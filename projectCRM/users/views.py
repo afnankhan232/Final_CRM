@@ -10,4 +10,4 @@ def home(request, **kwargs):
 	)
 
 def about(request, **kwargs):
-	return HttpResponse("This is an About Page")
+	return HttpResponse("This is an Updated Page")
