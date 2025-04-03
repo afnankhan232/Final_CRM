@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from .forms import UserRegisterForm
+from .forms import CompanyUserCreationForm
 
 from django.contrib.auth.models import User
 
@@ -9,13 +9,14 @@ from django.contrib import messages
 # Create your views here.
 def registrationView(request, *args, **kwargs):
     if(request.method == "POST"):
-        form = UserRegisterForm(request.POST)
+        form = CompanyUserCreationForm(request.POST)
         if(form.is_valid()):
+            form.save()
             companyName = form.cleaned_data.get("company_email")
-            messages.success(request, f"Account is Created!")
-            return redirect('home')
+            messages.success(request, f"Your account has been created! You can now log in")
+            return redirect('login')
     else:
-        form = UserRegisterForm()
+        form = CompanyUserCreationForm()
     
     context = {
         'form': form,

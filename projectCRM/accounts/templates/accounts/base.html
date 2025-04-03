@@ -31,10 +31,21 @@
 
 
                     <!-- Navbar Right Side -->
-                    <div class="navbar-nav">
-                        <a class="nav-item nav-link" href="#">Login</a>
-                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                    </div>
+                    {% if user.is_authenticated %}
+                        <div class="navbar-nav">
+                            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-item nav-link l-own">Logout
+                                </button>
+                            </form>
+                            <!-- <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a> -->
+                        </div>
+                    {% else %}
+                        <div class="navbar-nav">
+                            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                            <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                        </div>
+                    {% endif %}
                 </div>
 
             </div>

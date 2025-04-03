@@ -82,3 +82,19 @@ a.article-title:hover {
 .account-heading {
   font-size: 2.5rem;
 }
+
+.l-own {
+    border: none; 
+    background: none; 
+    font: inherit; 
+    color: #cbd5db; 
+    cursor: pointer;
+}
+
+.l-own:hover {
+    color: #ffffff;
+}
+
+.l-own:active {
+    font-weight: 500;
+}

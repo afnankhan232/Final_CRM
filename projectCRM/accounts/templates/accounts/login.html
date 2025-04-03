@@ -1,26 +1,26 @@
 {% extends 'accounts/base.html' %}
 
-{% block contentTitle %}
-  
-  <style>
-    /* Basic styling */
-    .loginInfo { font-family: Arial, sans-serif; padding: 20px; }
-    form { max-width: 400px; margin: auto; }
-    label { display: block; margin-top: 10px; }
-    input { width: 100%; padding: 8px; margin-top: 5px; }
-    button { margin-top: 15px; padding: 10px 15px; }
-  </style>
-{% endblock contentTitle %}
+{% load crispy_forms_tags %}
 
 {% block contentBody1 %}
-  
-  <div class=".loginInfo">  
-    <h2>Login</h2>
-    <form method="post" action="{% url 'login' %}">
+  <div class="content-section">
+    <form method="POST"> 
       {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Login</button>
-    </form>
-  </div>
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4"> Log In </legend>
+        {{ form|crispy }}
+      </fieldset>
 
+      <div class="form-group">
+        <button class="btn btn-outline-info" type="submit">Login</button>
+      </div>
+    </form>
+
+    <div class="border-top pt-3">
+      <small class="text-muted">
+         Need An Account? <a class="ml-2" href="{% url 'register' %}">Sign Up Now</a>
+      </small>
+    </div>
+    
+  </div>
 {% endblock contentBody1 %}

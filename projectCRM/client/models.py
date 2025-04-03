@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import CompanyUser
+from accounts.models import BusinessUser
 
 # Create your models here.
 class Client(models.Model):
@@ -7,4 +7,4 @@ class Client(models.Model):
     email = models.CharField(max_length=50)
     address = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
-    companyAssignee = models.ForeignKey(CompanyUser, on_delete=models.CASCADE)
+    companyAssignee = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
