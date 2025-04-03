@@ -1,0 +1,26 @@
+{% extends 'accounts/base.html' %}
+
+{% block contentTitle %}
+  
+  <style>
+    /* Basic styling */
+    .loginInfo { font-family: Arial, sans-serif; padding: 20px; }
+    form { max-width: 400px; margin: auto; }
+    label { display: block; margin-top: 10px; }
+    input { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px 15px; }
+  </style>
+{% endblock contentTitle %}
+
+{% block contentBody1 %}
+  
+  <div class=".loginInfo">  
+    <h2>Login</h2>
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+{% endblock contentBody1 %}

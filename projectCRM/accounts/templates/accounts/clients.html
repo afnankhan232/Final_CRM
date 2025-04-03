@@ -1,0 +1,18 @@
+{% extends 'accounts/base.html' %}
+
+{% block contentBody1 %}
+
+	{% if checkVar == True %}
+	<div>I am working fine </div>
+	{% else %}
+	<div>There is something wrong </div>
+	{% endif %}
+	
+	<h1> My Clients: </h1>
+
+	<ol>
+		{% for client in Clients %}
+		<li>{{ client.name }}</li>
+		{% endfor %}
+	</ol>
+{% endblock contentBody1 %}
