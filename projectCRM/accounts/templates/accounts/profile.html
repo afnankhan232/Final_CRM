@@ -1,0 +1,30 @@
+{% extends 'accounts/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block contentTitle %}
+{% endblock contentTitle %}
+
+{% block contentBody1 %}
+    <div class="content-section">
+        <div class="media">
+            <img width="100px" class="rounded-circle accounts-img" src="{{ user.company_logo.url }}">
+            <div class="media-body">
+                <h2 class="account-heading">{{user.company_name}}</h2>
+                <p class="text-secondary">{{user.company_email}}</p>
+            </div>
+        </div>
+    </div>
+
+    {% if request.user.client_set.all %}
+        <h3> All Clients: </h3>
+        <ol>
+            {% for client in request.user.client_set.all %}
+                <li>{{ client.name }}</li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <p>No clients found.</p>
+    {% endif %}
+
+{% endblock contentBody1 %}

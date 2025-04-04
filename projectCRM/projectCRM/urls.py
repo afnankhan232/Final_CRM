@@ -19,15 +19,20 @@ from django.urls import path, include
 
 from accounts.views import accountsViews
 from accounts.views import registrationView
+from accounts.views import profileView
 from client.views import clientsPageViews
 
 from django.contrib.auth import views as auth_views
+
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
 
     path('register/', registrationView, name='register'),
 
     path('', accountsViews, name='home'),
+    path('accounts/profile/', profileView,name='profile'),
     path('clients', clientsPageViews, name='clients'),
 
     path('admin/', admin.site.urls),
@@ -35,4 +40,4 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
-]
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

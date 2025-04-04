@@ -33,11 +33,15 @@
                     <!-- Navbar Right Side -->
                     {% if user.is_authenticated %}
                         <div class="navbar-nav">
+                            
+                            <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+
                             <form action="{% url 'logout' %}" method="post" style="display: inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="nav-item nav-link l-own">Logout
                                 </button>
                             </form>
+                            
                             <!-- <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a> -->
                         </div>
                     {% else %}

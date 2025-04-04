@@ -4,12 +4,17 @@
 {% endblock contentTitle %}
 
 {% block contentBody1 %}
-
-    <div class="content-section">
-        <h2>Welcome to Our CRM Software</h2>
-        <p>
-            This simple CRM application helps you manage customer details, leads, and tasks efficiently.<br>
-            Keep track of your business interactions in one organized place.
-        </p>
-    </div>
+    {% if user.is_authenticated == False %}
+        <div class="content-section">
+            <h2>Welcome to Our CRM Software</h2>
+            <p>
+                This simple CRM application helps you manage customer details, leads, and tasks efficiently.<br>
+                Keep track of your business interactions in one organized place.
+            </p>
+        </div>
+    {% else %}
+        <div class="content-section">
+            <h2>Use the CRM Software!</h2>
+        </div>
+    {% endif %}
 {% endblock contentBody1 %}

@@ -35,7 +35,7 @@ class MyAccountManger(BaseUserManager):
 
 
 
-def get_image_filepath(self):
+def get_image_filepath(self, filename):
     return f'company_logos/{str(self.pk)}/{"logo.png"}'
 
 def get_default_image():

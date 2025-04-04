@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 
 from django.contrib import messages
 
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def registrationView(request, *args, **kwargs):
     if(request.method == "POST"):
@@ -26,3 +28,7 @@ def registrationView(request, *args, **kwargs):
 
 def accountsViews(request, *args, **kwargs):
     return render(request, 'accounts/home.html')
+
+@login_required
+def profileView(request, *args, **kwargs):
+    return render(request, 'accounts/profile.html')
