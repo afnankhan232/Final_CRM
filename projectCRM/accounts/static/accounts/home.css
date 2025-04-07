@@ -1,0 +1,14 @@
+.top-level {
+	display: flex;
+	flex: 1;
+	flex-direction: row;
+	border: solid;
+	border-radius: 2px;
+}
+
+.side-bar {
+	
+	top: 0;
+	border: solid;
+	border-color: red;
+}

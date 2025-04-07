@@ -1,6 +1,9 @@
 {% extends 'accounts/base.html' %}
 
+{% load static %}
+
 {% block contentTitle %}
+    <link rel="stylesheet" href="{% static 'accounts/home.css' %}" type="text/css">
 {% endblock contentTitle %}
 
 {% block contentBody1 %}
@@ -13,8 +16,14 @@
             </p>
         </div>
     {% else %}
-        <div class="content-section">
-            <h2>Use the CRM Software!</h2>
+        <div class="top-level">
+
+            <div class="side-bar">
+                This is the side bar
+            </div>
+            <div class="content">
+                <h2>Use the CRM Software!</h2>
+            </div>
         </div>
     {% endif %}
 {% endblock contentBody1 %}
