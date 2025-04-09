@@ -7,8 +7,8 @@ def clientsPageViews(request, *args, **kwargs):
         'Clients': Clients.objects.all(),
         'checkVar': True, 
     }
-    if (User.is_authenticated):
-        print("is Authenticated??")
+    if (request.user.is_authenticated):
+        print("is Authenticated!!")
     else:
-        print("Do Something")
+        print("Login Required! To use application")
     return render(request, 'accounts/clients.html', context)

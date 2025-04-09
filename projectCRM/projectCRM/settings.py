@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'featuredApp.apps.FeaturedappConfig',
     'client.apps.ClientConfig',
     'accounts.apps.AccountsConfig',
     'crispy_forms',
@@ -139,8 +140,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGOUT_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/app/home/"
 LOGIN_URL = 'login'
+
 # For local development, add this:
 # if DEBUG:
 #     import mimetypes

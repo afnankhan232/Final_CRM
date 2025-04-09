@@ -1,0 +1,369 @@
+body, 
+html {
+
+    margin: 0;
+    padding: 0;
+
+    font-family: sans-serif;
+
+    background-color: #ffffff;
+    color: #222;
+}
+
+.l-own {
+    border: none; 
+    background: none; 
+    font: inherit; 
+    color: #cbd5db; 
+    cursor: pointer;
+}
+
+.l-own:hover {
+    color: #ffffff;
+}
+
+.l-own:active {
+    font-weight: 500;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.top-header {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+
+    background-color: #ffffff;
+    color: #222;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 15px;
+
+    z-index: 1000;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    .left-nav .menu-toggle {
+        margin-top: -4px;
+    }
+}
+
+.menu-toggle {
+
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+/* Sidebar */
+.sidebar {
+
+    background-color: #f4f4f4;
+    color: #222;
+
+    padding-top: 60px;
+
+    height: 100vh;
+
+    overflow: hidden;
+
+    transition: width 0.3s ease;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    z-index: 999;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.01);
+
+    border-right: 1px solid #e0e0e0;
+}
+
+.sidebar.expanded {
+    width: 220px;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+/*.menu-logo {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}*/
+
+.menu-items a {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #222;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.menu-items a i {
+    margin-right: 12px;
+    min-width: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: #555;
+    transition: color 0.2s;
+}
+
+.menu-items a:hover {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+}
+
+/*.menu-items a:hover i {
+    color: #007bff;
+}*/
+
+.menu-label {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar.collapsed .menu-label {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Active Link */
+.menu-items a.active {
+    background-color: #e0e0e0;
+    font-weight: 600;
+    border-right: 2px solid darkgray;
+    border-radius: 2px;
+}
+
+/*.menu-items a.active i {
+    color: #1d4ed8;
+}
+*/
+
+/* Content */
+.content {
+    margin-left: 220px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.collapsed ~ .content {
+    margin-left: 60px;
+}
+
+/* Responsive: always visible sidebar, just collapsible */
+@media (max-width: 600px) {
+    .content {
+        margin-left: 220px;
+    }
+
+    .sidebar.collapsed ~ .content {
+        margin-left: 60px;
+    }
+}
+
+.top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #ffffff;
+    color: #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.left-nav {
+    display: flex;
+    align-items: center;
+
+    a {
+        color: black;
+        text-decoration: none;
+        cursor: pointer; 
+    }
+
+    a:hover,
+    a:active,
+    a:visited,
+    a:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
+
+.menu-toggle {
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: bold;
+
+    text-decoration: none;
+}
+
+/*.right-nav .account-link {
+    font-size: 22px;
+    color: #222;
+    text-decoration: none;
+}
+
+.right-nav .account-link:hover {
+    color: #007bff;
+}*//* --- Slide Panel Container --- */
+.account-panel {
+  position: fixed;
+  top: 0;
+  right: -320px; /* Hidden by default */
+  width: 300px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  border-left: 1px solid #e5e5e5;
+  transition: right 0.3s ease;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Open State --- */
+.account-panel.open {
+  right: 0;
+}
+
+/* --- Header with Company Info --- */
+.account-panel-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 38px 12px;
+  border-bottom: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+/* --- Company Logo --- */
+.company-logo {
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* --- Company Details --- */
+.company-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.company-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.company-email {
+  font-size: 13px;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Close Button (×) --- */
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  color: #888;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* --- Body Links --- */
+.account-panel-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-panel-body a {
+  display: block;
+  padding: 10px 0;
+  font-size: 15px;
+  color: #333;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.account-panel-body a:hover {
+  color: #007bff;
+}
+
+
+/* --- Right Nav Container --- */
+.right-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+}
+
+/* --- Account Trigger Icon Area --- */
+.account-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; /* ✅ This makes it a pointer */
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+/* Optional hover effect */
+.account-trigger:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* --- Account Icon Styling --- */
+.account-icon {
+  font-size: 22px;
+  color: #333;
+}
+
+
+
+.sidebar {
+  visibility: hidden;
+}
+
+.sidebar.ready {
+  visibility: visible;
+}
