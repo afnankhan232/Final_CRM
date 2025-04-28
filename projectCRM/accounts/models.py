@@ -84,3 +84,4 @@ class BusinessUser(AbstractBaseUser):
         return str(self.company_logo)[str(self.company_logo).index(f'company_logos/{self.pk}/'):]
 
 # python manage.py migrate && python manage.py createsuperuser && python manage.py makemigrations && python manage.py migrate
+

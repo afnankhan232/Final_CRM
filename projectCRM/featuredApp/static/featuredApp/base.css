@@ -1,6 +1,8 @@
 body, 
 html {
 
+    font-size: 12px;
+
     margin: 0;
     padding: 0;
 
@@ -10,26 +12,34 @@ html {
     color: #222;
 }
 
+.container-defined {
+    padding-top: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
 .l-own {
     border: none; 
     background: none; 
     font: inherit; 
-    color: #cbd5db; 
+    padding: 0px;
+    margin: 0px;
+    color: indianred; 
     cursor: pointer;
 }
 
 .l-own:hover {
-    color: #ffffff;
+    color: orangered;
 }
 
 .l-own:active {
     font-weight: 500;
 }
 
-.layout {
+/*.layout {
     display: flex;
     min-height: 100vh;
-}
+}*/
 
 .top-header {
 

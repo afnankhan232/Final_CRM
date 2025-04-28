@@ -10,3 +10,17 @@ class Client(models.Model):
 
     is_active = models.BooleanField(default=True)
     companyAssignee = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
+
+class Project(models.Model):
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
+
+class Contact(models.Model):
+    full_name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, blank=True)
+    company_name = models.CharField(max_length=255, blank=True)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+    tags = models.CharField(max_length=255, blank=True)
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
+    owner = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)

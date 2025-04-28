@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
+from client.models import Contact, Project
+
 @login_required
 def profile(request, *args, **kwargs):
     return render(request, 'users/profile.html')
@@ -20,4 +22,11 @@ def activities_view(request, *args, **kwargs):
 
 @login_required
 def contact_view(request, *args, **kwargs):
-    return render(request, 'featuredApp/contacts.html')
+    user = request.user
+    contacts = Contact.objects.filter(owner=user)
+    projects = Project.objects.filter(user=user)
+    return render(request, 'featuredApp/contacts.html', {
+        'contacts': contacts,
+        'projects': projects,
+        'total_contacts': contacts.count()
+    })

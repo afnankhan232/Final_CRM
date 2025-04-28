@@ -3,5 +3,58 @@
 {% load static %}
 
 {% block contentBody1 %}
-hello there
+	<h2 style="font-weight: bolder;">Contacts</h2>
+
+	<ul class="nav nav-tabs">
+	  <li class="nav-item"><a class="nav-link active" href="#">All</a></li>
+	  {% for project in projects %}
+	    <li class="nav-item"><a class="nav-link" href="#">{{ project.name }}</a></li>
+	  {% endfor %}
+	  <li class="nav-item"><a class="nav-link" href="#">+</a></li>
+	</ul>
+
+	<div class="d-flex justify-content-between my-2">
+	  <div>
+	    <button class="btn btn-primary">Add Contact</button>
+	    <div class="btn-group">
+	      <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown">Upload Contacts</button>
+	      <ul class="dropdown-menu">
+	        <li><a class="dropdown-item" href="#">From CSV</a></li>
+	        <li><a class="dropdown-item" href="#">From Excel</a></li>
+	      </ul>
+	    </div>
+	  </div>
+	  <div>Total Contacts: {{ total_contacts }}</div>
+	</div>
+
+	<input type="text" class="form-control my-2" placeholder="Search contacts...">
+
+	<table class="table">
+	  <thead>
+	    <tr>
+	      <th><input type="checkbox" /></th>
+	      <th>Full Name</th>
+	      <th>Title</th>
+	      <th>Company Name</th>
+	      <th>Email</th>
+	      <th>Phone</th>
+	      <th>Tags</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    {% for contact in contacts %}
+	    <tr>
+	      <td><input type="checkbox" /></td>
+	      <td>{{ contact.full_name }}</td>
+	      <td>{{ contact.title }}</td>
+	      <td>{{ contact.company_name }}</td>
+	      <td>{{ contact.email }}</td>
+	      <td>{{ contact.phone }}</td>
+	      <td>{{ contact.tags }}</td>
+	    </tr>
+	    {% endfor %}
+	  </tbody>
+	</table>
+
+
 {% endblock contentBody1 %}
