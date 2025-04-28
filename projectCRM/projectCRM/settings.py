@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'client.apps.ClientConfig',
     'accounts.apps.AccountsConfig',
     'crispy_forms',
-    "crispy_bootstrap4",
+    "crispy_bootstrap5",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
