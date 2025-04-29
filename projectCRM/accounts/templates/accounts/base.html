@@ -4,75 +4,183 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My CRM</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <link rel="stylesheet" type="text/css" href="{% static 'accounts/base.css' %}">
 
+    <link rel="stylesheet" type="text/css" href="{% static 'featuredApp/base.css' %}">
+    {% block addCSSlink %}{% endblock addCSSlink %}
+
     {% block contentTitle %} {% endblock contentTitle %}
+
+    <!-- Loading ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
 </head>
 <body>
-    <header class="site-header" style="color: black">
-        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-            <div class="container">
+    <div class="site-header layout">
 
-                <a class="navbar-brand mr-4" href="{% url 'home' %}"> CRM </a>
+        <header class="top-header">
 
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <div class="left-nav">
 
-                <div class="collapse navbar-collapse" id="navbarToggle">
-                    <div class="navbar-nav mr-auto">
-                        {% if user.is_authenticated %}
-                            <a class="nav-item nav-link" href="{% url 'dashboardHome' %}">Home</a>
-                        {% else %}
-                            <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
-                        {% endif %}
-                        <a class="nav-item nav-link" href="#">About</a>
-                    </div>
+                <div class="menu-toggle" onclick="toggleSidebar()"> ☰ </div>
 
+                <a href="{% url 'index' %}"> 
+                    <div class="logo"> CRM </div> 
+                </a>
 
-                    <!-- Navbar Right Side -->
+            </div>
+
+            <div class="right-nav">
+
+                <!-- LogIn -->
+                <!-- SignUp -->
+                <!-- Navbar Right Side -->
                     {% if user.is_authenticated %}
-                        <div class="navbar-nav">
+                        <div class="navbar-nav" style="display: flex; flex-direction: row; justify-content: space-between; column-gap: 18px;">
                             
-                            <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+                            <div>
+                                <a class="nav-item nav-link" href="{% url 'appDashboard' %}">Go To Apps</a>
+                            </div>
 
-                            <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="nav-item nav-link l-own">Logout
-                                </button>
-                            </form>
+                            <div style="align-content: center;">
+                                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="nav-item nav-link l-own">Logout
+                                    </button>
+                                </form>
+                            </div>
                             
                             <!-- <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a> -->
                         </div>
                     {% else %}
-                        <div class="navbar-nav">
-                            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                            <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                        <div class="navbar-nav" style="display: flex; flex-direction: row; justify-content: space-between; column-gap: 18px;">
+                            <div><a class="nav-item nav-link" href="{% url 'login' %}">Login</a></div>
+                            <div><a class="nav-item nav-link" href="{% url 'register' %}">Register</a></div>
                         </div>
                     {% endif %}
-                </div>
 
             </div>
-        </nav>
-    </header>
+        </header>
 
-    <div class="container">
+        <aside class="sidebar" id="sidebar">
+
+            <!-- <div class="menu-logo"><i class="fas fa-bars"></i></div> -->
+
+            <nav class="menu-items">
+
+                <!-- ITEM ONE -->
+                <a 
+                    href="{% url 'index' %}" 
+                    class=
+                    "
+                        {% if request.path == '/' %}
+                        active
+                        {% endif %}
+                    "
+                >
+                    <!-- ICON -->
+                    <i class="fas fa-home"></i>
+                    <!-- Name -->
+                    <span class="menu-label">Home</span>
+
+                </a>
+
+                <!-- ITEM TWO -->
+                <a 
+                    href="{% url 'about' %}" 
+                    class=
+                    "
+                        {% if request.path == '/about' %}
+                            active
+                        {% endif %}
+                    "
+                >
+
+                    <!-- ICON -->
+                    <i class="fas fa-info-circle"></i>
+                    <!-- Name -->
+                    <span class="menu-label">About</span>
+                </a>
+
+            </nav>
+        </aside>
+
+        <!-- <main class="content">
+            <h2>Contacts</h2>
+            {% block content %}
+            {% endblock %}
+        </main> -->
+    </div>
+
+    <div class="container-defined" style="margin-left: 60px; margin-top: 60px;">
+
         {% if messages %}
+
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}"> {{ message }} </div>
             {% endfor %}
+
         {% endif %}
-        <div style="margin-top: 60px;"></div>
+
         {% block contentBody1 %} {% endblock contentBody1 %}
+
     </div>
 
     <div style="margin-top: 100px;"></div>
 
+
+    <!-- JS files attached below -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script></body>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- JS files ended -->
+
+    <!-- Extra JS Features -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const sidebar = document.getElementById("sidebar");
+
+      const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+
+      if (isCollapsed) {
+        sidebar.classList.add("collapsed");
+      } else {
+        sidebar.classList.add("expanded");
+      }
+
+      // Finally, make it visible
+      sidebar.classList.add("ready");
+
+      // Toggle function
+      window.toggleSidebar = function () {
+        sidebar.classList.toggle("collapsed");
+        sidebar.classList.toggle("expanded");
+
+        const nowCollapsed = sidebar.classList.contains("collapsed");
+        localStorage.setItem("sidebar-collapsed", nowCollapsed);
+      };
+    });
+
+
+    function toggleAccountPanel() {
+      const panel = document.getElementById("accountPanel");
+      panel.classList.toggle("open");
+    }
+
+    // Optional: Close when clicking outside
+    document.addEventListener("click", function (event) {
+      const panel = document.getElementById("accountPanel");
+      const trigger = document.querySelector(".account-trigger");
+
+      if (!panel.contains(event.target) && !trigger.contains(event.target)) {
+        panel.classList.remove("open");
+      }
+    });
+
+    </script>
+    <!-- Extra JS Features ENDED -->
+
+</body>
 </html>

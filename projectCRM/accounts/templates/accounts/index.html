@@ -1,0 +1,27 @@
+{% extends 'accounts/base.html' %}
+
+{% load static %}
+
+<!-- Adding css link -->
+{% block addCSSlink%}
+    <link rel="stylesheet" href="{% static 'accounts/home.css' %}" type="text/css">
+{% endblock addCSSlink%}
+
+<!-- adding title -->
+{% block contentTitle %}
+    <title> My CRM </title>
+{% endblock contentTitle %}
+
+<!-- Content Page [Main] -->
+{% block contentBody1 %}
+
+
+    <div class="content-section">
+        <h2>Welcome to Our CRM Software</h2>
+        <p>
+            This simple CRM application helps you manage customer details, leads, and tasks efficiently.<br>
+            Keep track of your business interactions in one organized place.
+        </p>
+    </div>
+
+{% endblock contentBody1 %}

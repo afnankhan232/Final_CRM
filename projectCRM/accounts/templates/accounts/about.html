@@ -1,0 +1,29 @@
+{% extends 'accounts/base.html' %}
+
+{% load static %}
+
+<!-- Adding css link -->
+{% block addCSSlink%}
+    <link rel="stylesheet" href="{% static 'accounts/home.css' %}" type="text/css">
+{% endblock addCSSlink%}
+
+<!-- adding title -->
+{% block contentTitle %}
+    <title> My CRM </title>
+{% endblock contentTitle %}
+
+<!-- Content Page [Main] -->
+{% block contentBody1 %}
+
+    <div class="content-section">
+        <h2>Welcome to Our CRM Software</h2>
+        <br><br>
+        <h3>This Software is created by:</h3>
+        <p>
+            Adarsh Vishwakarma<br>
+            Afnan Khan<br>
+            Anurag Pandey<br>
+            Arpit Patel<br>
+        </p>
+    </div>
+{% endblock contentBody1 %}

@@ -1,8 +1,7 @@
 """
-URL configuration for projectCRM project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
+Important Link(s):
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
+
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -17,29 +16,45 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from accounts.views import accountsViews
+from django.conf import settings
+from django.conf.urls.static import static
+
+# Views from Different django-apps
+from accounts.views import indexView
+from accounts.views import aboutView
 from accounts.views import registrationView
 from accounts.views import profileView
 from client.views import clientsPageViews
 
+# for Authentication - Login and Logout
 from django.contrib.auth import views as auth_views
 
-from django.conf import settings
-from django.conf.urls.static import static
-
+# URL's!
 urlpatterns = [
 
+    # Index / Home Page
+    path('', indexView, name='index'),
+    path('home/', indexView, name='home'),
+    path('about/', aboutView, name='about'),
+
+    # Creating New User (Registration Page)
     path('register/', registrationView, name='register'),
 
-    path('', accountsViews, name='home'),
-    path('accounts/profile/', profileView,name='profile'),
-    path('clients', clientsPageViews, name='clients'),
-
-    path('admin/', admin.site.urls),
-
+    # Login and Logout
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
-    path('app/', include('featuredApp.urls'))
+    # Profile View [Temporary]
+    path('accounts/profile/', profileView, name='profile'),
+
+    # This should be removed!
+    path('clients', clientsPageViews, name='clients'), 
+
+    # Admin Page for Local Development
+    path('admin/', admin.site.urls),
+    
+
+    # Advanced Featured App
+    path('apps/', include('featuredApp.urls')),
 
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -8,7 +8,16 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+# Index or Home page for CRM Software
+def indexView(request, *args, **kwargs):
+    print(request.path)
+    return render(request, 'accounts/index.html')
+
+# About Page of CRM Software Include info about the Authors
+def aboutView(request, *args, **kwargs):
+    return render(request, 'accounts/about.html')
+
+# Register a New Account
 def registrationView(request, *args, **kwargs):
     if(request.method == "POST"):
         form = CompanyUserCreationForm(request.POST)
@@ -26,9 +35,9 @@ def registrationView(request, *args, **kwargs):
 
     return render(request, 'accounts/register.html', context)
 
-def accountsViews(request, *args, **kwargs):
-    return render(request, 'accounts/home.html')
+# Login and Logout are handled from URL-Patterns Using default django Class.
 
+# Profile View Extends featuredApp/base.html
 @login_required
 def profileView(request, *args, **kwargs):
     return render(request, 'accounts/profile.html')
