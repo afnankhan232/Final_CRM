@@ -36,6 +36,8 @@ def registrationView(request, *args, **kwargs):
             companyName = form.cleaned_data.get("company_email")
             messages.success(request, f"Your account has been created! You can now log in")
             return redirect('login')
+        else:
+            messages.success(request, f"Can't Create Account")
     else:
         form = CompanyUserCreationForm()
     

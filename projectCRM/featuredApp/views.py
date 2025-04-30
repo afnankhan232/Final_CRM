@@ -27,22 +27,30 @@ def dashboard_view(request, *args, **kwargs):
 @login_required
 def contact_view(request, *args, **kwargs):
 
-    # # For Pop-up window specific to Project Creation!!
-    if(request.method == "POST"):
-    # #     # After work
-    # #     # Check if the From is from ProjectCreation OR ClientCreation
+    print(request.user)
 
-        form = ProjectCreationForm(request.POST)
+    # Project Creation!!
+    if(request.method == "POST"):
+        # After work
+        # Check if the From is from ProjectCreation OR ClientCreation
+
+        form = ProjectCreationForm(request.POST, user=request.user)
         if(form.is_valid()):
+            # Commit as False -> cause we need other field to be enter before saving the form
             projectValidForm = form.save(commit = False)
             projectValidForm.user = request.user
-            projectValidForm.save()
+            projectValidForm.save() # Save the form
+
             messages.success(request, f"New Project Created Successfully!")
+
             return redirect('appContacts')
+        
         else:
-            messages.success(request, f"NOPE!!!")
+            # Message for un-success project creation
+            messages.error(request, "A project with this name already exists.")
+            return redirect('appContacts')
     else:
-        form = ProjectCreationForm()
+        form = ProjectCreationForm(user=request.user)
 
     # current User
     user = request.user
