@@ -49,19 +49,62 @@ class Lead(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     modified_at = models.DateTimeField(auto_now = True)
 
+class Project(models.Model):
+
+    # Necessary Field [Project Name]
+    name = models.CharField(max_length=255)
+
+    # An Optional Description Field
+    description = models.TextField(null = True, blank = True)
+
+    # Linking with BusinessUser Model (every user have their own unique set of contacts that they can add and access)
+    user = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
+
+    # Adding META class - cause we need unique project name [inside each user]
+    class Meta:
+        unique_together = ('name', 'user', )
+
+    # dunder str method, so we get better naming at the admin page (DEVELOPMENT SPECIFIC)
+    def __str__(self):
+        return f'{self.name} - {self.user.company_name}'
 
 class Client(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.CharField(max_length=50)
-    address = models.CharField(max_length=100)
-    phone = models.CharField(max_length=15)
 
+    # Necessary Field
+    name = models.CharField(max_length=255)
+
+    # Email
+    email = models.CharField(max_length=80)
+    # Phone Number ['country_code' -> 'phone_number] + Exceptional
+    country_code = models.IntegerField(default=91, blank = True, null = True)
+    phone = models.IntegerField(blank = True, null = True)
+
+    # Over-riding clean method [to allow one of the field (email, phone_number) to be provided at the time of Client creation]
+    def clean(self):
+        super().clean()
+        if not self.email and not self.phone:
+            raise ValidationError('At least of the field ("email" or "phone_number") must be provided!')
+
+
+    # Exceptional Field
+    address = models.CharField(max_length=255, blank = True, null = True)
+
+    # Exceptional Field
+    description = models.TextField(blank = True, null = True)
+
+    # A binary Field (Defaul set to 'True')
     is_active = models.BooleanField(default=True)
+
+    # Adding OneToOne field [linking with contact
+    list = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+    # Linking with BusinessUser Model (every user have their own unique set of contacts that they can add and access)
+    # models.CASCADE refers that if the BusinessUser is deleted, then delete the Client table from the database..
     companyAssignee = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
 
-class Project(models.Model):
-    name = models.CharField(max_length=255)
-    user = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
+    # dunder str method, so we get better naming at the admin page (DEVELOPMENT SPECIFIC)
+    def __str__(self):
+        return f'{self.name} - {self.companyAssignee.company_name}'
 
 class Contact(models.Model):
     full_name = models.CharField(max_length=255)

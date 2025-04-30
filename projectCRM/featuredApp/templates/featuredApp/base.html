@@ -108,6 +108,9 @@
             {% endfor %}
         {% endif %}
         {% block contentBody1 %} {% endblock contentBody1 %}
+        
+        {% block addPopUp1 %} {% endblock addPopUp1 %}
+        {% block addPopUp2 %} {% endblock addPopUp2 %}
     </div>
 
     <div style="margin-top: 100px;"></div>
@@ -149,6 +152,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!-- JS files ended -->
 
+    <!-- Js Script for windows and sidebars [STARTED] -->
     <script>
     document.addEventListener("DOMContentLoaded", () => {
       const sidebar = document.getElementById("sidebar");
@@ -191,6 +195,11 @@
     });
 
     </script>
+    <!-- Js Script for windows and sidebars [ENDED] -->
+
+    <!-- Extra Script [STARTED]  -->
+    {% block extraJS %} {% endblock extraJS %}
+    <!-- Extra Script [ENDED] -->
 
 
 </body>

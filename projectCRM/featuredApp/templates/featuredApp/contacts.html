@@ -1,64 +1,164 @@
+<!-- Extend from base.html  -->
 {% extends 'featuredApp/base.html' %}
 
+
+<!-- Loading CSS files from static (path defined at settings.py)-->
 {% load static %}
 
+
+<!-- As we are loading crispy form Hence Import crispy_forms_tags -->
+{% load crispy_forms_tags %}
+
+
+<!-- A nice title -->
 {% block titleBlock %} 
 	<title> Contacts </title>
 {% endblock titleBlock %}
 
+
+<!-- Some extra css property for this specific page -->
+{% block addCSSlink %}
+	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/contacts.css' %}">
+{% endblock addCSSlink %}
+
+
+<!-- Main CONTENT GOES HERE -->
 {% block contentBody1 %}
 	<h2 style="font-weight: bolder;"> Contacts </h2>
 
-	<ul class="nav nav-tabs">
-	  <li class="nav-item"><a class="nav-link active" href="#">All</a></li>
-	  {% for project in projects %}
-	    <li class="nav-item"><a class="nav-link" href="#">{{ project.name }}</a></li>
-	  {% endfor %}
-	  <li class="nav-item"><a class="nav-link" href="#">+</a></li>
-	</ul>
+	<!-- Displaying SET of projects -->
+	<!-- These are clickable -->
+	<ul class="nav nav-tabs" style="align-items: center;">
+
+		<!-- First List Item as [ALL] -->
+		<li class="nav-item"><a class="nav-link active" href="#">All</a></li>
+
+		<!-- Next List of [PROJECTS] -->
+		{% for project in projects %}
+			<li class="nav-item"><a class="nav-link" href="#">{{ project.name }}</a></li>
+		{% endfor %}
+
+		<!-- Last we have [Add Button] -->
+		<li class="nav-item">
+			<button class="prj-add-btn" type="button" onclick="openProjectFormPopUp()">+</button>
+		</li>
+
+			</ul>
 
 	<div class="d-flex justify-content-between my-2">
-	  <div>
-	    <button class="btn btn-primary">Add Contact</button>
-	    <div class="btn-group">
-	      <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown">Upload Contacts</button>
-	      <ul class="dropdown-menu">
-	        <li><a class="dropdown-item" href="#">From CSV</a></li>
-	        <li><a class="dropdown-item" href="#">From Excel</a></li>
-	      </ul>
-	    </div>
-	  </div>
-	  <div>Total Contacts: {{ total_contacts }}</div>
+		<div>
+			Total Contacts: {{ total_contacts }}
+		</div>
+
+		<div>
+
+			<button class="btn btn-dark">Add Contact</button>
+
+			<!-- This feature is for future development -->
+			<!-- Allow to add Contacts/Clients from CSV file or EXCEL -->
+			<!-- <div class="btn-group">
+
+				<button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown">
+					Upload Contacts
+				</button>
+
+				<ul class="dropdown-menu">
+        			<li><a class="dropdown-item" href="#">From CSV</a></li>
+        			<li><a class="dropdown-item" href="#">From Excel</a></li>
+      			</ul>
+
+    		</div> -->
+
+	  	</div>
 	</div>
 
 	<input type="text" class="form-control my-2" placeholder="Search contacts...">
 
 	<table class="table">
-	  <thead>
-	    <tr>
-	      <th><input type="checkbox" /></th>
-	      <th>Full Name</th>
-	      <th>Title</th>
-	      <th>Company Name</th>
-	      <th>Email</th>
-	      <th>Phone</th>
-	      <th>Tags</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    {% for contact in contacts %}
-	    <tr>
-	      <td><input type="checkbox" /></td>
-	      <td>{{ contact.full_name }}</td>
-	      <td>{{ contact.title }}</td>
-	      <td>{{ contact.company_name }}</td>
-	      <td>{{ contact.email }}</td>
-	      <td>{{ contact.phone }}</td>
-	      <td>{{ contact.tags }}</td>
-	    </tr>
-	    {% endfor %}
-	  </tbody>
+		<thead>
+			<tr>
+				<th><input type="checkbox" /></th>
+				<th>Full Name</th>
+				<th>Title</th>
+				<th>Company Name</th>
+				<th>Email</th>
+				<th>Phone</th>
+				<th>Tags</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for contact in contacts %}
+				<tr>
+					<td><input type="checkbox" /></td>
+					<td>{{ contact.full_name }}</td>
+					<td>{{ contact.title }}</td>
+					<td>{{ contact.company_name }}</td>
+					<td>{{ contact.email }}</td>
+					<td>{{ contact.phone }}</td>
+					<td>{{ contact.tags }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
 	</table>
 
-
 {% endblock contentBody1 %}
+
+
+<!-- There GOES the POP-UP Window for Project Form -->
+{% block addPopUp1 %}
+	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
+	<div class="add-prj-pop-up-window" id="prj-pop-up-window-element">
+
+		<span class="close-prj-popup-btn" onclick="closeProjectFormPopUp()">&times;</span>
+
+		<!-- There GOES the form -->
+		<!-- Referenced From accounts/register.html -->
+		<div style="margin-top: 20px;" class="content-section">
+			<form method="POST"> 
+				{% csrf_token %}
+				<fieldset class="form-group">
+					<legend class="border-bottom mb-4"> Add NEW PROJECT </legend>
+					{{ form|crispy }}
+				</fieldset>
+
+				<div class="form-group">
+					<button class="btn btn-outline-info" type="submit">Add Project</button>
+				</div>
+			</form>
+			
+		</div>
+
+	</div>
+
+	<!-- This div allow us to close the pop-up if we click outside.. -->
+	<div class="popup-overlay" id="popupOverlay" onclick="closeProjectFormPopUp()"></div>
+{%endblock addPopUp1 %}
+
+<!-- There GOES the extra script that handles the pop-up window [ show / hide ] -->
+{% block extraJS %} 
+	<script type="text/javascript">
+		let prjPopUp = document.getElementById('prj-pop-up-window-element');
+		let tmp = document.getElementById('popupOverlay');
+		
+
+		function openProjectFormPopUp() {
+			const form = prjPopUp.querySelector('form');
+			form.reset();
+
+			prjPopUp.classList.add('open-prj-popup');
+			tmp.classList.add('active');
+		}
+
+		function closeProjectFormPopUp() {
+			prjPopUp.classList.remove('open-prj-popup');
+			tmp.classList.remove('active');
+		}
+
+		// Close popup on ESC key
+		document.addEventListener('keydown', function(event) {
+			if (event.key === 'Escape') {
+				closeProjectFormPopUp();
+			}
+		});
+	</script>
+{% endblock extraJS %}
