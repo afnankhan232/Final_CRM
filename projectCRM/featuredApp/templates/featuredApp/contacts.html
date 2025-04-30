@@ -31,12 +31,28 @@
 	<ul class="nav nav-tabs" style="align-items: center;">
 
 		<!-- First List Item as [ALL] -->
-		<li class="nav-item"><a class="nav-link active" href="#">All</a></li>
+		<li class="nav-item">
+			<a class="nav-link {% if set_to_all == True %}active{% endif %}" href="{% url 'appContacts' %}">All</a></li>
 
 		<!-- Next List of [PROJECTS] -->
 		{% for project in projects %}
-			<li class="nav-item"><a class="nav-link" href="#">{{ project.name }}</a></li>
+			<li class="nav-item">
+				<a href="?project_id={{ project.id }}" class="nav-link {% if selected_project_id == project.id %}active{% endif %}">{{ project.name }}</a>
+			</li>
 		{% endfor %}
+
+		{% if projects|length > 5 %}
+			<div class="btn-group" role="group">
+				<button id="btnGroupDrop1" type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					More
+				</button>
+				<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+					{% for project in projects|slice:"5:" %}
+						<a class="dropdown-item" href="?project_id={{ project.id }}">{{ project.name }}</a>
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
 
 		<!-- Last we have [Add Button] -->
 		<li class="nav-item">
@@ -79,23 +95,19 @@
 			<tr>
 				<th><input type="checkbox" /></th>
 				<th>Full Name</th>
-				<th>Title</th>
-				<th>Company Name</th>
 				<th>Email</th>
 				<th>Phone</th>
-				<th>Tags</th>
+				<th>Address</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for contact in contacts %}
 				<tr>
 					<td><input type="checkbox" /></td>
-					<td>{{ contact.full_name }}</td>
-					<td>{{ contact.title }}</td>
-					<td>{{ contact.company_name }}</td>
+					<td>{{ contact.name }}</td>
 					<td>{{ contact.email }}</td>
 					<td>{{ contact.phone }}</td>
-					<td>{{ contact.tags }}</td>
+					<td>{{ contact.address }}</td>
 				</tr>
 			{% endfor %}
 		</tbody>
@@ -132,7 +144,11 @@
 
 	<!-- This div allow us to close the pop-up if we click outside.. -->
 	<div class="popup-overlay" id="popupOverlay" onclick="closeProjectFormPopUp()"></div>
-{%endblock addPopUp1 %}
+{% endblock addPopUp1 %}
+
+<!-- A pop-up Window for creating new Client/Contact -->
+{% block addPopUp2 %}
+{% endblock addPopUp2 %}
 
 <!-- There GOES the extra script that handles the pop-up window [ show / hide ] -->
 {% block extraJS %} 

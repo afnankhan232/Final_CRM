@@ -7,7 +7,11 @@ from django.contrib.auth.decorators import login_required
 # A helper notification section, which notify the new activity
 from django.contrib import messages
 
-from client.models import Contact, Project
+from client.models import Client
+from client.forms import ClientCreationForm
+
+# Project Model and Form
+from client.models import Project
 from client.forms import ProjectCreationForm
 
 
@@ -17,8 +21,6 @@ from client.forms import ProjectCreationForm
 def profile(request, *args, **kwargs):
     return render(request, 'users/profile.html')
 
-
-
 # ---- ==== FEATURED APP LINKS LISTED BELOW ==== ----
 @login_required
 def dashboard_view(request, *args, **kwargs):
@@ -27,13 +29,12 @@ def dashboard_view(request, *args, **kwargs):
 @login_required
 def contact_view(request, *args, **kwargs):
 
-    print(request.user)
-
     # Project Creation!!
     if(request.method == "POST"):
         # After work
         # Check if the From is from ProjectCreation OR ClientCreation
 
+        # the user arguement pass to the __init__ attribute of the ProjectCreationForm (it's no big deal)
         form = ProjectCreationForm(request.POST, user=request.user)
         if(form.is_valid()):
             # Commit as False -> cause we need other field to be enter before saving the form
@@ -41,13 +42,16 @@ def contact_view(request, *args, **kwargs):
             projectValidForm.user = request.user
             projectValidForm.save() # Save the form
 
+            # A success Message
             messages.success(request, f"New Project Created Successfully!")
 
             return redirect('appContacts')
         
         else:
-            # Message for un-success project creation
+            # An error message
             messages.error(request, "A project with this name already exists.")
+
+            # The re-direction help! - [ don't know if it's best practice! ]
             return redirect('appContacts')
     else:
         form = ProjectCreationForm(user=request.user)
@@ -55,15 +59,23 @@ def contact_view(request, *args, **kwargs):
     # current User
     user = request.user
 
-    # some Values from DATABASE [existing user]
-    contacts = Contact.objects.filter(owner=user)
+    # Retrieving Values from DATABASE [existing user]
+    user = request.user
+    project_id = request.GET.get('project_id')
+
+    contacts = Client.objects.filter(companyAssignee=user)
     projects = Project.objects.filter(user=user)
+
+    if project_id:
+        contacts = contacts.filter(list__id = project_id)
 
     context = {
         'form': form,
         'contacts': contacts,
         'projects': projects,
         'total_contacts': contacts.count(),
+        'selected_project_id': int(project_id) if project_id else None,
+        'set_to_all': True if project_id is None else False,
     }
 
     return render (
@@ -74,7 +86,24 @@ def contact_view(request, *args, **kwargs):
 
 @login_required
 def tasks_view(request, *args, **kwargs):
-    return render(request, 'featuredApp/tasks.html')
+
+    if request.method == "POST":
+        form = ClientCreationForm(request.POST, user = request.user)
+        if(form.is_valid()):
+            tmp = form.save(commit = False)
+            tmp.companyAssignee = request.user
+            tmp.save()
+            return redirect('appTasks')
+    else:
+        form = ClientCreationForm(user = request.user)
+
+    return render(
+        request, 
+        'featuredApp/tasks.html',
+        {
+            'form': form,
+        },
+    )
 
 @login_required
 def activities_view(request, *args, **kwargs):

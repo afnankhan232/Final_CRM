@@ -18,16 +18,16 @@
         - DONE DataBase Model
         - DONE Create Signal to trigger and create a -> [default project]
         - DONE Creation From for Project
-        - ONGOING A Pop-up window views for creating new project
-        - Edit Form for Project
-        - Deletion Form for Project
+        - DONE A Pop-up window views for creating new project
+        - ONGOING Edit Form for Project
+        - ONGOING Deletion Form for Project
         
 
     - Client (store the contact info)
         - DONE Database Model
-        - link with Project Model
+        - DONE link with Project Model
         - Views pages for [contact page]
-            - List of Client
+            - DONE List of Client
             - Detailed View of each Client (their details)
         - Creation form for Client
         - Edit form for Client

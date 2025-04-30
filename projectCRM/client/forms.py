@@ -1,6 +1,10 @@
 # Basic Import
 from django import forms
 
+# For Displaying [country_code] and [phone_number] side-by-side
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Column, Field, Fieldset, Div
+
 # ---- ==== Form for creating new Project ==== ----
 from .models import Project
 
@@ -34,4 +38,35 @@ class ClientCreationForm(forms.ModelForm):
         # specifying the model we are targeting
         model = Client
         # Field to show in Form
-        fields = ('name', 'email', 'address', 'phone', 'description',)
+        fields = ('name', 'email', 'country_code', 'phone', 'address', 'description', 'list')
+
+    # We need to over-ride the __init__ method (getting the projects from current user)
+    # we also include the 'user' field in the views.py
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+
+        # Don't  mess with the original __init__ method! EVER
+        super().__init__(*args, **kwargs)
+
+        # The following code set the possible value of project
+        if user:
+            self.fields['list'].queryset = Project.objects.filter(user = user)
+        
+        # Making ['email' and 'phone'] fields optional - for crispy form
+        self.fields['email'].required = False
+        self.fields['phone'].required = False
+        
+        # Chaning the Layout of side-by-side display for [country_code] and [phone_number]
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field('name'),
+            Field('email'),
+            Div(
+                Div('country_code', css_class='pr-2', style='flex: 1;'),
+                Div('phone', style='flex: 3;'),
+                css_class='d-flex align-item-end'
+            ),
+            Field('address'),
+            Field('description'),
+            Field('list'),
+        )

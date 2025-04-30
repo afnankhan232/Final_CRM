@@ -2,6 +2,70 @@
 
 {% load static %}
 
+{% load crispy_forms_tags %}
+
 {% block contentBody1 %}
-hello there
+
+	<!-- 	
+	<form>
+	  <div class="form-row">
+	    <div class="col-2">
+	      <div class="form-group col-md-2" style="background: lightblue;">LEFT</div>
+	    </div>
+	    <div class="col">
+	      <input type="text" class="form-control" placeholder="State">
+	    </div>
+	    <div class="col">
+	      <input type="text" class="form-control" placeholder="Zip">
+	    </div>
+	  </div>
+	</form> -->
+
+	<!-- 	
+	<form>
+	  <div class="row">
+	    <div class="col">
+	      <div class="form-group col-md-2" style="background: lightblue;">LEFT</div>
+	    </div>
+	    <div class="col">
+	      <div class="form-group col-md-10" style="background: lightgreen;">RIGHT</div>
+	    </div>
+	  </div>
+	</form> -->
+
+	<h2 style="font-weight:800; padding-bottom: 20px;"> Add New Client </h2>
+	<form method="POST">
+		{% csrf_token %}
+		<div class="form-group">
+    {{ form.name|as_crispy_field }}
+  </div>
+
+  <div class="form-group">
+    {{ form.email|as_crispy_field }}
+  </div>
+
+  <!-- Side-by-side layout -->
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      {{ form.country_code|as_crispy_field }}
+    </div>
+    <div class="form-group col-md-9">
+      {{ form.phone|as_crispy_field }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    {{ form.address|as_crispy_field }}
+  </div>
+
+  <div class="form-group">
+    {{ form.description|as_crispy_field }}
+  </div>
+
+  <div class="form-group">
+    {{ form.list|as_crispy_field }}
+  </div>
+		<button type="submit" class="btn btn-primary">SAVE</button>
+	</form>
+
 {% endblock contentBody1 %}
