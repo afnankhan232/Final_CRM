@@ -34,30 +34,65 @@ def contact_view(request, *args, **kwargs):
 
     # Project Creation!!
     if(request.method == "POST"):
-        # After work
-        # Check if the From is from ProjectCreation OR ClientCreation
 
-        # the user arguement pass to the __init__ attribute of the ProjectCreationForm (it's no big deal)
-        form = ProjectCreationForm(request.POST, user=request.user)
-        if(form.is_valid()):
-            # Commit as False -> cause we need other field to be enter before saving the form
-            projectValidForm = form.save(commit = False)
-            projectValidForm.user = request.user
-            projectValidForm.save() # Save the form
+        # Possible Values: ['project_form', 'client_form']
+        form_type = request.POST.get("form_type")
 
-            # A success Message
-            messages.success(request, f"New Project Created Successfully!")
+        # Handeling two different form off one view
+        if(form_type == 'project_form'):
 
-            return redirect('appContacts')
-        
-        else:
-            # An error message
-            messages.error(request, "A project with this name already exists.")
+            # the user arguement pass to the __init__ attribute of the ProjectCreationForm (it's no big deal)
+            formA = ProjectCreationForm(request.POST, user = request.user)
+            formB = ClientCreationForm(user = request.user)
 
-            # The re-direction help! - [ don't know if it's best practice! ]
-            return redirect('appContacts')
+            if(formA.is_valid()):
+                # Commit as False -> cause we need other field to be enter before saving the form
+                projectValidForm = formA.save(commit = False)
+                projectValidForm.user = request.user
+                projectValidForm.save() # Save the form
+
+                # A success Message
+                messages.success(request, f"New Project Created Successfully!")
+
+                return redirect('appContacts')
+            
+            else:
+                messages.error(request, "Project Name should be unique!")
+
+                # For development
+                print("Form errors:", formA.errors)
+
+                return redirect('appContacts')
+                
+
+        elif(form_type == 'client_form'):
+
+            formA = ProjectCreationForm(user = request.user)
+            # the user arguement pass to the __init__ attribute of the ProjectCreationForm (it's no big deal)
+            formB = ClientCreationForm(request.POST, user = request.user)
+
+            if(formB.is_valid()):
+                clientValidForm = formB.save(commit = False)
+                clientValidForm.companyAssignee = request.user
+                clientValidForm.save()
+                
+                # A success Message
+                messages.success(request, f"New Client Created Successfully!")
+
+                return redirect('appContacts')
+            
+            else:
+                messages.error(request, "PhoneNumber or Email should be provided for Client")
+
+                # For Development
+                print("Form errors:", formB.errors)
+
+                return redirect('appContacts')
+            
+            
     else:
-        form = ProjectCreationForm(user=request.user)
+        formA = ProjectCreationForm(user = request.user)
+        formB = ClientCreationForm(user = request.user)
 
     # current User
     user = request.user
@@ -73,7 +108,8 @@ def contact_view(request, *args, **kwargs):
         contacts = contacts.filter(list__id = project_id)
 
     context = {
-        'form': form,
+        'formA': formA,
+        'formB': formB,
         'contacts': contacts,
         'projects': projects,
         'total_contacts': contacts.count(),

@@ -21,15 +21,4 @@
         </div>
     </div>
 
-    {% if request.user.client_set.all %}
-        <h3> All Clients: </h3>
-        <ol>
-            {% for client in request.user.client_set.all %}
-                <li>{{ client.name }}</li>
-            {% endfor %}
-        </ol>
-    {% else %}
-        <p>No clients found.</p>
-    {% endif %}
-
 {% endblock contentBody1 %}

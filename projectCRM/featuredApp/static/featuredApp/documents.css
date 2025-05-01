@@ -1,5 +1,5 @@
-.prj-more-btn,
-.prj-add-btn {
+.doc-more-btn,
+.doc-add-btn {
 	color: black;
 	background-color: #ffffff;
 	font-weight: 500;
@@ -15,24 +15,24 @@
 
 }
 
-.prj-more-btn:hover,
-.prj-add-btn:hover {
+.doc-more-btn:hover,
+.doc-add-btn:hover {
 	background-color: #f0f0f0;
 	box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 
-.prj-more-btn:focus,
-.prj-more-btn:active,
-.prj-add-btn:focus,
-.prj-add-btn:active {
+.doc-more-btn:focus,
+.doc-more-btn:active,
+.doc-add-btn:focus,
+.doc-add-btn:active {
 	outline: none;
 	box-shadow: none;
 	border-color: #333333;
 }
 
 
-.add-prj-pop-up-window {
-	
+.add-doc-pop-up-window {
+	visibility: hidden;
 	position: fixed;
 	top: 10%;
 	left: 50%;
@@ -50,8 +50,6 @@
 
 	max-height: 80vh;
 	overflow-y: auto;
-
-	visibility: hidden;
 }
 
 textarea {
@@ -61,14 +59,14 @@ textarea {
 	resize: vertical; /* allow resize if you want */
 }
 
-.open-prj-popup {
+.open-doc-popup {
 	visibility: visible;
 	opacity: 1;
 }
 
 /* THE FOllowing is the cross button for the pop-up window */
 /*CAN be used in several occassions - like at project / client / and many more... */
-.close-prj-popup-btn {
+.close-doc-popup-btn {
 	position: absolute;
 	top: 8px;
 	right: 16px;
@@ -79,7 +77,7 @@ textarea {
 	transition: color 0.2s ease;
 }
 
-.close-prj-popup-btn:hover {
+.close-doc-popup-btn:hover {
 	color: #000;
 }
 

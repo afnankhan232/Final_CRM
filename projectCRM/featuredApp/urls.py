@@ -1,7 +1,11 @@
 from django.urls import path
+from django.shortcuts import redirect
 from . import views
 
 urlpatterns = [
+
+    # Just the default 
+    path('', lambda request: redirect('/apps/dashboard/', permanent=False)),
 
     # Dashboard considered as the home
     path('dashboard/', views.dashboard_view, name='appDashboard'),

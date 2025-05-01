@@ -8,7 +8,7 @@
 
 <!-- Some extra css property for this specific page -->
 {% block addCSSlink %}
-	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/contacts.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/documents.css' %}">
 {% endblock addCSSlink %}
 
 
@@ -20,51 +20,55 @@
 
 	<h2 style="font-weight: bolder;"> Documents </h2>
 
-	<div class="d-flex justify-content-between my-2">
+	<hr style="margin: 20px 0;">
+
+	<div class="d-flex justify-content-between my-2" style="align-items: flex-end;">
 		<div>
 			Total Documents: {{total_documents}}
 		</div>
 
 		<div>
-			<button class="btn btn-dark" type="button" onclick= "openProjectFormPopUp()"> Add Document</button>
+			<button class="btn btn-dark" type="button" onclick= "openDocumentFormPopUp()"> Add Document</button>
 		</div>
 	</div>
 			
 			
-			<input type="text" class="form-control my-2" placeholder="Search contacts...">
+	<input type="text" class="form-control my-2" placeholder="Search contacts...">
 
-			<table class="table">
-				<thead>
-					<tr>
-						<th><input type="checkbox" /></th>
-						<th>Document Name</th>
-						<th>Related To</th>
-						<th>Description</th>
+	<table class="table">
+		<thead>
+			<tr>
+				<th><input type="checkbox" /></th>
+				<th>Document Name</th>
+				<th>Related To</th>
+				<th>Description</th>
+				<th>Time</th>
 
-					</tr>
-				</thead>
-				<tbody>
-					{% for document in documents %}
-						<tr">
-							<td><input type="checkbox" /></td>
-							<td>{{ document.document_name }}</td>
-							<td>{{ document.related_to }}</td>
-							<td>{{ document.description }}</td>
-							
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+			</tr>
+		</thead>
+		<tbody>
+			{% for document in documents %}
+				<tr">
+					<td><input type="checkbox" /></td>
+					<td>{{ document.document_name }}</td>
+					<td>{{ document.related_to }}</td>
+					<td>{{ document.description }}</td>
+					<td>{{ document.uploaded_at|date:"M-d-Y H:i" }}</td>
+					
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 	
 {% endblock contentBody1 %}
 
 
-<!-- There GOES the POP-UP Window for Project Form -->
+<!-- There GOES the POP-UP Window for Document Form -->
 {% block addPopUp1 %}
-	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
-	<div class="add-prj-pop-up-window" id="prj-pop-up-window-element">
+	<!-- The Following defined the POP-UP WINDOW for adding new Document to the model -->
+	<div class="add-doc-pop-up-window" id="doc-pop-up-window-element">
 
-		<span class="close-prj-popup-btn" onclick="closeProjectFormPopUp()">&times;</span>
+		<span class="close-doc-popup-btn" onclick="closeDocumentFormPopUp()">&times;</span>
 
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
@@ -88,33 +92,33 @@
 	</div>
 
 	<!-- This div allow us to close the pop-up if we click outside.. -->
-	<div class="popup-overlay" id="popupOverlay" onclick="closeProjectFormPopUp()"></div>
+	<div class="popup-overlay" id="popupOverlay" onclick="closeDocumentFormPopUp()"></div>
 {% endblock addPopUp1 %}
 
 <!-- There GOES the extra script that handles the pop-up window [ show / hide ] -->
 {% block extraJS %} 
 	<script type="text/javascript">
-		let prjPopUp = document.getElementById('prj-pop-up-window-element');
+		let docPopUp = document.getElementById('doc-pop-up-window-element');
 		let tmp = document.getElementById('popupOverlay');
 		
 
-		function openProjectFormPopUp() {
-			const form = prjPopUp.querySelector('form');
+		function openDocumentFormPopUp() {
+			const form = docPopUp.querySelector('form');
 			form.reset();
 
-			prjPopUp.classList.add('open-prj-popup');
+			docPopUp.classList.add('open-doc-popup');
 			tmp.classList.add('active');
 		}
 
-		function closeProjectFormPopUp() {
-			prjPopUp.classList.remove('open-prj-popup');
+		function closeDocumentFormPopUp() {
+			docPopUp.classList.remove('open-doc-popup');
 			tmp.classList.remove('active');
 		}
 
 		// Close popup on ESC key
 		document.addEventListener('keydown', function(event) {
 			if (event.key === 'Escape') {
-				closeProjectFormPopUp();
+				closeDocumentFormPopUp();
 			}
 		});
 	</script>

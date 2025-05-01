@@ -18,13 +18,22 @@
 
 <!-- Some extra css property for this specific page -->
 {% block addCSSlink %}
+
+	<!-- Specific for Project pop-up  -->
 	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/contacts.css' %}">
+
+	<!-- Specific for Contacts pop-up -->
+	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/documents.css' %}">
+
 {% endblock addCSSlink %}
+
 
 
 <!-- Main CONTENT GOES HERE -->
 {% block contentBody1 %}
 	<h2 style="font-weight: bolder;"> Contacts </h2>
+
+	<hr style="margin: 20px 0;">
 
 	<!-- Displaying SET of projects -->
 	<!-- These are clickable -->
@@ -35,7 +44,7 @@
 			<a class="nav-link {% if set_to_all == True %}active{% endif %}" href="{% url 'appContacts' %}">All</a></li>
 
 		<!-- Next List of [PROJECTS] -->
-		{% for project in projects %}
+		{% for project in projects|slice:":5" %}
 			<li class="nav-item">
 				<a href="?project_id={{ project.id }}" class="nav-link {% if selected_project_id == project.id %}active{% endif %}">{{ project.name }}</a>
 			</li>
@@ -73,7 +82,7 @@
 
 		<div>
 
-			<button class="btn btn-dark">Add Contact</button>
+			<button class="btn btn-dark" type="button" onclick="openDocumentFormPopUp()">Add Contact</button>
 
 			<!-- This feature is for future development -->
 			<!-- Allow to add Contacts/Clients from CSV file or EXCEL -->
@@ -135,11 +144,11 @@
 				{% csrf_token %}
 				<fieldset class="form-group">
 					<legend class="border-bottom mb-4"> Add NEW PROJECT </legend>
-					{{ form|crispy }}
+					{{ formA|crispy }}
 				</fieldset>
 
 				<div class="form-group">
-					<button class="btn btn-outline-info" type="submit">Add Project</button>
+					<button class="btn btn-outline-info" type="submit" name="form_type" value="project_form">Add Project</button>
 				</div>
 			</form>
 			
@@ -151,12 +160,80 @@
 	<div class="popup-overlay" id="popupOverlay" onclick="closeProjectFormPopUp()"></div>
 {% endblock addPopUp1 %}
 
+
+
 <!-- A pop-up Window for creating new Client/Contact -->
 {% block addPopUp2 %}
+	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
+	<div class="add-doc-pop-up-window" id="doc-pop-up-window-element">
+
+		<span class="close-doc-popup-btn" onclick="closeDocumentFormPopUp()">&times;</span>
+
+		<!-- There GOES the form -->
+		<!-- Referenced From accounts/register.html -->
+		<div style="margin-top: 20px;" class="content-section">
+			<!-- Added enctype - cause we need file to be loaded -->
+			<form method="POST"> 
+				{% csrf_token %}
+				<fieldset class="form-group">
+					<legend class="border-bottom mb-4"> Add new Client </legend>
+					
+					<form method="POST">
+						{% csrf_token %}
+						<div class="form-group">
+							{{ formB.name|as_crispy_field }}
+						</div>
+
+						<div class="form-group">
+							{{ formB.email|as_crispy_field }}
+						</div>
+
+						<!-- Side-by-side layout -->
+						<div class="form-row">
+							<div class="form-group col-md-2">
+								{{ formB.country_code|as_crispy_field }}
+							</div>
+							<div class="form-group col-md-10">
+								{{ formB.phone|as_crispy_field }}
+							</div>
+						</div>
+
+						<div class="form-group">
+							{{ formB.address|as_crispy_field }}
+						</div>
+
+						<div class="form-group">
+							{{ formB.description|as_crispy_field }}
+						</div>
+
+						<div class="form-group">
+							{{ formB.list|as_crispy_field }}
+						</div>
+
+						<div class="form-group">
+							<button class="btn btn-outline-info" type="submit" name="form_type" value="client_form">Save</button>
+						</div>
+						
+					</form>
+
+				</fieldset>
+
+				
+			</form>
+			
+		</div>
+
+	</div>
+
+	<!-- This div allow us to close the pop-up if we click outside.. -->
+	<div class="popup-overlay" id="popupOverlay2" onclick="closeDocumentFormPopUp()"></div>
 {% endblock addPopUp2 %}
 
+
 <!-- There GOES the extra script that handles the pop-up window [ show / hide ] -->
-{% block extraJS %} 
+{% block extraJS %}
+
+	<!-- The script is specific for project pop-up -->
 	<script type="text/javascript">
 		let prjPopUp = document.getElementById('prj-pop-up-window-element');
 		let tmp = document.getElementById('popupOverlay');
@@ -179,6 +256,37 @@
 		document.addEventListener('keydown', function(event) {
 			if (event.key === 'Escape') {
 				closeProjectFormPopUp();
+			}
+		});
+
+		// <!-- The script is specific for contact pop-up -->
+
+		let docPopUp2 = document.getElementById('doc-pop-up-window-element');
+		let tmp2 = document.getElementById('popupOverlay2');
+		
+
+		function openDocumentFormPopUp() {
+			// const formB = docPopUp2.querySelector('formB');
+			// formB.reset();
+
+			document.body.style.overflow = 'hidden';
+
+			docPopUp2.classList.add('open-doc-popup');
+			tmp2.classList.add('active');
+		}
+
+		function closeDocumentFormPopUp() {
+
+			document.body.style.overflow = '';
+
+			docPopUp2.classList.remove('open-doc-popup');
+			tmp2.classList.remove('active');
+		}
+
+		// Close popup on ESC key
+		document.addEventListener('keydown', function(event) {
+			if (event.key === 'Escape') {
+				closeDocumentFormPopUp();
 			}
 		});
 	</script>

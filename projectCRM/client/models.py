@@ -1,6 +1,32 @@
 from django.db import models
 from accounts.models import BusinessUser
 
+# Validation Error
+from django.core.exceptions import ValidationError
+
+# Need to validate phone number
+from django.core.validators import RegexValidator
+
+# Validator for country code: + followed by 1–4 digits
+COUNTRY_CODE_CHOICES = [
+    ('+1', 'United States (+1)'),
+    ('+44', 'United Kingdom (+44)'),
+    ('+91', 'India (+91)'),
+    ('+81', 'Japan (+81)'),
+    ('+61', 'Australia (+61)'),
+    ('+49', 'Germany (+49)'),
+    ('+971', 'UAE (+971)'),
+    ('+86', 'China (+86)'),
+    ('+33', 'France (+33)'),
+    # Add more as needed
+]
+
+# Validator for phone number: digits only, usually 7–12 digits depending on country
+phone_number_validator = RegexValidator(
+    regex=r'^\d{5,12}$',
+    message="Enter a valid phone number without country code."
+)
+
 # Leads Model
 # - INCLUDE (priority, status, name, email, description, created_at, created_by)
 class Lead(models.Model):
@@ -76,8 +102,23 @@ class Client(models.Model):
     # Email
     email = models.CharField(max_length=80)
     # Phone Number ['country_code' -> 'phone_number] + Exceptional
-    country_code = models.IntegerField(default=91, blank = True, null = True)
-    phone = models.IntegerField(blank = True, null = True)
+    country_code = models.CharField(
+        max_length=5,
+        choices=COUNTRY_CODE_CHOICES,
+        default='+91',
+        blank = True,
+        null = True,
+    )
+    phone = models.CharField(
+        max_length=12,
+        validators=[phone_number_validator],
+        blank = True,
+        null = True,
+    )
+
+    # A method displaying full number
+    def full_number(self):
+        return f"{self.country_code}{self.phone_number}"
 
     # Over-riding clean method [to allow one of the field (email, phone_number) to be provided at the time of Client creation]
     def clean(self):

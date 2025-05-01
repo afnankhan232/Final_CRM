@@ -1,5 +1,7 @@
 - DONE Create Virtual Environment and Install Django Package
 
+- DONE Change Time Zone [IST]
+
 - DONE Base Pages and Templates
     - DONE Create App for pages
     - DONE Create Base Template
@@ -10,6 +12,11 @@
     - DONE Register
     - DONE Login
     - DONE Logout
+
+- User Profile
+    - DONE View Page
+    - Edit Form
+    - Delete Account Button
 
 - Create Dashboard
     - Views page for Dashboard
@@ -24,7 +31,7 @@
     - Functionality for Deletion for leads 
     - Future work (trash after deletion)
 
-- Contact's app
+- Contact's App
     - DONE Project (store client based on project)
         - DONE DataBase Model
         - DONE Create Signal to trigger and create a -> [default project]
@@ -40,7 +47,7 @@
         - Views pages for [contact page]
             - DONE List of Client
             - Detailed View of each Client (their details)
-        - ONGOING Creation form for Client
+        - DONE Creation form for Client
         - Edit form for Client
         - Deletion form for Client
         - Form for creating new Client
