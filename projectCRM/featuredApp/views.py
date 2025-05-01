@@ -59,7 +59,7 @@ def contact_view(request, *args, **kwargs):
     # current User
     user = request.user
 
-    # Retrieving Values from DATABASE [existing user]
+    # Retrieving Values from DATABASE [current user]
     user = request.user
     project_id = request.GET.get('project_id')
 
