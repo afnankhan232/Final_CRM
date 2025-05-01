@@ -111,18 +111,26 @@ def tasks_view(request, *args, **kwargs):
 @login_required
 def documents_view(request, *args, **kwargs):
 
-    # if request.method == "POST":
-    #     form = DocumentCreationForm(request.POST, user = request.user)
-    #     if(form.is_valid()):
-    #         tmp = form.save(commit = False)
-    #         tmp.user = request.user
-    #         tmp.save()
-    #         return redirect('appDocuments')
-    # else:
-    #     form = DocumentCreationForm(user = request.user)
+    if request.method == "POST":
+
+        # For the purpose of file upload - we need request.FILES [COOL]
+        form = DocumentCreationForm(request.POST, request.FILES, user = request.user)
+
+        if(form.is_valid()):
+            tmp = form.save(commit = False)
+            tmp.user = request.user
+            tmp.save()
+
+            messages.success(request, f"New Document Added!")
+            return redirect('appDocuments')
+        else:
+
+            messages.success(request, f"Something Went Wrong!")
+            return redirect('appDocuments')
+    else:
+        form = DocumentCreationForm(user = request.user)
 
     # Retrieving Values from DATABASE [current user]
-    form = DocumentCreationForm()
     user = request.user
 
     documents = Document.objects.filter(user=user)
@@ -130,7 +138,11 @@ def documents_view(request, *args, **kwargs):
     return render(
         request, 
         'featuredApp/documents.html',
-        {"documents": documents, 'total_documents': documents.count(), "form": form}
+        {
+            "documents": documents, 
+            'total_documents': documents.count(), 
+            "form": form,
+        }
     )
 
 @login_required

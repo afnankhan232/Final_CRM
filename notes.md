@@ -11,7 +11,18 @@
     - DONE Login
     - DONE Logout
 
-- DONE Create Dashboard
+- Create Dashboard
+    - Views page for Dashboard
+
+- Create New Leads
+    - DONE Database Model
+    - Views pages for leads
+        - List of leads
+        - Detailed view page of leads
+    - Form for creation of leads
+    - Form for updation of leads
+    - Functionality for Deletion for leads 
+    - Future work (trash after deletion)
 
 - Contact's app
     - DONE Project (store client based on project)
@@ -29,46 +40,31 @@
         - Views pages for [contact page]
             - DONE List of Client
             - Detailed View of each Client (their details)
-        - Creation form for Client
+        - ONGOING Creation form for Client
         - Edit form for Client
         - Deletion form for Client
         - Form for creating new Client
 
-
-- Create New Leads
-    - DONE Database Model
-    - Views pages for leads
-        - List of leads
-        - Detailed view page of leads
-    - Form for creation of leads
-    - Form for updation of leads
-    - Functionality for Deletion for leads 
+- Documents
+    - DONE create model [document_name; file; related_to; description]
+    - DONE Views pages for documents
+        - DONE List of documents
+    - DONE Form for creation of documents
+    - Form for updation of documents
+    - Deletion for documents 
     - Future work (trash after deletion)
 
-- Change and Delete Leads
+- Tasks
+    - Database Model
 
-- Change and Delete Clients
+- Change and Delete Leads
 
 - Implement Solution for Teams
 
 - Create Roles
-
-- Documents
-    - DONE create model
-        - DONE document name
-        - DONE files
-        - DONE related to(which contact)
-        - DONE description
-    - DONE Views pages for documents
-        - DONE List of documentS
-    - ONGOING Form for creation of documents
-    - Form for updation of documents
-    - Functionality for Deletion for documents 
-    - Future work (trash after deletion)
 
 - Add Manage Users (assign roles to them)
 
 - Active Link for these users
 
 - Deploy
-

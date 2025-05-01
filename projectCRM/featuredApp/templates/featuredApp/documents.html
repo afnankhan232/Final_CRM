@@ -69,7 +69,8 @@
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
 		<div style="margin-top: 20px;" class="content-section">
-			<form method="POST"> 
+			<!-- Added enctype - cause we need file to be loaded -->
+			<form method="POST" enctype="multipart/form-data"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
 					<legend class="border-bottom mb-4"> Add a new Document </legend>
@@ -77,7 +78,8 @@
 				</fieldset>
 
 				<div class="form-group">
-					<button class="btn btn-outline-info" type="submit">Add Document</button>
+					<button class="btn btn-outline-info" type="submit">Upload</button>
+
 				</div>
 			</form>
 			

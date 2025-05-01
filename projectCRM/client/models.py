@@ -110,11 +110,15 @@ class Client(models.Model):
 
 class Document(models.Model):
 
+    # Adding Necessary Field
     document_name = models.CharField(max_length=255)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to='documents/')
 
+    # A Foreign Key Connected to [Client]
     related_to = models.ForeignKey(Client, on_delete=models.CASCADE)
+
+    # Time when the field is added - just for analysis
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
     # Exceptional Field
     description = models.TextField(blank = True, null = True)

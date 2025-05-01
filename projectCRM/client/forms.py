@@ -76,8 +76,10 @@ from .models import Document
 
 class DocumentCreationForm(forms.ModelForm):
         class Meta:
+
             # specifying the model we are targeting
             model = Document
+
             # Field to show in Form
             fields = ('document_name', 'file', 'related_to', 'description')
         
@@ -88,7 +90,7 @@ class DocumentCreationForm(forms.ModelForm):
 
              # The following code set the possible value of document
             if self.user:
-                self.fields['related_to'].queryset = Client.objects.filter(user = self.user)
+                self.fields['related_to'].queryset = Client.objects.filter(companyAssignee = self.user)
         
        
 
