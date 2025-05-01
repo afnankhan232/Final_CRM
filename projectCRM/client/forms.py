@@ -70,3 +70,25 @@ class ClientCreationForm(forms.ModelForm):
             Field('description'),
             Field('list'),
         )
+
+# ---- ==== Form for creating new documents ==== ----
+from .models import Document
+
+class DocumentCreationForm(forms.ModelForm):
+        class Meta:
+            # specifying the model we are targeting
+            model = Document
+            # Field to show in Form
+            fields = ('document_name', 'file', 'related_to', 'description')
+        
+
+        def __init__(self, *args, **kwargs):
+            self.user = kwargs.pop('user', None)  # fallback to None
+            super().__init__(*args, **kwargs)
+
+             # The following code set the possible value of document
+            if self.user:
+                self.fields['related_to'].queryset = Client.objects.filter(user = self.user)
+        
+       
+

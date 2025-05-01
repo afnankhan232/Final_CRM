@@ -105,6 +105,28 @@ class Client(models.Model):
     # dunder str method, so we get better naming at the admin page (DEVELOPMENT SPECIFIC)
     def __str__(self):
         return f'{self.name} - {self.companyAssignee.company_name}'
+    
+
+
+class Document(models.Model):
+
+    document_name = models.CharField(max_length=255)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    file = models.FileField(upload_to='documents/')
+
+    related_to = models.ForeignKey(Client, on_delete=models.CASCADE)
+
+    # Exceptional Field
+    description = models.TextField(blank = True, null = True)
+
+    # Linking with BusinessUser Model (every user have their own unique set of contacts that they can add and access)
+    # models.CASCADE refers that if the BusinessUser is deleted, then delete the Client table from the database..
+    user = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.document_name
+
+
 
 class Contact(models.Model):
     full_name = models.CharField(max_length=255)

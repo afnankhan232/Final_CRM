@@ -90,6 +90,22 @@
                     <!-- NAME -->
                     <span class="menu-label">Tasks</span>
                 </a>
+ 
+                <!-- ITEM FOUR -->
+                <a 
+                    href="{% url 'appDocuments' %}" 
+                    class="
+                        {% if request.path == '/apps/documents/' %}
+                            active
+                        {% endif %}
+                    "
+                >
+                    <!-- ICON -->
+                    <i class="fas fa-file-upload"></i>
+
+                    <!-- NAME -->
+                    <span class="menu-label">Documents</span>
+                </a>
 
             </nav>
         </aside>

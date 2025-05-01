@@ -14,6 +14,9 @@ from client.forms import ClientCreationForm
 from client.models import Project
 from client.forms import ProjectCreationForm
 
+# Document model and form 
+from client.models import Document
+from client.forms import DocumentCreationForm
 
 
 # ---- ==== Pofile link (containing form to update existing information) ==== ----
@@ -103,6 +106,31 @@ def tasks_view(request, *args, **kwargs):
         {
             'form': form,
         },
+    )
+
+@login_required
+def documents_view(request, *args, **kwargs):
+
+    # if request.method == "POST":
+    #     form = DocumentCreationForm(request.POST, user = request.user)
+    #     if(form.is_valid()):
+    #         tmp = form.save(commit = False)
+    #         tmp.user = request.user
+    #         tmp.save()
+    #         return redirect('appDocuments')
+    # else:
+    #     form = DocumentCreationForm(user = request.user)
+
+    # Retrieving Values from DATABASE [current user]
+    form = DocumentCreationForm()
+    user = request.user
+
+    documents = Document.objects.filter(user=user)
+
+    return render(
+        request, 
+        'featuredApp/documents.html',
+        {"documents": documents, 'total_documents': documents.count(), "form": form}
     )
 
 @login_required

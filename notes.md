@@ -53,8 +53,22 @@
 
 - Create Roles
 
+- Documents
+    - DONE create model
+        - DONE document name
+        - DONE files
+        - DONE related to(which contact)
+        - DONE description
+    - DONE Views pages for documents
+        - DONE List of documentS
+    - ONGOING Form for creation of documents
+    - Form for updation of documents
+    - Functionality for Deletion for documents 
+    - Future work (trash after deletion)
+
 - Add Manage Users (assign roles to them)
 
 - Active Link for these users
 
 - Deploy
+
