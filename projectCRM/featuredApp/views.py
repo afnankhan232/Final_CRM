@@ -1,6 +1,6 @@
 # ---- ==== Import Statement Goes HERE ==== ----
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
@@ -18,16 +18,22 @@ from client.forms import ProjectCreationForm
 from client.models import Document
 from client.forms import DocumentCreationForm
 
+# Date Time Field
+from django.utils import timezone
+
 
 # ---- ==== Pofile link (containing form to update existing information) ==== ----
 @login_required
 def profile(request, *args, **kwargs):
     return render(request, 'users/profile.html')
 
+
+
 # ---- ==== FEATURED APP LINKS LISTED BELOW ==== ----
 @login_required
 def dashboard_view(request, *args, **kwargs):
     return render(request, 'featuredApp/dashboard.html')
+
 
 @login_required
 def contact_view(request, *args, **kwargs):
@@ -123,6 +129,59 @@ def contact_view(request, *args, **kwargs):
         context,
     )
 
+
+@login_required
+def contact_detailed_view(request, pk):
+
+    # filtering specific contact -> [Current User] [Current Client]
+    contact = get_object_or_404(Client, companyAssignee = request.user, pk=pk)
+
+    # Client Updation Form
+    if(request.method == "POST"):
+        formEditClient = ClientCreationForm(request.POST, user = request.user, instance = contact)
+
+        if(formEditClient.is_valid()):
+            formEditClient.last_edit = timezone.now()
+            formEditClient.save()
+            messages.success(request, "Client information Updated!")
+            return redirect('appContactDetail', pk=pk)
+            
+        else:
+            messages.error(request, "Can't edit the user detail!")
+            return redirect('appContactDetail', pk=pk)
+    else:
+        formEditClient = ClientCreationForm(user = request.user, instance = contact)
+
+    context = {
+        'contact': contact,
+        'form': formEditClient,
+    }
+
+    return render(
+        request,
+        'featuredApp/contact_detailed.html',
+        context,
+    )
+
+@login_required
+def contact_delete_view(request, pk):
+
+    # Only POST request delete the form and not the GET request!
+    if(request.method == "POST"):
+        contact = get_object_or_404(Client, companyAssignee = request.user, pk=pk)
+        contact_name = contact.name
+
+        try:
+            contact.delete()
+            messages.success(request, f"Client '{contact_name}' is deleted!")
+        except:
+            messages.error(request, f"Can't Delete Client '{contact_name}' ")
+    else:
+        messages.error(request, f"GET Request is not allowed for this page!")
+
+    return redirect('appContacts')
+
+
 @login_required
 def tasks_view(request, *args, **kwargs):
 
@@ -143,6 +202,7 @@ def tasks_view(request, *args, **kwargs):
             'form': form,
         },
     )
+
 
 @login_required
 def documents_view(request, *args, **kwargs):
@@ -180,6 +240,7 @@ def documents_view(request, *args, **kwargs):
             "form": form,
         }
     )
+
 
 @login_required
 def activities_view(request, *args, **kwargs):

@@ -1,5 +1,5 @@
-.doc-more-btn,
-.doc-add-btn {
+.more-btn,
+.add-btn {
 	color: black;
 	background-color: #ffffff;
 	font-weight: 500;
@@ -15,23 +15,23 @@
 
 }
 
-.doc-more-btn:hover,
-.doc-add-btn:hover {
+.more-btn:hover,
+.add-btn:hover {
 	background-color: #f0f0f0;
 	box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 
-.doc-more-btn:focus,
-.doc-more-btn:active,
-.doc-add-btn:focus,
-.doc-add-btn:active {
+.more-btn:focus,
+.more-btn:active,
+.add-btn:focus,
+.add-btn:active {
 	outline: none;
 	box-shadow: none;
 	border-color: #333333;
 }
 
 
-.add-doc-pop-up-window {
+.add-pop-up-window {
 	visibility: hidden;
 	position: fixed;
 	top: 10%;
@@ -59,14 +59,14 @@ textarea {
 	resize: vertical; /* allow resize if you want */
 }
 
-.open-doc-popup {
+.open-popup {
 	visibility: visible;
 	opacity: 1;
 }
 
 /* THE FOllowing is the cross button for the pop-up window */
 /*CAN be used in several occassions - like at project / client / and many more... */
-.close-doc-popup-btn {
+.close-popup-btn {
 	position: absolute;
 	top: 8px;
 	right: 16px;
@@ -77,7 +77,7 @@ textarea {
 	transition: color 0.2s ease;
 }
 
-.close-doc-popup-btn:hover {
+.close-popup-btn:hover {
 	color: #000;
 }
 

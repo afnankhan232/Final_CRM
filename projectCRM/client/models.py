@@ -75,6 +75,7 @@ class Lead(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     modified_at = models.DateTimeField(auto_now = True)
 
+
 class Project(models.Model):
 
     # Necessary Field [Project Name]
@@ -92,7 +93,8 @@ class Project(models.Model):
 
     # dunder str method, so we get better naming at the admin page (DEVELOPMENT SPECIFIC)
     def __str__(self):
-        return f'{self.name} - {self.user.company_name}'
+        return f'{self.name}'
+
 
 class Client(models.Model):
 
@@ -136,6 +138,12 @@ class Client(models.Model):
     # A binary Field (Defaul set to 'True')
     is_active = models.BooleanField(default=True)
 
+    # Field - [Created]
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Field - [last edited]
+    last_edit = models.DateTimeField(auto_now = True)
+
     # Adding OneToOne field [linking with contact
     list = models.ForeignKey(Project, on_delete=models.CASCADE)
 
@@ -145,7 +153,7 @@ class Client(models.Model):
 
     # dunder str method, so we get better naming at the admin page (DEVELOPMENT SPECIFIC)
     def __str__(self):
-        return f'{self.name} - {self.companyAssignee.company_name}'
+        return f'{self.name}'
     
 
 

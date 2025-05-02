@@ -8,7 +8,7 @@
 
 <!-- Some extra css property for this specific page -->
 {% block addCSSlink %}
-	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/documents.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
 {% endblock addCSSlink %}
 
 
@@ -66,9 +66,9 @@
 <!-- There GOES the POP-UP Window for Document Form -->
 {% block addPopUp1 %}
 	<!-- The Following defined the POP-UP WINDOW for adding new Document to the model -->
-	<div class="add-doc-pop-up-window" id="doc-pop-up-window-element">
+	<div class="add-pop-up-window" id="pop-up-doc-window-element">
 
-		<span class="close-doc-popup-btn" onclick="closeDocumentFormPopUp()">&times;</span>
+		<span class="close-popup-btn" onclick="closeDocumentFormPopUp()">&times;</span>
 
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
@@ -98,7 +98,7 @@
 <!-- There GOES the extra script that handles the pop-up window [ show / hide ] -->
 {% block extraJS %} 
 	<script type="text/javascript">
-		let docPopUp = document.getElementById('doc-pop-up-window-element');
+		let docPopUp = document.getElementById('pop-up-doc-window-element');
 		let tmp = document.getElementById('popupOverlay');
 		
 
@@ -106,12 +106,12 @@
 			const form = docPopUp.querySelector('form');
 			form.reset();
 
-			docPopUp.classList.add('open-doc-popup');
+			docPopUp.classList.add('open-popup');
 			tmp.classList.add('active');
 		}
 
 		function closeDocumentFormPopUp() {
-			docPopUp.classList.remove('open-doc-popup');
+			docPopUp.classList.remove('open-popup');
 			tmp.classList.remove('active');
 		}
 

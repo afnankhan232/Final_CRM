@@ -20,10 +20,7 @@
 {% block addCSSlink %}
 
 	<!-- Specific for Project pop-up  -->
-	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/contacts.css' %}">
-
-	<!-- Specific for Contacts pop-up -->
-	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/documents.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
 
 {% endblock addCSSlink %}
 
@@ -55,7 +52,7 @@
 		    {% if total_projects > 5 %}
 		        <li class="nav-item" style="padding-left: 4px;">
 		            <div class="btn-group" role="group">
-		                <button id="btnGroupDrop1" type="button" class="prj-more-btn btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		                <button id="btnGroupDrop1" type="button" class="more-btn btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		                    More
 		                </button>
 		                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
@@ -70,7 +67,7 @@
 
 		<!-- Last we have [Add Button] -->
 		<li class="nav-item" style="padding-left: 4px;">
-			<button class="prj-add-btn btn btn-sm" type="button" onclick="openProjectFormPopUp()">+</button>
+			<button class="add-btn btn btn-sm" type="button" onclick="openProjectFormPopUp()">+</button>
 		</li>
 
 			</ul>
@@ -118,7 +115,7 @@
 			{% for contact in contacts %}
 				<tr">
 					<td><input type="checkbox" /></td>
-					<td>{{ contact.name }}</td>
+					<td><a href="{% url 'appContactDetail' contact.id %}">{{ contact.name }}</a></td>
 					<td>{{ contact.email }}</td>
 					<td>{{ contact.phone }}</td>
 					<td>{{ contact.address }}</td>
@@ -133,9 +130,9 @@
 <!-- There GOES the POP-UP Window for Project Form -->
 {% block addPopUp1 %}
 	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
-	<div class="add-prj-pop-up-window" id="prj-pop-up-window-element">
+	<div class="add-pop-up-window" id="prj-pop-up-window-element">
 
-		<span class="close-prj-popup-btn" onclick="closeProjectFormPopUp()">&times;</span>
+		<span class="close-popup-btn" onclick="closeProjectFormPopUp()">&times;</span>
 
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
@@ -165,9 +162,9 @@
 <!-- A pop-up Window for creating new Client/Contact -->
 {% block addPopUp2 %}
 	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
-	<div class="add-doc-pop-up-window" id="doc-pop-up-window-element">
+	<div class="add-pop-up-window" id="client-pop-up-window-element">
 
-		<span class="close-doc-popup-btn" onclick="closeDocumentFormPopUp()">&times;</span>
+		<span class="close-popup-btn" onclick="closeDocumentFormPopUp()">&times;</span>
 
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
@@ -243,12 +240,12 @@
 			const form = prjPopUp.querySelector('form');
 			form.reset();
 
-			prjPopUp.classList.add('open-prj-popup');
+			prjPopUp.classList.add('open-popup');
 			tmp.classList.add('active');
 		}
 
 		function closeProjectFormPopUp() {
-			prjPopUp.classList.remove('open-prj-popup');
+			prjPopUp.classList.remove('open-popup');
 			tmp.classList.remove('active');
 		}
 
@@ -261,7 +258,7 @@
 
 		// <!-- The script is specific for contact pop-up -->
 
-		let docPopUp2 = document.getElementById('doc-pop-up-window-element');
+		let docPopUp2 = document.getElementById('client-pop-up-window-element');
 		let tmp2 = document.getElementById('popupOverlay2');
 		
 
@@ -271,7 +268,7 @@
 
 			document.body.style.overflow = 'hidden';
 
-			docPopUp2.classList.add('open-doc-popup');
+			docPopUp2.classList.add('open-popup');
 			tmp2.classList.add('active');
 		}
 
@@ -279,7 +276,7 @@
 
 			document.body.style.overflow = '';
 
-			docPopUp2.classList.remove('open-doc-popup');
+			docPopUp2.classList.remove('open-popup');
 			tmp2.classList.remove('active');
 		}
 

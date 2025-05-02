@@ -38,19 +38,18 @@
         - DONE Creation From for Project
         - DONE A Pop-up window views for creating new project
         - ONGOING Edit Form for Project
-        - ONGOING Deletion Form for Project
-        
+        - Deletion Form for Project
 
-    - Client (store the contact info)
+    - DONE Client (store the contact info)
         - DONE Database Model
         - DONE link with Project Model
         - Views pages for [contact page]
             - DONE List of Client
-            - Detailed View of each Client (their details)
+            - DONE Detailed View of each Client (their details)
         - DONE Creation form for Client
-        - Edit form for Client
-        - Deletion form for Client
-        - Form for creating new Client
+        - DONE Detailed View for Client
+        - DONE Edit form for Client
+        - DONE Deletion form for Client
 
 - Documents
     - DONE create model [document_name; file; related_to; description]

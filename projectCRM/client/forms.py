@@ -55,21 +55,6 @@ class ClientCreationForm(forms.ModelForm):
         # Making ['email' and 'phone'] fields optional - for crispy form
         self.fields['email'].required = False
         self.fields['phone'].required = False
-        
-        # Chaning the Layout of side-by-side display for [country_code] and [phone_number]
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Field('name'),
-            Field('email'),
-            Div(
-                Div('country_code', css_class='pr-2', style='flex: 1;'),
-                Div('phone', style='flex: 3;'),
-                css_class='d-flex align-item-end'
-            ),
-            Field('address'),
-            Field('description'),
-            Field('list'),
-        )
 
 # ---- ==== Form for creating new documents ==== ----
 from .models import Document
