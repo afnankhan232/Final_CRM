@@ -1,11 +1,12 @@
 # Basic Import
 from django import forms
 
+# no active use
 # For Displaying [country_code] and [phone_number] side-by-side
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Field, Fieldset, Div
 
-# ---- ==== Form for creating new Project ==== ----
+# ---- ==== Form for CREATING new Project / UPDATING existing Project ==== ----
 from .models import Project
 
 class ProjectCreationForm(forms.ModelForm):
@@ -30,7 +31,7 @@ class ProjectCreationForm(forms.ModelForm):
             return name
 
 
-# ---- ==== Form for creating new Client ==== ----
+# ---- ==== Form for CREATING new Client OR UPDATING existing Client ==== ----
 from .models import Client
 
 class ClientCreationForm(forms.ModelForm):
@@ -56,6 +57,7 @@ class ClientCreationForm(forms.ModelForm):
         self.fields['email'].required = False
         self.fields['phone'].required = False
 
+
 # ---- ==== Form for creating new documents ==== ----
 from .models import Document
 
@@ -73,9 +75,6 @@ class DocumentCreationForm(forms.ModelForm):
             self.user = kwargs.pop('user', None)  # fallback to None
             super().__init__(*args, **kwargs)
 
-             # The following code set the possible value of document
+            # The following code set the possible value of document
             if self.user:
                 self.fields['related_to'].queryset = Client.objects.filter(companyAssignee = self.user)
-        
-       
-

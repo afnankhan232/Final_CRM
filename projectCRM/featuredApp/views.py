@@ -1,5 +1,6 @@
 # ---- ==== Import Statement Goes HERE ==== ----
 
+# Basic
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -7,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 # A helper notification section, which notify the new activity
 from django.contrib import messages
 
+# Client Model and Form
 from client.models import Client
 from client.forms import ClientCreationForm
 
@@ -28,13 +30,17 @@ def profile(request, *args, **kwargs):
     return render(request, 'users/profile.html')
 
 
-
 # ---- ==== FEATURED APP LINKS LISTED BELOW ==== ----
+
+# ---- ==== Featured Related to Dashboard View ==== ----
+# Include: [dashboard_view; ]
 @login_required
 def dashboard_view(request, *args, **kwargs):
     return render(request, 'featuredApp/dashboard.html')
 
 
+# ---- ===== Featured Related to Contact View ==== ----
+# Include: [contact_view; contact_detailed_view; contact_delete_view; contact_delete_permanently_view; contact_restore_view;]
 @login_required
 def contact_view(request, *args, **kwargs):
 
@@ -225,6 +231,9 @@ def contact_restore_view(request, pk):
 
     return redirect('appTrash')
 
+
+# ---- ==== Featured Related to Tasks View ==== ----
+# Include: [tasks_view; ]
 @login_required
 def tasks_view(request, *args, **kwargs):
 
@@ -247,6 +256,8 @@ def tasks_view(request, *args, **kwargs):
     )
 
 
+# ---- ==== Featured Related to Documents View ==== ----
+# Include: [document_view; ]
 @login_required
 def documents_view(request, *args, **kwargs):
 
@@ -285,11 +296,15 @@ def documents_view(request, *args, **kwargs):
     )
 
 
+# ---- ==== Featured Related to Activities View ==== ----
+# Include: [activities_view; ]
 @login_required
 def activities_view(request, *args, **kwargs):
     return render(request, 'featuredApp/activities.html')
 
 
+# ---- ==== Featured Related to Trash View ==== ----
+# Include: [trash_view; ]
 @login_required
 def trash_view(request):
     trashed_contacts = Client.all_objects.filter(companyAssignee = request.user, is_deleted = True)

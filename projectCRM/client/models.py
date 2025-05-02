@@ -1,3 +1,4 @@
+# Basic
 from django.db import models
 from accounts.models import BusinessUser
 
@@ -19,11 +20,13 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
     
+    # Temporary Delete (just change the filed value!)
     def soft_delete(self):
         self.is_deleted = True
         self.deleted_at = timezone.now()
         self.save()
     
+    # Restore deleted file
     def restore(self):
         self.is_deleted = False
         self.deleted_at = None
@@ -54,8 +57,8 @@ phone_number_validator = RegexValidator(
     message="Enter a valid phone number without country code."
 )
 
-# Leads Model
-# - INCLUDE (priority, status, name, email, description, created_at, created_by)
+# ---- ==== Leads Model ==== ----
+# INCLUDE [priority; status; name; email; description; created_at; created_by; modified_at; user; ]
 class Lead(models.Model):
 
     # simplifying work for form creation
@@ -102,7 +105,14 @@ class Lead(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     modified_at = models.DateTimeField(auto_now = True)
 
+    # Linking with BusinessUser Model (every user have their own unique set of contacts that they can add and access)
+    user = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
 
+
+# ---- ==== Project Model ==== ----
+# Inherit: [is_deleted; deleted_at; ]
+# Include: [name; description; user; ]
+# Method: [objects; all_objects; ]
 class Project(BaseModel):
 
     # Necessary Field [Project Name]
@@ -115,20 +125,24 @@ class Project(BaseModel):
     user = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
 
     # Trash Implementation
-    # Custom Manager hides the deleted Client
+    # Custom Manager hides the deleted Client {effect: Project.objects.filter()}
     objects = CustomManager()
-    # Default Manager brings all the Client
+    # Default Manager brings all the Client {effect: Project.all_objects.filter()}
     all_objects = models.Manager()
 
     # Adding META class - cause we need unique project name [inside each user]
     class Meta:
         unique_together = ('name', 'user', )
 
-    # dunder str method, so we get better naming at the admin page (DEVELOPMENT SPECIFIC)
+    # dunder str method, so we get better naming at the admin page [DEVELOPMENT SPECIFIC]
     def __str__(self):
         return f'{self.name}'
 
 
+# ---- ==== Client Model ==== ----
+# Inherit: [is_deleted; deleted_at; ]
+# Include: [name; email; country_code; phone; address; description; is_active; created_at; last_edit; list; companyAssignee; ]
+# Method: [full_number; clean; objects; all_objects; ]
 class Client(BaseModel):
 
     # Necessary Field
@@ -178,9 +192,9 @@ class Client(BaseModel):
     last_edit = models.DateTimeField(auto_now = True)
 
     # Trash Implementation
-    # Custom Manager hides the deleted Client
+    # Custom Manager hides the deleted Client {effect: Project.objects.filter()}
     objects = CustomManager()
-    # Default Manager brings all the Client
+    # Default Manager brings all the Client {effect: Project.all_objects.filter()}
     all_objects = models.Manager()
 
     # Adding OneToOne field [linking with contact
@@ -195,7 +209,10 @@ class Client(BaseModel):
         return f'{self.name}'
     
 
-
+# ---- ==== Document Model ==== ----
+# Inherit: [is_deleted; deleted_at]
+# Include: [document_name, file; related_to; uploaded_at; description; user; ]
+# Method: [objects; all_objects; __str__; ]
 class Document(BaseModel):
 
     # Adding Necessary Field
@@ -212,9 +229,9 @@ class Document(BaseModel):
     description = models.TextField(blank = True, null = True)
 
     # Trash Implementation
-    # Custom Manager hides the deleted Client
+    # Custom Manager hides the deleted Client {effect: Project.objects.filter()}
     objects = CustomManager()
-    # Default Manager brings all the Client
+    # Default Manager brings all the Client {effect: Project.all_objects.filter()}
     all_objects = models.Manager()
 
     # Linking with BusinessUser Model (every user have their own unique set of contacts that they can add and access)
@@ -225,7 +242,7 @@ class Document(BaseModel):
         return self.document_name
 
 
-
+# This should be deleted!
 class Contact(models.Model):
     full_name = models.CharField(max_length=255)
     title = models.CharField(max_length=255, blank=True)
