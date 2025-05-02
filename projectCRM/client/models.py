@@ -105,9 +105,6 @@ class Lead(models.Model):
     created_at = models.DateTimeField(auto_now_add = True)
     modified_at = models.DateTimeField(auto_now = True)
 
-    # Linking with BusinessUser Model (every user have their own unique set of contacts that they can add and access)
-    user = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
-
 
 # ---- ==== Project Model ==== ----
 # Inherit: [is_deleted; deleted_at; ]
