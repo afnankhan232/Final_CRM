@@ -2,48 +2,50 @@
 
 - DONE Change Time Zone [IST]
 
-- DONE Base Pages and Templates
-    - DONE Create App for pages
-    - DONE Create Base Template
-    - DONE Create Front Page
-    - DONE Create About Page
+- DONE Welcome Pages and Templates
+    - DONE Create App for [accounts management; featured app]
+    - DONE Views
+        - DONE Create Base Template 
+        - DONE Create Front Page
+        - DONE Create About Page
 
-- DONE Authentication
+- DONE User Authentication
     - DONE Register
     - DONE Login
     - DONE Logout
 
 - User Profile
     - DONE View Page
-    - Edit Form
-    - Delete Account Button
+        - DONE Display Information
+    - Edit Info Form
+    - Delete Account Form
 
-- Create Dashboard
+- Dashboard App
     - Views page for Dashboard
 
-- Create New Leads
+- Leads App
     - DONE Database Model
     - Views pages for leads
         - List of leads
         - Detailed view page of leads
     - Form for creation of leads
     - Form for updation of leads
-    - Functionality for Deletion for leads 
-    - Future work (trash after deletion)
+    - Deletion of leads 
+    - Move to Trash for deleted Leads
 
-- Contact's App
-    - DONE Project (store client based on project)
+- Contacts App
+    - Project (store client based on project)
         - DONE DataBase Model
         - DONE Create Signal to trigger and create a -> [default project]
         - DONE Creation From for Project
         - DONE A Pop-up window views for creating new project
         - ONGOING Edit Form for Project
-        - Deletion Form for Project
+        - ONGOING Deletion Form for Project
 
     - DONE Client (store the contact info)
         - DONE Database Model
         - DONE link with Project Model
-        - Views pages for [contact page]
+        - DONE Views pages for [contact page]
             - DONE List of Client
             - DONE Detailed View of each Client (their details)
         - DONE Creation form for Client
@@ -51,25 +53,33 @@
         - DONE Edit form for Client
         - DONE Deletion form for Client
 
-- Documents
-    - DONE create model [document_name; file; related_to; description]
-    - DONE Views pages for documents
+- Documents App
+    - DONE create model [document_name; file; related_to; description;]
+    - Views pages for documents
         - DONE List of documents
+        - Detailed View page for each Document
     - DONE Form for creation of documents
     - Form for updation of documents
     - Deletion for documents 
-    - Future work (trash after deletion)
+    - Move to Trash for deleted Documents
 
-- Tasks
-    - Database Model
-
-- Change and Delete Leads
+- Tasks App
+    - Create Database Model
 
 - Implement Solution for Teams
 
 - Create Roles
 
-- Add Manage Users (assign roles to them)
+- Implement Trash
+    - DONE Add BaseModel[is_deleted; deleted_at;]
+        - DONE add [soft_delete; restore] method
+    - DONE Inherit this BaseModel all Models
+    - DONE Add querySet filter field to CustomManager
+    - DONE add [objects; all_objects] to your models
+    - ONGOING Update your Deletion Form for all objects
+    - DONE Implement [Delete; Restore;] to your Trash View List
+
+- Manage Users (assign roles to them)*
 
 - Active Link for these users
 

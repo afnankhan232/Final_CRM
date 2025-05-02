@@ -107,6 +107,22 @@
                     <span class="menu-label">Documents</span>
                 </a>
 
+                <!-- ITEM FIVE -->
+                <a 
+                    href="{% url 'appTrash' %}" 
+                    class="
+                        {% if request.path == '/apps/trash/' %}
+                            active
+                        {% endif %}
+                    "
+                >
+                    <!-- ICON -->
+                    <i class="fas fa-trash-alt"></i>
+
+                    <!-- NAME -->
+                    <span class="menu-label">Trash</span>
+                </a>
+
             </nav>
         </aside>
 

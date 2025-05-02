@@ -22,7 +22,7 @@ from client.forms import DocumentCreationForm
 from django.utils import timezone
 
 
-# ---- ==== Pofile link (containing form to update existing information) ==== ----
+# ---- ==== Profile link (containing form to update existing information) ==== ----
 @login_required
 def profile(request, *args, **kwargs):
     return render(request, 'users/profile.html')
@@ -145,7 +145,7 @@ def contact_detailed_view(request, pk):
             formEditClient.save()
             messages.success(request, "Client information Updated!")
             return redirect('appContactDetail', pk=pk)
-            
+
         else:
             messages.error(request, "Can't edit the user detail!")
             return redirect('appContactDetail', pk=pk)
@@ -172,15 +172,58 @@ def contact_delete_view(request, pk):
         contact_name = contact.name
 
         try:
-            contact.delete()
+            contact.soft_delete()
             messages.success(request, f"Client '{contact_name}' is deleted!")
-        except:
+        except Exception as err:
+            print(err)
             messages.error(request, f"Can't Delete Client '{contact_name}' ")
     else:
         messages.error(request, f"GET Request is not allowed for this page!")
 
     return redirect('appContacts')
 
+
+@login_required
+def contact_permanent_delete_view(request, pk):
+
+    print("I am right here")
+
+    # Only POST request delete the form and not the GET request!
+    if(request.method == "POST"):
+
+        print("Get into POST request ")
+        contact = get_object_or_404(Client.all_objects, companyAssignee = request.user, pk=pk)
+        print("Gather contact Data Instance")
+        contact_name = contact.name
+
+        try:
+            contact.delete()
+            messages.success(request, f"Client '{contact_name}' is deleted permanently!")
+            
+        except Exception as err:
+            print(err)
+            messages.error(request, f"Can't Delete Client '{contact_name}' ")
+    else:
+        messages.error(request, f"GET Request is not allowed for this page!")
+
+    return redirect('appTrash')
+
+
+@login_required
+def contact_restore_view(request, pk):
+
+    if(request.method == "POST"):
+        contact = get_object_or_404(Client.all_objects, companyAssignee = request.user, pk=pk)
+        contact_name = contact.name
+
+        try:
+            contact.restore()
+            messages.success(request, f"Restored Contact '{contact_name}")
+        except Exception as err:
+            print(err)
+            messages.error(request, f"Can't Restore Contact '{contact_name}'")
+
+    return redirect('appTrash')
 
 @login_required
 def tasks_view(request, *args, **kwargs):
@@ -246,3 +289,17 @@ def documents_view(request, *args, **kwargs):
 def activities_view(request, *args, **kwargs):
     return render(request, 'featuredApp/activities.html')
 
+
+@login_required
+def trash_view(request):
+    trashed_contacts = Client.all_objects.filter(companyAssignee = request.user, is_deleted = True)
+    trashed_documents = Document.all_objects.filter(user = request.user, is_deleted = True)
+    trashed_project = Project.all_objects.filter(user = request.user, is_deleted = True)
+
+    return render(
+        request,
+        'featuredApp/trash.html',
+        {
+            'trashed_contacts': trashed_contacts,
+        },
+    )

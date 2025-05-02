@@ -1,11 +1,39 @@
 from django.db import models
 from accounts.models import BusinessUser
 
+# for Date Time field
+from django.utils import timezone
+
 # Validation Error
 from django.core.exceptions import ValidationError
 
 # Need to validate phone number
 from django.core.validators import RegexValidator
+
+# ---- ==== TRASH SOLUTION ==== ----
+# Base Model to Implement Trash Solution to every Object!
+class BaseModel(models.Model):
+    is_deleted = models.BooleanField(default = False)
+    deleted_at = models.DateTimeField(null = True, blank = True)
+
+    class Meta:
+        abstract = True
+    
+    def soft_delete(self):
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.save()
+    
+    def restore(self):
+        self.is_deleted = False
+        self.deleted_at = None
+        self.save()
+    
+# CustomManager to add filter querySet
+class CustomManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted = False)
+
 
 # Validator for country code: + followed by 1–4 digits
 COUNTRY_CODE_CHOICES = [
@@ -18,7 +46,6 @@ COUNTRY_CODE_CHOICES = [
     ('+971', 'UAE (+971)'),
     ('+86', 'China (+86)'),
     ('+33', 'France (+33)'),
-    # Add more as needed
 ]
 
 # Validator for phone number: digits only, usually 7–12 digits depending on country
@@ -76,7 +103,7 @@ class Lead(models.Model):
     modified_at = models.DateTimeField(auto_now = True)
 
 
-class Project(models.Model):
+class Project(BaseModel):
 
     # Necessary Field [Project Name]
     name = models.CharField(max_length=255)
@@ -87,6 +114,12 @@ class Project(models.Model):
     # Linking with BusinessUser Model (every user have their own unique set of contacts that they can add and access)
     user = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
 
+    # Trash Implementation
+    # Custom Manager hides the deleted Client
+    objects = CustomManager()
+    # Default Manager brings all the Client
+    all_objects = models.Manager()
+
     # Adding META class - cause we need unique project name [inside each user]
     class Meta:
         unique_together = ('name', 'user', )
@@ -96,7 +129,7 @@ class Project(models.Model):
         return f'{self.name}'
 
 
-class Client(models.Model):
+class Client(BaseModel):
 
     # Necessary Field
     name = models.CharField(max_length=255)
@@ -144,6 +177,12 @@ class Client(models.Model):
     # Field - [last edited]
     last_edit = models.DateTimeField(auto_now = True)
 
+    # Trash Implementation
+    # Custom Manager hides the deleted Client
+    objects = CustomManager()
+    # Default Manager brings all the Client
+    all_objects = models.Manager()
+
     # Adding OneToOne field [linking with contact
     list = models.ForeignKey(Project, on_delete=models.CASCADE)
 
@@ -157,7 +196,7 @@ class Client(models.Model):
     
 
 
-class Document(models.Model):
+class Document(BaseModel):
 
     # Adding Necessary Field
     document_name = models.CharField(max_length=255)
@@ -171,6 +210,12 @@ class Document(models.Model):
 
     # Exceptional Field
     description = models.TextField(blank = True, null = True)
+
+    # Trash Implementation
+    # Custom Manager hides the deleted Client
+    objects = CustomManager()
+    # Default Manager brings all the Client
+    all_objects = models.Manager()
 
     # Linking with BusinessUser Model (every user have their own unique set of contacts that they can add and access)
     # models.CASCADE refers that if the BusinessUser is deleted, then delete the Client table from the database..

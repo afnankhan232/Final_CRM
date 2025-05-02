@@ -1,0 +1,57 @@
+<!-- Extend from base.html  -->
+{% extends 'featuredApp/base.html' %}
+
+
+<!-- Loading CSS files from static (path defined at settings.py)-->
+{% load static %}
+
+
+<!-- As we are loading crispy form Hence Import crispy_forms_tags -->
+{% load crispy_forms_tags %}
+
+
+<!-- A nice title -->
+{% block titleBlock %} 
+	<title> Trash </title>
+{% endblock titleBlock %}
+
+
+<!-- Some extra css property for this specific page -->
+{% block addCSSlink %}
+
+	<!-- Specific for Project pop-up  -->
+	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
+	<style type="text/css">
+		.table-striped tbody tr:nth-of-type(odd) {
+		  background-color: #fff !important;  /* First row white */
+		}
+
+		.table-striped tbody tr:nth-of-type(even) {
+		  background-color: #f9f9f9 !important;  /* Second row light gray */
+		}
+	</style>
+
+{% endblock addCSSlink %}
+
+
+
+<!-- Main CONTENT GOES HERE -->
+{% block contentBody1 %}
+	<h2 style="font-weight: bolder;"> Trash </h2>
+
+	<hr style="margin: 20px 0;">
+
+	<!-- CONTACTS -->
+	<h4>Contacts</h4>
+	{% include "featuredApp/trash_table.html" with items=trashed_contacts model="Contact" %}
+
+	<!-- PROJECTS -->
+	<h4 class="mt-4">Projects</h4>
+	{% include "featuredApp/trash_table.html" with items=trashed_projects model="Project" %}
+
+	<!-- DOCUMENTS -->
+	<h4 class="mt-4">Documents</h4>
+	{% include "featuredApp/trash_table.html" with items=trashed_documents model="Document" %}
+
+
+{% endblock contentBody1 %}
