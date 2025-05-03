@@ -27,13 +27,19 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+SITE_ID = 1
+
 INSTALLED_APPS = [
-    'featuredApp.apps.FeaturedappConfig',
-    'client.apps.ClientConfig',
     'accounts.apps.AccountsConfig',
 
     'crispy_forms',
     'crispy_bootstrap4',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +49,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'projectCRM.urls'
@@ -127,33 +146,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Changed Auth model to BusinessUser which allows more specific fields..
-# company email; company name; + AbstractBaseUser + exceptional fields
-AUTH_USER_MODEL = 'accounts.BusinessUser'
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
-
-AUTHENTICATION_BACKENDS = [
-    'accounts.backends.CaseInsensitiveModelBackend',  # Your custom backend
-    'django.contrib.auth.backends.ModelBackend',  # Default Django backend
-]
-
-# ---- ==== Specific to CRM Software ==== ----
-
-# Cirspy forms used at userCreation, userLogin, and other..
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-# Added media path (to store logo of company and storing Documents)
-# Secured folder can't be accessed directly
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Send to crm home page for logout
+LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-
-# Set login page
-LOGIN_URL = 'login'
-
-# For local development
-# if DEBUG:
-#     import mimetypes
-#     mimetypes.add_type("image/png", ".png", True)

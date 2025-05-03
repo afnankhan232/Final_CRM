@@ -24,4 +24,20 @@
         </p>
     </div>
 
+    {% load socialaccount %}
+
+    <div class="content-section">
+        <h2>LOGIN VIA GOOGLE ACCOUNT</h2>
+        <a href="{% provider_login_url 'google'%}?next=/ ">Login</a>
+    </div>
+
+    {% if user.is_authenticated %}
+        <div class="content-section">
+            <h2>Your Are currently logged-in </h2>
+            <p>
+                {{ user.username }}
+            </p>
+        </div>
+    {% endif %}
+
 {% endblock contentBody1 %}
