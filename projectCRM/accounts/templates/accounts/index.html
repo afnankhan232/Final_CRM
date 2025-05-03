@@ -5,6 +5,28 @@
 <!-- Adding css link -->
 {% block addCSSlink%}
     <link rel="stylesheet" href="{% static 'accounts/home.css' %}" type="text/css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 5rem;
+        }
+        .hero {
+            background-color: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        }
+        .btn-google {
+            background-color: #4285F4;
+            color: white;
+        }
+        .btn-google:hover {
+            background-color: #3367D6;
+        }
+    </style>
+
 {% endblock addCSSlink%}
 
 <!-- adding title -->
@@ -15,13 +37,25 @@
 <!-- Content Page [Main] -->
 {% block contentBody1 %}
 
+    {% load socialaccount %}
 
-    <div class="content-section">
-        <h2>Welcome to Our CRM Software</h2>
-        <p>
-            This simple CRM application helps you manage customer details, leads, and tasks efficiently.<br>
-            Keep track of your business interactions in one organized place.
-        </p>
+    <div class="container">
+        <div class="text-center hero mb-5">
+            <h1 class="display-5 fw-bold">Welcome to Our CRM Software</h1>
+            <p class="lead mt-3">
+                Manage customer details, leads, and tasks efficiently.<br>
+                Stay organized, stay productive.
+            </p>
+
+            {% if not user.is_authenticated %}
+                <a class="btn btn-google btn-lg mt-4" href="{% provider_login_url 'google' %}?next=/">
+                    <i class="bi bi-google"></i> Login with Google
+                </a>
+            {% else %}
+                <p class="text-success fw-semibold mt-4">You are logged in as <strong>{{ businessuser.company_name }}</strong>.</p>
+                <a class="btn btn-primary mt-3" href="{% url 'appDashboard' %}">Go to Dashboard</a>
+            {% endif %}
+        </div>
     </div>
 
 {% endblock contentBody1 %}

@@ -26,8 +26,19 @@ from django.utils import timezone
 
 # ---- ==== Profile link (containing form to update existing information) ==== ----
 @login_required
-def profile(request, *args, **kwargs):
-    return render(request, 'users/profile.html')
+def profile_view(request, *args, **kwargs):
+
+    user = request.user.businessuser
+
+    context = {
+        'businessuser': user,
+    }
+
+    return render(
+        request, 
+        'users/profile.html',
+        context,
+    )
 
 
 # ---- ==== FEATURED APP LINKS LISTED BELOW ==== ----
@@ -36,13 +47,26 @@ def profile(request, *args, **kwargs):
 # Include: [dashboard_view; ]
 @login_required
 def dashboard_view(request, *args, **kwargs):
-    return render(request, 'featuredApp/dashboard.html')
+
+    user = request.user.businessuser
+
+    context = {
+        'businessuser': user,
+    }
+
+    return render(
+        request, 
+        'featuredApp/dashboard.html',
+        context,
+    )
 
 
 # ---- ===== Featured Related to Contact View ==== ----
 # Include: [contact_view; contact_detailed_view; contact_delete_view; contact_delete_permanently_view; contact_restore_view;]
 @login_required
 def contact_view(request, *args, **kwargs):
+
+    user = request.user.businessuser
 
     # Project Creation!!
     if(request.method == "POST"):
@@ -54,13 +78,13 @@ def contact_view(request, *args, **kwargs):
         if(form_type == 'project_form'):
 
             # the user arguement pass to the __init__ attribute of the ProjectCreationForm (it's no big deal)
-            formA = ProjectCreationForm(request.POST, user = request.user)
-            formB = ClientCreationForm(user = request.user)
+            formA = ProjectCreationForm(request.POST, user = user)
+            formB = ClientCreationForm(user = user)
 
             if(formA.is_valid()):
                 # Commit as False -> cause we need other field to be enter before saving the form
                 projectValidForm = formA.save(commit = False)
-                projectValidForm.user = request.user
+                projectValidForm.user = user
                 projectValidForm.save() # Save the form
 
                 # A success Message
@@ -79,13 +103,13 @@ def contact_view(request, *args, **kwargs):
 
         elif(form_type == 'client_form'):
 
-            formA = ProjectCreationForm(user = request.user)
+            formA = ProjectCreationForm(user = user)
             # the user arguement pass to the __init__ attribute of the ProjectCreationForm (it's no big deal)
-            formB = ClientCreationForm(request.POST, user = request.user)
+            formB = ClientCreationForm(request.POST, user = user)
 
             if(formB.is_valid()):
                 clientValidForm = formB.save(commit = False)
-                clientValidForm.companyAssignee = request.user
+                clientValidForm.companyAssignee = user
                 clientValidForm.save()
                 
                 # A success Message
@@ -103,14 +127,11 @@ def contact_view(request, *args, **kwargs):
             
             
     else:
-        formA = ProjectCreationForm(user = request.user)
-        formB = ClientCreationForm(user = request.user)
+        formA = ProjectCreationForm(user = user)
+        formB = ClientCreationForm(user = user)
 
-    # current User
-    user = request.user
 
     # Retrieving Values from DATABASE [current user]
-    user = request.user
     project_id = request.GET.get('project_id')
 
     contacts = Client.objects.filter(companyAssignee=user)
@@ -127,6 +148,7 @@ def contact_view(request, *args, **kwargs):
         'total_contacts': contacts.count(),
         'selected_project_id': int(project_id) if project_id else None,
         'set_to_all': True if project_id is None else False,
+        'businessuser': user,
     }
 
     return render (
@@ -139,12 +161,14 @@ def contact_view(request, *args, **kwargs):
 @login_required
 def contact_detailed_view(request, pk):
 
+    user = request.user.businessuser
+
     # filtering specific contact -> [Current User] [Current Client]
-    contact = get_object_or_404(Client, companyAssignee = request.user, pk=pk)
+    contact = get_object_or_404(Client, companyAssignee = user, pk=pk)
 
     # Client Updation Form
     if(request.method == "POST"):
-        formEditClient = ClientCreationForm(request.POST, user = request.user, instance = contact)
+        formEditClient = ClientCreationForm(request.POST, user = user, instance = contact)
 
         if(formEditClient.is_valid()):
             formEditClient.last_edit = timezone.now()
@@ -156,11 +180,12 @@ def contact_detailed_view(request, pk):
             messages.error(request, "Can't edit the user detail!")
             return redirect('appContactDetail', pk=pk)
     else:
-        formEditClient = ClientCreationForm(user = request.user, instance = contact)
+        formEditClient = ClientCreationForm(user = user, instance = contact)
 
     context = {
         'contact': contact,
         'form': formEditClient,
+        'businessuser': user,
     }
 
     return render(
@@ -172,9 +197,11 @@ def contact_detailed_view(request, pk):
 @login_required
 def contact_delete_view(request, pk):
 
+    user = request.user.businessuser
+
     # Only POST request delete the form and not the GET request!
     if(request.method == "POST"):
-        contact = get_object_or_404(Client, companyAssignee = request.user, pk=pk)
+        contact = get_object_or_404(Client, companyAssignee = user, pk=pk)
         contact_name = contact.name
 
         try:
@@ -192,13 +219,13 @@ def contact_delete_view(request, pk):
 @login_required
 def contact_permanent_delete_view(request, pk):
 
-    print("I am right here")
+    user = request.user.businessuser
 
     # Only POST request delete the form and not the GET request!
     if(request.method == "POST"):
 
         print("Get into POST request ")
-        contact = get_object_or_404(Client.all_objects, companyAssignee = request.user, pk=pk)
+        contact = get_object_or_404(Client.all_objects, companyAssignee = user, pk=pk)
         print("Gather contact Data Instance")
         contact_name = contact.name
 
@@ -218,8 +245,10 @@ def contact_permanent_delete_view(request, pk):
 @login_required
 def contact_restore_view(request, pk):
 
+    user = request.user.businessuser
+
     if(request.method == "POST"):
-        contact = get_object_or_404(Client.all_objects, companyAssignee = request.user, pk=pk)
+        contact = get_object_or_404(Client.all_objects, companyAssignee = user, pk=pk)
         contact_name = contact.name
 
         try:
@@ -237,15 +266,17 @@ def contact_restore_view(request, pk):
 @login_required
 def tasks_view(request, *args, **kwargs):
 
+    user = request.user.businessuser
+
     if request.method == "POST":
-        form = ClientCreationForm(request.POST, user = request.user)
+        form = ClientCreationForm(request.POST, user = user)
         if(form.is_valid()):
             tmp = form.save(commit = False)
-            tmp.companyAssignee = request.user
+            tmp.companyAssignee = user
             tmp.save()
             return redirect('appTasks')
     else:
-        form = ClientCreationForm(user = request.user)
+        form = ClientCreationForm(user = user)
 
     return render(
         request, 
@@ -261,14 +292,16 @@ def tasks_view(request, *args, **kwargs):
 @login_required
 def documents_view(request, *args, **kwargs):
 
+    user = request.user.businessuser
+
     if request.method == "POST":
 
         # For the purpose of file upload - we need request.FILES [COOL]
-        form = DocumentCreationForm(request.POST, request.FILES, user = request.user)
+        form = DocumentCreationForm(request.POST, request.FILES, user = user)
 
         if(form.is_valid()):
             tmp = form.save(commit = False)
-            tmp.user = request.user
+            tmp.user = user
             tmp.save()
 
             messages.success(request, f"New Document Added!")
@@ -278,10 +311,7 @@ def documents_view(request, *args, **kwargs):
             messages.success(request, f"Something Went Wrong!")
             return redirect('appDocuments')
     else:
-        form = DocumentCreationForm(user = request.user)
-
-    # Retrieving Values from DATABASE [current user]
-    user = request.user
+        form = DocumentCreationForm(user = user)
 
     documents = Document.objects.filter(user=user)
 
@@ -307,9 +337,12 @@ def activities_view(request, *args, **kwargs):
 # Include: [trash_view; ]
 @login_required
 def trash_view(request):
-    trashed_contacts = Client.all_objects.filter(companyAssignee = request.user, is_deleted = True)
-    trashed_documents = Document.all_objects.filter(user = request.user, is_deleted = True)
-    trashed_project = Project.all_objects.filter(user = request.user, is_deleted = True)
+
+    user = request.user.businessuser
+
+    trashed_contacts = Client.all_objects.filter(companyAssignee = user, is_deleted = True)
+    trashed_documents = Document.all_objects.filter(user = user, is_deleted = True)
+    trashed_project = Project.all_objects.filter(user = user, is_deleted = True)
 
     return render(
         request,

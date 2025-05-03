@@ -20,8 +20,23 @@ from django.contrib.auth.decorators import login_required
 
 # Index or Home page for CRM Software
 def indexView(request, *args, **kwargs):
-    print(request.path)
-    return render(request, 'accounts/index.html')
+
+    if request.user.is_authenticated:
+        user = request.user.businessuser
+    else:
+        user = None
+
+    context = {
+        'businessuser': user,
+    }
+
+    # print(request.path)
+
+    return render(
+        request, 
+        'accounts/index.html',
+        context,
+    )
 
 # About Page of CRM Software Include info about the Authors
 def aboutView(request, *args, **kwargs):
@@ -52,4 +67,19 @@ def registrationView(request, *args, **kwargs):
 # Profile View Extends featuredApp/base.html
 @login_required
 def profileView(request, *args, **kwargs):
-    return render(request, 'accounts/profile.html')
+
+    print(" I am here ")
+
+    user = request.user.businessuser
+
+    print(user.company_email)
+
+    context = {
+        'businessuser': user,
+    }
+
+    return render(
+        request, 
+        'accounts/profile.html',
+        context,
+    )

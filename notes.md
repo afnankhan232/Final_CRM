@@ -13,6 +13,7 @@
     - DONE Register
     - DONE Login
     - DONE Logout
+    - DONE Google Authentication
 
 - User Profile
     - DONE View Page

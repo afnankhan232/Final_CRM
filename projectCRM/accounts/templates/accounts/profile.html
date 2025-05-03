@@ -10,10 +10,10 @@
 {% block contentBody1 %}
     <div class="content-section">
         <div class="media">
-            <img width="100px" class="rounded-circle accounts-img" src="{{ user.company_logo.url }}">
+            <img width="100px" class="rounded-circle accounts-img" src="{{ businessuser.company_logo.url }}">
             <div class="media-body">
-                <h2 class="account-heading">{{user.company_name}}</h2>
-                <p class="text-secondary">{{user.company_email}}</p>
+                <h2 class="account-heading">{{ businessuser.company_name }}</h2>
+                <p class="text-secondary">{{ businessuser.company_email }}</p>
 
                 <!-- <div class="last-login">Last login: {{ last_login|date:"M d, Y H:i" }}</div> -->
                 

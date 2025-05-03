@@ -1,0 +1,67 @@
+{% load socialaccount %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login with Google</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f1f3f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background-color: #ffffff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .card h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+      color: #202124;
+    }
+    .card p {
+      color: #5f6368;
+      margin-bottom: 30px;
+    }
+    .google-btn {
+      background-color: #4285f4;
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .google-btn:hover {
+      background-color: #3367d6;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Sign in with Google</h2>
+    <p>Use your Google account to continue.</p>
+    <form method="post" action="{% provider_login_url 'google' process='login' %}">
+      {% csrf_token %}
+      <button type="submit" class="google-btn">Continue with Google</button>
+    </form>
+  </div>
+</body>
+</html>

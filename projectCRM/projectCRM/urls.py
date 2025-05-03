@@ -21,6 +21,9 @@ urlpatterns = [
     path('home/', indexView, name='home'),
     path('about/', aboutView, name='about'),
 
+    # Google Sign-up / Login
+    path("accounts/", include("allauth.urls")),
+
     # Creating New User [Registration Page]
     path('register/', registrationView, name='register'),
 
