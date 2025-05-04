@@ -69,7 +69,53 @@
 
 - Implement Solution for Teams
 
-- Create Roles
+
+- Connecting Multiple User
+
+    - DONE Roles Model [contact_read; contact_write; contact_edit; contact_delete; contact_delete_permanenet;]
+
+    - DONE AccessPermission Model 
+        - DONE Owner [who is sharing;]
+        - DONE Shared_with [who is accessing;]
+        - DONE role [from Role Model]
+
+    - BYPASS Form for Roles
+        - BYPASS Creating New Role
+        - BYPASS Updating Existing Role
+
+    - BYPASS Form for AccessPermission Model
+        - BYPASS Creating New AccessPermission
+        - BYPASS Update Exiting AccessPermission
+
+    - BYPASS Deletion of Roles
+
+    - BYPASS Deletion of AccessPermission
+
+    - Building User Management UI 
+        - Manage User Views
+            - Form to invite / grant access to another user
+                - INPUT: Email + Role
+                - ON SUBMIT: create AccessPermission record
+    
+    - DONE Switch Accounts
+        - DONE DEFAULT: My Account
+        - DONE OPTIONS: Other BusinessUser
+        - DONE Update request.session (Add Session Key)
+    
+    - Fallback to the logged-in usre's ID if session key is missing or invalid
+
+    - ONGOING Update Contact Queries
+        - ONGOING Load Contact owned by current user
+        - ONGOING load shared contacts via AccessPermission [filter based on allowed access]
+
+    - ONGOING Restrict Actions Based on Role
+        - ONGOING check the permission before performing any action
+    
+    - Add Email Notification Flow
+        - Send Email to other user
+        - Accept / Reject the invitation
+        - Only activate AccessPermission is accepted
+    
 
 - Implement Trash
     - DONE Add BaseModel[is_deleted; deleted_at;]
@@ -80,8 +126,10 @@
     - ONGOING Update your Deletion Form for all objects
     - DONE Implement [Delete; Restore;] to your Trash View List
 
-- Manage Users (assign roles to them)*
-
-- Active Link for these users
+- Forget Password
+    - INPUT: Email
+    - Check if the email exist
+    - Forward Email
+    - ...
 
 - Deploy

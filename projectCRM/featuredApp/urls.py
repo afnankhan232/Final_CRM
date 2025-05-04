@@ -7,6 +7,9 @@ urlpatterns = [
     # Just the default 
     path('', lambda request: redirect('/apps/dashboard/', permanent=False)),
 
+    # ---- ==== Switch Account ==== ----
+    path('switch-account/<uuid:public_id>/', views.switch_account, name='switch_account'),
+
     # ---- ==== Related to Dashboard ==== ----
     # Dashboard considered as the home
     path('dashboard/', views.dashboard_view, name='appDashboard'),
@@ -45,5 +48,8 @@ urlpatterns = [
     # ---- ===== Related to Trash ==== ----
     # Trash - Contain Trash - that no-one likes, but save lives!
     path('trash/', views.trash_view, name='appTrash'),
+
+    # ---- ==== Manage Access : Multiple Users ==== ----
+    path('manage-access/', views.manage_access, name='appManageAccess'),
     
 ]

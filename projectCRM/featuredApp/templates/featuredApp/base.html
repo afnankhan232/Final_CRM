@@ -123,6 +123,22 @@
                     <span class="menu-label">Trash</span>
                 </a>
 
+                <!-- ITEM SIX -->
+                <a 
+                    href="{% url 'appManageAccess' %}" 
+                    class="
+                        {% if request.path == '/apps/manage-access/' %}
+                            active
+                        {% endif %}
+                    "
+                >
+                    <!-- ICON -->
+                    <i class="fas fa-users"></i>
+
+                    <!-- NAME -->
+                    <span class="menu-label">Manage Access</span>
+                </a>
+
             </nav>
         </aside>
 

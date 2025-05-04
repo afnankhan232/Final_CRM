@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import BusinessUser
+from .models import Role
 
 class CompanyUserCreationForm(UserCreationForm):
 
@@ -35,3 +36,28 @@ class CompanyUserCreationForm(UserCreationForm):
                 }
             )
         return user
+    
+class RolesCreationForm_Account(forms.ModelForm):
+    class Meta:
+        model = Role
+        fields = [
+            'name',
+            # Contacts
+            'can_read_contact', 'can_add_contact', 'can_edit_contact',
+            'can_delete_contact', 'can_permanent_delete_contact',
+
+            # Projects
+            'can_add_project',
+
+            # Tasks
+            'can_read_tasks', 'can_add_tasks', 'can_edit_tasks',
+            'can_delete_tasks', 'can_permanent_delete_tasks',
+
+            # Documents
+            'can_read_documents', 'can_add_documents', 'can_edit_documents',
+            'can_delete_documents', 'can_permanent_delete_documents',
+        ]
+        widgets = {
+            field: forms.CheckboxInput(attrs={'class': 'form-check-input'})
+            for field in fields if field != 'name'
+        }

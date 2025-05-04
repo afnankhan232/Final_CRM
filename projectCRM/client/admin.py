@@ -3,6 +3,7 @@ from .models import Client
 from .models import Project
 from .models import Document
 from .models import Contact
+from .models import ProjectAccessPermisssion
 
 # Importing Leads model(/table) from model.py
 from .models import Lead
@@ -19,3 +20,5 @@ admin.site.register(Client)
 admin.site.register(Project)
 
 admin.site.register(Contact)
+
+admin.site.register(ProjectAccessPermisssion)

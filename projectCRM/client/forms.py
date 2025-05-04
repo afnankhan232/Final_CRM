@@ -46,12 +46,20 @@ class ClientCreationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
 
+        try:
+            possible_projects = kwargs.pop('possible_projects', None)
+        except:
+            possible_projects = None
+
         # Don't  mess with the original __init__ method! EVER
         super().__init__(*args, **kwargs)
 
         # The following code set the possible value of project
         if user:
-            self.fields['list'].queryset = Project.objects.filter(user = user)
+            if possible_projects != None:
+                self.fields['list'].queryset = possible_projects
+            else:
+                self.fields['list'].queryset = Project.objects.filter(user = user)
         
         # Making ['email' and 'phone'] fields optional - for crispy form
         self.fields['email'].required = False
@@ -78,3 +86,26 @@ class DocumentCreationForm(forms.ModelForm):
             # The following code set the possible value of document
             if self.user:
                 self.fields['related_to'].queryset = Client.objects.filter(companyAssignee = self.user)
+
+
+# ---- ==== PrejectAccessForm ==== ----
+from .models import ProjectAccessPermisssion
+from client.models import Project
+
+class ProjectAccessPermissionForm_Client(forms.ModelForm):
+    class Meta:
+        model = ProjectAccessPermisssion
+        fields = [
+            'project',
+            'can_read_project',
+            'can_edit_project',
+            'can_delete_project',
+            'can_permanent_delete_project',
+        ]
+        widgets = {
+            'project': forms.Select(attrs={'class': 'form-select'}),
+            'can_read_project': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'can_edit_project': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'can_delete_project': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'can_permanent_delete_project': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }

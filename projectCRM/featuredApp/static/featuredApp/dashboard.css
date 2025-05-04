@@ -1,0 +1,20 @@
+button.switch-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #007bff;
+    text-decoration: none;
+    cursor: pointer;
+
+}
+
+a:hover,
+button.switch-link:active,
+button.switch-link:hover{
+    text-decoration: underline;
+    color: #1a0dab ;
+}
+
+button.switch-link:focus {
+    outline: none;
+}

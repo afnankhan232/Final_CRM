@@ -6,10 +6,45 @@
 	<title> Dashboard </title>
 {% endblock titleBlock %}
 
+{% block addCSSlink %}
+
+	<!-- Specific for Project pop-up  -->
+	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/dashboard.css' %}">
+
+{% endblock addCSSlink %}
+
 {% block contentBody1 %}
 
 	<h2 style="font-weight: bolder;"> Dashboard </h2>
 
 	<hr style="margin: 20px 0;">
+
+	<h3>Switch Account</h3>
+		<ul>
+			<!-- Self Account -->
+			<li>
+				<a href="{% url 'switch_account' public_id=self_account.public_id %}">
+					My Account
+				</a>
+			</li>
+
+			<!-- Accessible Accounts -->
+			{% for shared_user in accessible_accounts %}
+				<li>
+					{% if shared_user.owner.public_id %}
+					    <form method="post" action="{% url 'switch_account' public_id=shared_user.owner.public_id %}" style="display:inline;">
+			                {% csrf_token %}
+			                <button type="submit" class="switch-link">
+			                    Switch to <strong>{{ shared_user.owner.company_email }}</strong>
+			                </button>
+			            </form>
+					{% else %}
+					    <span>{{ shared_user.user.email }} (no public ID)</span>
+					{% endif %}
+				</li>
+				{% empty %}
+					<li class="text-danger">No shared access yet.</li>
+			{% endfor %}
+		</ul>
 
 {% endblock contentBody1 %}

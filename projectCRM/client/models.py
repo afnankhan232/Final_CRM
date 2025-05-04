@@ -133,8 +133,36 @@ class Project(BaseModel):
 
     # dunder str method, so we get better naming at the admin page [DEVELOPMENT SPECIFIC]
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} -> {self.user.company_email}'
 
+class ProjectAccessPermisssion(models.Model):
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="shared_project_permissions")
+
+    owner = models.ForeignKey(
+        BusinessUser, 
+        related_name = 'project_shared_with', 
+        on_delete = models.CASCADE,
+    )
+
+    shared_with = models.ForeignKey(
+        BusinessUser, 
+        related_name='project_accessible_accounts',
+        on_delete = models.CASCADE,
+    )
+
+    can_read_project = models.BooleanField(default = False)
+    can_edit_project = models.BooleanField(default = False)
+    can_delete_project = models.BooleanField(default = False)
+    can_permanent_delete_project = models.BooleanField(default = False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('project', 'shared_with')
+
+    def __str__(self):
+        return f"{self.shared_with} access to {self.project}"
 
 # ---- ==== Client Model ==== ----
 # Inherit: [is_deleted; deleted_at; ]
