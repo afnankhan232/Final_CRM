@@ -10,25 +10,25 @@ from crispy_forms.layout import Layout, Row, Column, Field, Fieldset, Div
 from .models import Project
 
 class ProjectCreationForm(forms.ModelForm):
-        class Meta:
-            # specifying the model we are targeting
-            model = Project
-            # Field to show in Form
-            fields = ('name', 'description')
-        
+    class Meta:
+        # specifying the model we are targeting
+        model = Project
+        # Field to show in Form
+        fields = ('name', 'description')
+    
 
-        def __init__(self, *args, **kwargs):
-            self.user = kwargs.pop('user', None)  # fallback to None
-            super().__init__(*args, **kwargs)
-        
-        # Since we need the name of the each form to be unique for a user
-        # we need to over-ride the [clean] method
-        # It prevent from unusual error page
-        def clean_name(self):
-            name = self.cleaned_data.get('name')
-            if Project.objects.filter(name=name, user=self.user).exists():
-                raise forms.ValidationError("You already have a project with this name.")
-            return name
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # fallback to None
+        super().__init__(*args, **kwargs)
+    
+    # Since we need the name of the each form to be unique for a user
+    # we need to over-ride the [clean] method
+    # It prevent from unusual error page
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if Project.objects.filter(name=name, user=self.user).exists():
+            raise forms.ValidationError("You already have a project with this name.")
+        return name
 
 
 # ---- ==== Form for CREATING new Client OR UPDATING existing Client ==== ----
@@ -89,21 +89,23 @@ class DocumentCreationForm(forms.ModelForm):
 
 
 # ---- ==== PrejectAccessForm ==== ----
-from .models import ProjectAccessPermisssion
+from .models import ProjectAccessPermission
 from client.models import Project
 
 class ProjectAccessPermissionForm_Client(forms.ModelForm):
+    project_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+    project_name = forms.CharField(widget=forms.HiddenInput(), required=False)
     class Meta:
-        model = ProjectAccessPermisssion
+        model = ProjectAccessPermission
         fields = [
-            'project',
+            'project_name',
             'can_read_project',
             'can_edit_project',
             'can_delete_project',
             'can_permanent_delete_project',
         ]
         widgets = {
-            'project': forms.Select(attrs={'class': 'form-select'}),
+            'project_name': forms.Select(attrs={'class': 'form-select'}),
             'can_read_project': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'can_edit_project': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'can_delete_project': forms.CheckboxInput(attrs={'class': 'form-check-input'}),

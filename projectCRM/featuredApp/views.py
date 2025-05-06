@@ -20,20 +20,24 @@ from client.forms import ProjectCreationForm
 from client.models import Document
 from client.forms import DocumentCreationForm
 
-from client.models import ProjectAccessPermisssion
+from client.models import ProjectAccessPermission
 
 # Date Time Field
 from django.utils import timezone
 
+from accounts.models import Role
+
 # MORE SECURITY
 def get_active_business_user_with_permission(request, permission_field_name: str, show_err = None, fallback = False):
     """
+    ASK: do I have a permission?
     Verifies if the logged-in user has the required permission on the active business account.
     
     Args:
         request: The HTTP request object.
         permission_field_name: A string name of the permission field (e.g. "can_read_project").
-
+        show_err:
+        fallBack: 
     Returns:
         BusinessUser: the active_business_user object.
 
@@ -42,18 +46,12 @@ def get_active_business_user_with_permission(request, permission_field_name: str
         Success: Boolean Value
     """
 
-    print('I am working fine!')
-
     logged_in_user = request.user.businessuser
-
     active_id = request.session.get('active_business_user_id')
     active_business_user = get_object_or_404(BusinessUser, id=active_id)
 
-    print("3#" * 50)
-    print(active_business_user)
-
     if logged_in_user == active_business_user:
-        return (active_business_user, False)
+        return (active_business_user, True)
 
     try:
         permission = AccessPermission.objects.get(
@@ -181,7 +179,7 @@ def contact_view(request, *args, **kwargs):
                     active_business_user == logged_in_user or
                     (
                         active_business_user != logged_in_user and
-                        get_active_business_user_with_permission(request, 'can_add_project', show_err='Add') == True
+                        get_active_business_user_with_permission(request, 'can_add_project', show_err='Add')[1] == True
                     )
                 ):
                     projectValidForm = formA.save(commit = False)
@@ -219,11 +217,21 @@ def contact_view(request, *args, **kwargs):
         projects = Project.objects.filter(user = logged_in_user)
         contacts = Client.objects.filter(companyAssignee = logged_in_user)
     else:
+        print("I am here!!")
+        # projects = Project.objects.filter(
+        #     shared_project_permissions__shared_with = logged_in_user,
+        #     shared_project_permissions__can_read_project = True,
+        #     user = active_business_user,
+        # )
         projects = Project.objects.filter(
-            shared_project_permissions__shared_with = logged_in_user,
-            shared_project_permissions__can_read_project = True,
-            user = active_business_user,
-        )
+            shared_project_permissions__role__in=AccessPermission.objects.filter(
+                owner=active_business_user,
+                shared_with=logged_in_user
+            ).values_list('role', flat=True),
+            shared_project_permissions__can_read_project=True,
+            user=active_business_user
+        ).distinct()
+        print("I am done but here")
         contacts = Client.objects.filter(
             list__in = projects,
             companyAssignee=active_business_user,
@@ -260,10 +268,13 @@ def contact_detailed_view(request, pk):
         contact = get_object_or_404(Client, companyAssignee = user, pk=pk)
     else:
         projects = Project.objects.filter(
-            shared_project_permissions__shared_with = logged_in_user,
-            shared_project_permissions__can_read_project = True,
-            user = active_business_user,
-        )
+            shared_project_permissions__role__in=AccessPermission.objects.filter(
+                owner=active_business_user,
+                shared_with=logged_in_user
+            ).values_list('role', flat=True),
+            shared_project_permissions__can_read_project=True,
+            user=active_business_user
+        ).distinct()
         contact = get_object_or_404(
             Client,
             list__in = projects,
@@ -308,13 +319,11 @@ def contact_delete_view(request, pk):
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_delete_contact', show_err='Delete')
 
-    print(active_business_user.company_email, is_success)
+    if(is_success == False):
+        return redirect('appContactDetail', pk=pk)
     # Only POST request to delete the contact and not the GET request!
     if(request.method == "POST"):
-        if(logged_in_user != active_business_user):
             contact = get_object_or_404(Client, companyAssignee = active_business_user, pk=pk)
-        else:
-            contact = get_object_or_404(Client, companyAssignee = logged_in_user, pk=pk)
             contact_name = contact.name
             contact.soft_delete()
             messages.success(request, f"Client '{contact_name}' is deleted!")
@@ -327,6 +336,8 @@ def contact_permanent_delete_view(request, pk):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_permanent_delete_contact', show_err='Permanent Delete')
+    if(is_success == False):
+        return redirect('appTrash')
     # Only POST request delete the form and not the GET request!
     if(request.method == "POST"):
         if(logged_in_user != active_business_user):
@@ -345,6 +356,8 @@ def contact_restore_view(request, pk):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_delete_contact', show_err='Restore')
+    if(is_success == False):
+        return redirect('appTrash')
     if(request.method == "POST"):
         if(logged_in_user != active_business_user):
             contact = get_object_or_404(Client.all_objects, companyAssignee = active_business_user, pk=pk)
@@ -360,23 +373,10 @@ def contact_restore_view(request, pk):
 @login_required
 def tasks_view(request, *args, **kwargs):
 
-    user = request.user.businessuser
-
-    if request.method == "POST":
-        form = ClientCreationForm(request.POST, user = user)
-        if(form.is_valid()):
-            tmp = form.save(commit = False)
-            tmp.companyAssignee = user
-            tmp.save()
-            return redirect('appTasks')
-    else:
-        form = ClientCreationForm(user = user)
-
     return render(
         request, 
         'featuredApp/tasks.html',
         {
-            'form': form,
         },
     )
 
@@ -392,7 +392,9 @@ def documents_view(request, *args, **kwargs):
         # For the purpose of file upload - we need request.FILES [COOL]
         form = DocumentCreationForm(request.POST, request.FILES, user = user)
 
+        print("this is the post request")
         if(form.is_valid()):
+            print('your form is valid')
             tmp = form.save(commit = False)
             tmp.user = user
             tmp.save()
@@ -400,7 +402,7 @@ def documents_view(request, *args, **kwargs):
             messages.success(request, f"New Document Added!")
             return redirect('appDocuments')
         else:
-
+            print("your form is not valid, even if it is the post request")
             messages.success(request, f"Something Went Wrong!")
             return redirect('appDocuments')
     else:
@@ -459,35 +461,122 @@ def trash_view(request):
 # ---- ==== Manage User Access ==== ----
 from accounts.forms import RolesCreationForm_Account
 from client.forms import ProjectAccessPermissionForm_Client
+from accounts.models import AccessPermission
+from django.forms import modelformset_factory
+# This funciton is valid up to the logged in user!
 @login_required
-def manage_access(request, *args, **kwargs):
-    formA = RolesCreationForm_Account()
-    formB = ProjectAccessPermissionForm_Client()
-    formC = None
+def manage_access(request):
     user = request.user.businessuser
-    project_queryset = Project.objects.filter(user = user)
-    context = {
-        'formA': formA,
-        'formB': formB,
-        'project_queryset': project_queryset,
-    }
-    return render(
-        request,
-        'featuredApp/manage_access.html',
-        context,
+    projects = Project.objects.filter(user=user)
+    roles = Role.objects.filter(user=user)
+    accesses = AccessPermission.objects.filter(owner=user)
+
+    # Forms
+    role_form = RolesCreationForm_Account(user=user)
+    permission_formset_factory = modelformset_factory(
+        ProjectAccessPermission,
+        form=ProjectAccessPermissionForm_Client,
+        extra=len(projects)
+    )
+    permission_formset = None
+
+    if request.method == "POST":
+        role_form = RolesCreationForm_Account(request.POST, user=user)
+        permission_formset = permission_formset_factory(request.POST, queryset=ProjectAccessPermission.objects.none())
+        form_type = request.POST.get("form_type")
+
+        if form_type == 'role_form':
+            if role_form.is_valid() and permission_formset.is_valid():
+                try:
+                    role_instance = role_form.save(commit=False)
+                    role_instance.user = user
+                    role_instance.save()
+
+                    for form, project in zip(permission_formset, projects):
+                        permission_instance = form.save(commit=False)
+                        permission_instance.project = project
+                        permission_instance.role = role_instance
+                        permission_instance.save()
+
+                    messages.success(request, f"The role '{role_instance.name}' has been created successfully.")
+                    return redirect('appManageAccess')
+
+                except Exception as e:
+                    messages.error(request, f"An error occurred: {str(e)}")
+            elif(role_form.is_valid() == False):
+                messages.error(request, f"Role With Same Name Already Exist")
+            else:
+                messages.error(request, "Please correct the errors in the form.")
+            return redirect('appManageAccess')
+        elif form_type == "access_form":
+            emails = request.POST.getlist('shared_with_emails')
+            roles_ids = request.POST.getlist('roles')
+            success = True
+            for email, role_id in zip(emails, roles_ids):
+                try:
+                    shared_user = BusinessUser.objects.get(company_email=email)
+                    role = Role.objects.get(id=role_id, user=user)
+                    AccessPermission.objects.create(
+                        owner=user,
+                        shared_with=shared_user,
+                        role=role,
+                    )
+                except BusinessUser.DoesNotExist:
+                    messages.error(request, f"User with email {email} does not exist.")
+                    success = False
+                except Role.DoesNotExist:
+                    messages.error(request, f"Invalid role selected.")
+                    success = False
+                except Exception as e:
+                    messages.error(request, f"Error sharing access with {email}: {str(e)}")
+                    success = False
+
+            if success:
+                messages.success(request, "Access shared successfully.")
+            return redirect('appManageAccess')
+
+    # GET request - prepare empty formset with initial values
+    initial_data = [{
+        'project_id': project.id,
+        'project_name': project.name,
+        'can_read_project': False,
+        'can_edit_project': False,
+        'can_delete_project': False,
+        'can_permanent_delete_project': False,
+    } for project in projects]
+
+    permission_formset = permission_formset_factory(
+        queryset=ProjectAccessPermission.objects.none(),
+        initial=initial_data,
     )
 
-# def role_permission_view(request):
-#     active_business_user = get_active_business_user(request)
+    # Pair forms with corresponding projects
+    formset_with_projects = zip(permission_formset, projects)
 
-#     form = ProjectAccessPermissionForm()
-#     project_queryset = Project.objects.filter(
-#         Q(owner=active_business_user) |
-#         Q(shared_permissions__shared_with=active_business_user,
-#           shared_permissions__can_read=True)
-#     ).distinct()
+    context = {
+        'formA': role_form,
+        'formB': permission_formset,
+        'formB_with_project_queryset': formset_with_projects,
+        'project_queryset': projects,
+        'roles': roles,
+        'accesses': accesses,
+    }
+    return render(request, 'featuredApp/manage_access.html', context)
 
-#     return render(request, 'your_template.html', {
-#         'form': form,
-#         'project_queryset': project_queryset
-#     })
+from django.views.decorators.http import require_POST
+
+@require_POST
+def delete_role(request, role_id):
+    role = get_object_or_404(Role, id=role_id, user=request.user.businessuser)
+    role_name = role.name
+    role.delete()
+    messages.success(request, f"Role '{role_name}' deleted.")
+    return redirect('appManageAccess')
+
+@require_POST
+def delete_access(request, access_id):
+    access = get_object_or_404(AccessPermission, id=access_id, owner=request.user.businessuser)
+    access.shared_with  # Access for feedback
+    access.delete()
+    messages.success(request, f"Access revoked for {access.shared_with.company_email}.")
+    return redirect('appManageAccess')

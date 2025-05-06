@@ -61,3 +61,20 @@ class RolesCreationForm_Account(forms.ModelForm):
             field: forms.CheckboxInput(attrs={'class': 'form-check-input'})
             for field in fields if field != 'name'
         }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # fallback to None
+        super().__init__(*args, **kwargs)
+    
+    # Since we need the name of the each form to be unique for a user
+    # we need to over-ride the [clean] method
+    # It prevent from unusual error page
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if Role.objects.filter(name=name, user=self.user).exists():
+            raise forms.ValidationError("You already have a Role with this name.")
+        return name
+
+
+class AccessShareForm(forms.Form):
+    shared_with_emails = forms.CharField(widget=forms.HiddenInput(), required=False)

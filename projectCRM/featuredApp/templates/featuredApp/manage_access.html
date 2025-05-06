@@ -25,6 +25,9 @@
 	    .permissions-box {
 	        cursor: default; /* Prevent pointer or resize cursors on edges */
 	    }
+	    .button:focus {
+	    	outline: None;
+	    }
 	</style>
 
 {% endblock addCSSlink %}
@@ -35,8 +38,92 @@
 
 	<hr style="margin: 20px 0;">
 
-	<button class="btn btn-dark" type="button" onclick="openRolesFormPopUp()">Add Roles</button>
+	<div class="container">
+		<div class="row">
+
+			<!-- Roles Section -->
+			<div class="col-md-6">
+				<h5 style="font-weight:800">Your Roles</h5>
+				<ul class="list-group mb-3">
+					{% for role in roles %}
+						<li class="list-group-item d-flex justify-content-between align-items-center">
+							{{ role.name }}
+							<form method="post" action="{% url 'delete_role' role.id %}">
+								{% csrf_token %}
+								<button type="submit" class="btn btn-sm btn-danger">Delete</button>
+							</form>
+						</li>
+					{% endfor %}
+				</ul>
+				<button class="btn btn-dark" type="button" onclick="openRolesFormPopUp()">Add Roles</button>
+			</div>
+
+			<!-- Access Section -->
+			<div class="col-md-6">
+				<h5 style="font-weight: 800">Shared Access</h5>
+				<ul class="list-group mb-3">
+					{% for access in accesses %}
+						<li class="list-group-item d-flex justify-content-between align-items-center">
+							{{ access.shared_with.company_email }} — {{ access.role.name }}
+							<form method="post" action="{% url 'delete_access' access.id %}">
+								{% csrf_token %}
+								<button type="submit" class="btn btn-sm btn-danger">Revoke</button>
+							</form>
+						</li>
+					{% endfor %}
+				</ul>
+				<button class="btn btn-dark" type="button" onclick="openAccessFormPopUp()">Add Access</button>
+			</div>
+		</div>
+	</div>
 {% endblock contentBody1 %}
+
+{% block addPopUp1 %}
+	<div class="add-pop-up-window" id="access-pop-up-window-element">
+
+		<span class="close-popup-btn" onclick="closeAccessFormPopUp()">&times;</span>
+
+			<h5 style="font-weight: 800">Share Access with Other Users</h5>
+			<form method="post">
+			    {% csrf_token %}
+			    <div id="access-permissions-container"></div>
+
+			    <button type="button" class="btn btn-outline-success mb-3" onclick="addAccessPermission()" id="add-access-btn">+ Share Access</button>
+
+				<template id="access-permission-template">
+					<div class="border rounded p-2 mb-3 access-block">
+					    <div class="row mb-2">
+					        <div class="col-md-6">
+								<label class="form-label">User Email</label>
+								<input type="email" name="shared_with_emails" class="form-control shared-email" placeholder="user@example.com" required>
+					        </div>
+					        <div class="col-md-3">
+					            <label class="form-label">Role</label>
+					            <select name="roles" class="form-control">
+					                {% for role in roles %}
+					                    <option value="{{ role.id }}">{{ role.name }}</option>
+					                {% endfor %}
+					            </select>
+					        </div>
+					        <div class="col-md-3 d-flex align-items-end">
+					            <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('.access-block').remove()">Remove</button>
+					        </div>
+					    </div>
+					</div>
+			    </template>
+
+				<button type="submit" class="btn btn-dark w-100" name="form_type" value="access_form">Submit</button>
+			    <small class="text-muted d-block mt-1" name="form_type" value="access_form">
+			    	Share data access by assigning roles to user emails.
+				</small>
+			</form>
+
+	</div>
+
+	<!-- This div allow us to close the pop-up if we click outside.. -->
+	<div class="popup-overlay" id="popupOverlay-1" onclick="closeAccessFormPopUp()"></div>
+
+{% endblock addPopUp1 %}
 
 <!-- A pop-up Window for creating new Client/Contact -->
 {% block addPopUp2 %}
@@ -128,98 +215,38 @@
 				    {% endfor %}
 				    <small class="text-muted d-block mt-1">Set permissions for managing documents.</small>
 				</div>
-<h5>Project Permissions</h5>
-<div class="border rounded p-2 mb-3 permissions-box" id="project-permissions-container">
-	<small class="text-muted d-block mt-1">Assign access control for individual projects.</small>
-</div>
-
-<button type="button" class="btn btn-outline-primary mb-3" onclick="addProjectPermission()" id="add-project-btn">+ Add Project Permission</button>
-
-<template id="project-permission-template">
-<div class="border rounded p-2 mb-3 permission-block">
-<div class="mb-2">
-<label class="form-label">Select Project</label>
-<select class="form-select project-select" name="project">
-{% for project in project_queryset %}
-<option value="{{ project.id }}">{{ project.name }}</option>
-{% endfor %}
-</select>
-</div>
-
-{% comment "Project permission checkboxes" %}
-<div>
-{% for field in formA %}
-{% if "project" in field.name and not "id" in field.name %}
-<div class="form-check form-check-inline">
-{{ field }}
-<label class="form-check-label">
-{% if "_read_" in field.name %}View
-{% elif "can_edit_" in field.name %}Edit
-{% elif "can_delete_" in field.name %}Delete
-{% elif "can_permanent_delete_" in field.name %}Permanent Delete
-{% endif %}
-</label>
-</div>
-{% endif %}
-{% endfor %}
-</div>
-{% endcomment %}
-
-<!-- Hardcoded checkboxes for clarity -->
-<div class="d-flex flex-wrap gap-3 mt-2">
-<div class="form-check form-check-inline">
-<input type="checkbox" name="can_read_project" class="form-check-input">
-<label class="form-check-label">View</label>
-</div>
-<div class="form-check form-check-inline">
-<input type="checkbox" name="can_edit_project" class="form-check-input">
-<label class="form-check-label">Edit</label>
-</div>
-<div class="form-check form-check-inline">
-<input type="checkbox" name="can_delete_project" class="form-check-input">
-<label class="form-check-label">Delete</label>
-</div>
-<div class="form-check form-check-inline">
-<input type="checkbox" name="can_permanent_delete_project" class="form-check-input">
-<label class="form-check-label">Permanent Delete</label>
-</div>
-</div>
-
-<button type="button" class="btn btn-sm btn-danger mt-2">Remove</button>
-</div>
-</template>
-
-<h5>Share Access with Other Users</h5>
-<div id="access-permissions-container"></div>
-
-<button type="button" class="btn btn-outline-success mb-3" onclick="addAccessPermission()" id="add-access-btn">+ Share Access</button>
-
-<template id="access-permission-template">
-<div class="border rounded p-2 mb-3 access-block">
-	<div class="row mb-2">
-		<div class="col-md-6">
-			<label class="form-label">User Email</label>
-			<input type="email" name="shared_with_emails" class="form-control shared-email" placeholder="user@example.com" required>
-		</div>
-	</div>
-	<!-- <div class="col-md-1 d-flex align-items-end"> -->
-		<button type="button" class="btn btn-sm btn-danger" onclick="this.closest('.access-block').remove()">Remove</button>
-	<!-- </div> -->
-</div>
-</template>
-
-<small class="text-muted d-block mt-1">Share data access by assigning roles to user emails.</small>
-
-
-			    <button type="submit" class="btn btn-dark w-100">Save Role</button>
+				<h5>Project Permissions</h5>
+				<!-- {{ formset.management_form }} -->
+				{{ formB.management_form }}
+				<div class="border rounded p-2 mb-3 permissions-box">
+					{% for form, prj in formB_with_project_queryset %}
+						{{ prj.name }}
+						<div class="border rounded p-2 mb-1 permissions-box">
+						{% for field in form %}
+							<div class="form-check form-check-inline">
+				                {{ field }}
+				                <label class="form-check-label">
+				                    {% if "_read_" in field.name %}View
+				                    {% elif "can_add_" in field.name %}Create
+				                    {% elif "can_edit_" in field.name %}Edit
+				                    {% elif "can_delete_" in field.name %}Delete
+				                    {% elif "can_permanent_delete_" in field.name %}Permanent Delete
+				                    {% endif %}
+				                </label>
+				            </div>
+				        {% endfor %}
+					    </div>
+					{% endfor %}
+					<small class="text-muted d-block mt-1">Set permissions for individual project.</small>
+				</div>
+			    <button type="submit" class="btn btn-dark w-100" name="form_type" value="role_form">Save Role</button>
 			</form>
-			
 		</div>
 
 	</div>
 
 	<!-- This div allow us to close the pop-up if we click outside.. -->
-	<div class="popup-overlay" id="popupOverlay2" onclick="closeRolesFormPopUp()"></div>
+	<div class="popup-overlay" id="popupOverlay-2" onclick="closeRolesFormPopUp()"></div>
 {% endblock addPopUp2 %}
 
 
@@ -227,105 +254,50 @@
 
 	<!-- The script is specific for project pop-up -->
 	<script type="text/javascript">
+		let accessPopUp = document.getElementById('access-pop-up-window-element');
 		let rolesPopUp = document.getElementById('roles-pop-up-window-element');
-		let tmp = document.getElementById('popupOverlay');
+		let overLay1 = document.getElementById('popupOverlay-1');
+		let overLay2 = document.getElementById('popupOverlay-2');
+
+		function openAccessFormPopUp() {
+			const form = accessPopUp.querySelector('form');
+			form.reset()
+
+			accessPopUp.classList.add('open-popup');
+			overLay1.classList.add('active');
+		}
+
+		function closeAccessFormPopUp() {
+			accessPopUp.classList.remove('open-popup');
+			overLay1.classList.remove('active')
+		}
 		
+		function addAccessPermission() {
+		    const container = document.getElementById('access-permissions-container');
+		    const template = document.getElementById('access-permission-template').content.cloneNode(true);
+		    container.appendChild(template);
+		}
 
 		function openRolesFormPopUp() {
 			const form = rolesPopUp.querySelector('form');
 			form.reset();
 
 			rolesPopUp.classList.add('open-popup');
-			tmp.classList.add('active');
+			overLay2.classList.add('active');
 		}
 
 		function closeRolesFormPopUp() {
 			rolesPopUp.classList.remove('open-popup');
-			tmp.classList.remove('active');
+			overLay2.classList.remove('active');
 		}
 
 		// Close popup on ESC key
 		document.addEventListener('keydown', function(event) {
 			if (event.key === 'Escape') {
 				closeRolesFormPopUp();
+				closeAccessFormPopUp();
 			}
 		});
-
-const usedProjects = new Set();
-
-function addProjectPermission() {
-const template = document.getElementById('project-permission-template');
-const clone = template.content.cloneNode(true);
-const projectSelect = clone.querySelector('.project-select');
-
-// Remove already selected projects
-const options = [...projectSelect.options];
-options.forEach(opt => {
-if (usedProjects.has(opt.value)) {
-opt.remove();
-}
-});
-
-if (projectSelect.options.length === 0) {
-alert("All projects have already been assigned permissions.");
-return;
-}
-
-projectSelect.addEventListener('change', function () {
-usedProjects.add(this.value);
-});
-
-// Track selected project
-let selectedValue = projectSelect.value;
-usedProjects.add(selectedValue);
-
-// Listen for selection change (to keep usedProjects in sync)
-projectSelect.addEventListener('change', function () {
-usedProjects.delete(selectedValue); // old
-selectedValue = this.value;
-usedProjects.add(selectedValue); // new
-});
-
-// Handle Remove
-const removeButton = clone.querySelector('.btn-danger');
-removeButton.addEventListener('click', function () {
-usedProjects.delete(selectedValue);
-this.closest('.permission-block').remove();
-});
-
-// Add first selected project to usedProjects
-usedProjects.add(projectSelect.value);
-
-document.getElementById('project-permissions-container').appendChild(clone);
-}
-
-const usedEmails = new Set();
-
-function addAccessPermission() {
-const template = document.getElementById('access-permission-template');
-const clone = template.content.cloneNode(true);
-const emailInput = clone.querySelector('.shared-email');
-const removeBtn = clone.querySelector('.btn-danger');
-
-emailInput.addEventListener('change', function () {
-const email = this.value.trim().toLowerCase();
-if (usedEmails.has(email)) {
-alert("This email has already been added.");
-this.value = '';
-return;
-}
-usedEmails.add(email);
-});
-
-removeBtn.addEventListener('click', function () {
-const email = emailInput.value.trim().toLowerCase();
-usedEmails.delete(email);
-this.closest('.access-block').remove();
-});
-
-document.getElementById('access-permissions-container').appendChild(clone);
-}
-
 	</script>
 {% endblock extraJS %}
 
