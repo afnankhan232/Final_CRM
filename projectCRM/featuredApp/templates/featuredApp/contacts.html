@@ -22,6 +22,23 @@
 	<!-- Specific for Project pop-up  -->
 	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
 
+	<style>
+		.icon-button:focus,
+		.icon-button:hover,
+		.icon-button:active {
+			outline: none;
+		}
+
+	    .icon-button.edit:hover {
+	        color: green;
+	    }
+
+	    .icon-button.delete:hover {
+	        color: red;
+	    }
+	</style>
+
+
 {% endblock addCSSlink %}
 
 
@@ -67,10 +84,26 @@
 
 		<!-- Last we have [Add Button] -->
 		<li class="nav-item" style="padding-left: 4px;">
-			<button class="add-btn btn btn-sm" type="button" onclick="openProjectFormPopUp()">+</button>
+			<button class="add-btn btn btn-sm icon-button edit" type="button" onclick="openProjectFormPopUp()"><i class="fas fa-plus"></i></button>
 		</li>
 
-			</ul>
+
+		{% if selected_project_id %}
+		<!-- Edit Button -->
+		<button class="add-btn btn btn-sm icon-button edit" type="button" onclick="openProjectFormPopUp()">
+			<i class="fas fa-pen"></i>
+		</button>
+
+		<form action="{% url 'appProjectDelete' selected_project_id %}" method="post">
+			{% csrf_token %}
+			<!-- Delete Button -->
+			<button class="add-btn btn btn-sm icon-button delete" type="submit">
+				<i class="fas fa-trash-alt"></i>
+			</button>
+		</form>
+		{% endif %}
+
+	</ul>
 
 	<div class="d-flex justify-content-between my-2">
 		<div>
@@ -145,7 +178,7 @@
 				</fieldset>
 
 				<div class="form-group">
-					<button class="btn btn-outline-info" type="submit" name="form_type" value="project_form">Add Project</button>
+					<button class="w-100 btn btn-dark" type="submit" name="form_type" value="project_form">Add Project</button>
 				</div>
 			</form>
 			
@@ -208,7 +241,7 @@
 						</div>
 
 						<div class="form-group">
-							<button class="btn btn-outline-info" type="submit" name="form_type" value="client_form">Save</button>
+							<button class="w-100 btn btn-dark" type="submit" name="form_type" value="client_form">Save</button>
 						</div>
 						
 					</form>

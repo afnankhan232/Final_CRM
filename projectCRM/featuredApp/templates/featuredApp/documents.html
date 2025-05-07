@@ -50,7 +50,7 @@
 			{% for document in documents %}
 				<tr">
 					<td><input type="checkbox" /></td>
-					<td>{{ document.document_name }}</td>
+					<td><a href="{% url 'appDocumentDetail' document.id %}">{{ document.document_name }}</a></td>
 					<td>{{ document.related_to }}</td>
 					<td>{{ document.description }}</td>
 					<td>{{ document.uploaded_at|date:"M-d-Y H:i" }}</td>
@@ -82,7 +82,7 @@
 				</fieldset>
 
 				<div class="form-group">
-					<button class="btn btn-outline-info" type="submit">Upload</button>
+					<button class="btn btn-dark w-100" type="submit">Upload</button>
 
 				</div>
 			</form>

@@ -18,28 +18,28 @@ urlpatterns = [
     # ---- ==== Related to Clients ==== ----
     # List View Clients
     path('contacts/', views.contact_view, name='appContacts'),
-
     # Detailed View of Clients
     path('contacts/<int:pk>/', views.contact_detailed_view, name='appContactDetail'),
-
     # Deletion Clients
     path('contacts/<int:pk>/delete', views.contact_delete_view, name='appContactDelete'),
-
     # Permanent Deletion of Client
     path('contacts/<int:pk>/permanentDelete', views.contact_permanent_delete_view, name='appContactPermanentDelete'),
-
     # Restoring Deleted Client
     path('contacts/<int:pk>/restore', views.contact_restore_view, name='appContactRestore'),
-
+    # Delete Project
+    path('project/delete/<int:id>/', views.project_delete_view, name='appProjectDelete'),
 
     # ---- ==== Related to Tasks ==== ----
     # Task - Calendar; Notification; and more!
     path('tasks/', views.tasks_view, name='appTasks'),
 
-
     # ---- ==== Related to Documents ==== ----
     # Documents List View
     path('documents/', views.documents_view, name='appDocuments'),
+    path('document/detail/<int:pk>/', views.documents_detailed_view, name='appDocumentDetail'),
+    path('document/delete/<int:pk>/', views.document_delete_view, name='appDocumentDelete'),
+    path('document/permanentDelete/<int:pk>/', views.document_permanent_delete_view, name='appDocumentPermanentDelete'),
+    path('document/restore/<int:pk>/', views.document_restore_view, name='appDocumentRestore'),
 
     # ---- ==== Related to Activities ==== ----
     path('activities/', views.activities_view, name='appActivities'),

@@ -87,9 +87,9 @@
         - BYPASS Creating New AccessPermission
         - BYPASS Update Exiting AccessPermission
 
-    - BYPASS Deletion of Roles
+    - DONE Deletion of Roles
 
-    - BYPASS Deletion of AccessPermission
+    - DONE Deletion of AccessPermission
 
     - Building User Management UI 
         - Manage User Views
@@ -102,11 +102,11 @@
         - DONE OPTIONS: Other BusinessUser
         - DONE Update request.session (Add Session Key)
     
-    - Fallback to the logged-in usre's ID if session key is missing or invalid
+    - DONE Fallback to the logged-in usre's ID if session key is missing or invalid
 
-    - ONGOING Update Contact Queries
-        - ONGOING Load Contact owned by current user
-        - ONGOING load shared contacts via AccessPermission [filter based on allowed access]
+    - DONE Update Contact Queries
+        - DONE Load Contact owned by current user
+        - DONE load shared contacts via AccessPermission [filter based on allowed access]
 
     - ONGOING Restrict Actions Based on Role
         - ONGOING check the permission before performing any action

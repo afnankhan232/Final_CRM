@@ -99,7 +99,7 @@
 					        </div>
 					        <div class="col-md-3">
 					            <label class="form-label">Role</label>
-					            <select name="roles" class="form-control">
+					            <select name="roles" class="form-control" required>
 					                {% for role in roles %}
 					                    <option value="{{ role.id }}">{{ role.name }}</option>
 					                {% endfor %}

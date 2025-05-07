@@ -4,6 +4,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 
 # A helper notification section, which notify the new activity
 from django.contrib import messages
@@ -285,23 +286,14 @@ def contact_detailed_view(request, pk):
     if(request.method == "POST"):
         formEditClient = ClientCreationForm(request.POST, user = active_business_user, possible_projects = projects, instance = contact)
         if(formEditClient.is_valid()):
-            if(
-                (active_business_user == logged_in_user) 
-                or 
-                (
-                    active_business_user != logged_in_user and 
-                    get_active_business_user_with_permission(request, 'can_edit_contact', show_err='Client Edit')[1] == True
-                )
-            ):
+            if get_active_business_user_with_permission(request, 'can_edit_contact', show_err='Client Edit')[1] == True:
                 formEditClient.last_edit = timezone.now()
                 formEditClient.save()
                 messages.success(request, "Client information Updated!")
                 return redirect('appContactDetail', pk=pk)
-        else:
-            messages.error(request, "Can't edit the user detail!")
-            return redirect('appContactDetail', pk=pk)
-    else:
-        formEditClient = ClientCreationForm(user = active_business_user, possible_projects = projects, instance = contact)
+        messages.error(request, "Can't edit the user detail!")
+        return redirect('appContactDetail', pk=pk)
+    formEditClient = ClientCreationForm(user = active_business_user, possible_projects = projects, instance = contact)
     context = {
         'contact': contact,
         'form': formEditClient,
@@ -326,7 +318,7 @@ def contact_delete_view(request, pk):
             contact = get_object_or_404(Client, companyAssignee = active_business_user, pk=pk)
             contact_name = contact.name
             contact.soft_delete()
-            messages.success(request, f"Client '{contact_name}' is deleted!")
+            messages.warning(request, f"Client '{contact_name}' is deleted!")
     else:
         messages.error(request, f"GET Request is not allowed for this page!")
     return redirect('appContacts')
@@ -346,7 +338,7 @@ def contact_permanent_delete_view(request, pk):
             contact = get_object_or_404(Client.all_objects, companyAssignee = user, pk=pk)
         contact_name = contact.name
         contact.delete()
-        messages.success(request, f"Client '{contact_name}' is deleted permanently!")
+        messages.warning(request, f"Client '{contact_name}' is deleted permanently!")
     else:
         messages.error(request, f"GET Request is not allowed for this page!")
     return redirect('appTrash')
@@ -368,6 +360,9 @@ def contact_restore_view(request, pk):
         messages.success(request, f"Restored Contact '{contact_name}")
     return redirect('appTrash')
 
+def project_delete_view(request, id, *args, **kwargs):
+    return redirect('appContacts')
+
 # ---- ==== Featured Related to Tasks View ==== ----
 # Include: [tasks_view; ]
 @login_required
@@ -384,41 +379,137 @@ def tasks_view(request, *args, **kwargs):
 # Include: [document_view; ]
 @login_required
 def documents_view(request, *args, **kwargs):
-
     user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_documents', show_err='Document Read')
 
     if request.method == "POST":
-
         # For the purpose of file upload - we need request.FILES [COOL]
         form = DocumentCreationForm(request.POST, request.FILES, user = user)
 
-        print("this is the post request")
-        if(form.is_valid()):
-            print('your form is valid')
+        if(form.is_valid() and get_active_business_user_with_permission(request, 'can_edit_documents', show_err='Document Edit')[1]):
             tmp = form.save(commit = False)
             tmp.user = user
             tmp.save()
-
             messages.success(request, f"New Document Added!")
             return redirect('appDocuments')
         else:
-            print("your form is not valid, even if it is the post request")
             messages.success(request, f"Something Went Wrong!")
             return redirect('appDocuments')
     else:
         form = DocumentCreationForm(user = user)
 
-    documents = Document.objects.filter(user=user)
+    if(is_success == False):
+        documents = None
+    else:
+        documents = Document.objects.filter(user=user)
 
     return render(
         request, 
         'featuredApp/documents.html',
         {
             "documents": documents, 
-            'total_documents': documents.count(), 
+            'total_documents': documents.count() if documents != None else 0, 
             "form": form,
         }
     )
+
+@login_required
+def documents_detailed_view(request, pk, *args, **kwargs):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_documents', show_err='Document Read')
+
+    if active_business_user == logged_in_user:
+        document = get_object_or_404(Document, user = user, pk=pk)
+    else:
+        messages.warning("Developer warning!! Check before Proceed!")
+        projects = Project.objects.filter(
+            shared_project_permissions__role__in=AccessPermission.objects.filter(
+                owner=active_business_user,
+                shared_with=logged_in_user
+            ).values_list('role', flat=True),
+            shared_project_permissions__can_read_project=True,
+            user=active_business_user
+        ).distinct()
+        contact = get_object_or_404(
+            Client,
+            list__in = projects,
+            companyAssignee=active_business_user,
+            pk=pk,
+        )
+        current_accessing_document = get_object_or_404(Document, pk=pk)
+        print(current_accessing_document)
+        print(contact)
+        messages.warning("Developer warning!! Check before Proceed!")
+        document = None
+    
+    if(request.method == "POST"):
+        formEditDocument = DocumentCreationForm(request.POST, user = active_business_user, instance = document)
+        if(formEditDocument.is_valid()):
+            if get_active_business_user_with_permission(request, 'can_edit_document', show_err='Document Edit')[1] == True:
+                formEditDocument.save()
+                messages.success(request, "Document Updated!")
+                return redirect('appDocumentDetail', pk=pk)
+        messages.error(request, "Can't edit the user detail!")
+        return redirect('appDocumentDetail', pk=pk)
+    
+    formEditDocument = DocumentCreationForm(user = active_business_user, instance = document)
+    context = {
+        'document': document,
+        'form': formEditDocument,
+    }
+    return render(
+        request,
+        'featuredApp/documents_detailed.html',
+        context,
+    )
+
+@require_POST
+@login_required
+def document_delete_view(request, pk):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_delete_documents', show_err='Document Delete')
+
+    if(is_success == False):
+        return redirect('appDocumentDetail', pk=pk)
+
+    document = get_object_or_404(Document, user = active_business_user, pk=pk)
+    document_name = document.document_name
+    document.soft_delete()
+    messages.warning(request, f"Document '{document_name}' is deleted!")
+    return redirect('appDocuments')
+
+@require_POST
+@login_required
+def document_permanent_delete_view(request, pk):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_permanent_delete_contact', show_err='Permanent Delete')
+    if(is_success == False):
+        return redirect('appTrash')
+
+    document = get_object_or_404(Document.all_objects, user = active_business_user, pk=pk)
+    document_name = document.document_name
+    document.delete()
+    messages.warning(request, f"Document '{document_name}' is deleted permanently!")
+    return redirect('appTrash')
+
+@require_POST
+def document_restore_view(request, pk):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_delete_document', show_err='Restore')
+    if(is_success == False):
+        return redirect('appTrash')
+
+    document = get_object_or_404(Document.all_objects, user = active_business_user, pk=pk)
+    document_name = document.document_name
+    document.restore()
+    messages.success(request, f"Restored Document '{document_name}")
+    return redirect('appTrash')
+
 
 # ---- ==== Featured Related to Activities View ==== ----
 # Include: [activities_view; ]
@@ -450,6 +541,7 @@ def trash_view(request):
 
     context = {
         'trashed_contacts': trashed_contacts,
+        'trashed_documents': trashed_documents,
     }
 
     return render(
@@ -563,14 +655,12 @@ def manage_access(request):
     }
     return render(request, 'featuredApp/manage_access.html', context)
 
-from django.views.decorators.http import require_POST
-
 @require_POST
 def delete_role(request, role_id):
     role = get_object_or_404(Role, id=role_id, user=request.user.businessuser)
     role_name = role.name
     role.delete()
-    messages.success(request, f"Role '{role_name}' deleted.")
+    messages.warning(request, f"Role '{role_name}' deleted.")
     return redirect('appManageAccess')
 
 @require_POST
@@ -578,5 +668,5 @@ def delete_access(request, access_id):
     access = get_object_or_404(AccessPermission, id=access_id, owner=request.user.businessuser)
     access.shared_with  # Access for feedback
     access.delete()
-    messages.success(request, f"Access revoked for {access.shared_with.company_email}.")
+    messages.warning(request, f"Access revoked for {access.shared_with.company_email}.")
     return redirect('appManageAccess')
