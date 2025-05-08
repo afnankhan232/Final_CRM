@@ -40,8 +40,8 @@
         - DONE Create Signal to trigger and create a -> [default project]
         - DONE Creation From for Project
         - DONE A Pop-up window views for creating new project
-        - ONGOING Edit Form for Project
-        - ONGOING Deletion Form for Project
+        - REMOVE Edit Form for Project
+        - DONE Deletion Form for Project
 
     - DONE Client (store the contact info)
         - DONE Database Model
@@ -54,18 +54,32 @@
         - DONE Edit form for Client
         - DONE Deletion form for Client
 
-- Documents App
+- DONE Documents App
     - DONE create model [document_name; file; related_to; description;]
     - Views pages for documents
         - DONE List of documents
         - Detailed View page for each Document
     - DONE Form for creation of documents
-    - Form for updation of documents
-    - Deletion for documents 
-    - Move to Trash for deleted Documents
+    - DONE Form for updation of documents
+    - DONE Deletion for documents 
+    - DONE Move to Trash for deleted Documents
 
 - Tasks App
-    - Create Database Model
+    - Create Database Model(
+        task_name; 
+        description; 
+        status[New; In-Progress; Completed]; 
+        Priority[Normal; Urgent; Low; ]; 
+        Owner[me; share_access; ]; 
+        Type[Call; Whatsappp; Gmail; Other; ]; 
+        related_to;
+        Due_date;
+        Due_time;
+    )
+    - Views page
+        - List of Tasks
+    - Form for creating new Tasks
+    - Deletion of Tasks
 
 - Implement Solution for Teams
 
@@ -108,8 +122,8 @@
         - DONE Load Contact owned by current user
         - DONE load shared contacts via AccessPermission [filter based on allowed access]
 
-    - ONGOING Restrict Actions Based on Role
-        - ONGOING check the permission before performing any action
+    - DONE Restrict Actions Based on Role
+        - DONE check the permission before performing any action
     
     - Add Email Notification Flow
         - Send Email to other user
@@ -117,13 +131,13 @@
         - Only activate AccessPermission is accepted
     
 
-- Implement Trash
+- DONE Implement Trash
     - DONE Add BaseModel[is_deleted; deleted_at;]
         - DONE add [soft_delete; restore] method
     - DONE Inherit this BaseModel all Models
     - DONE Add querySet filter field to CustomManager
     - DONE add [objects; all_objects] to your models
-    - ONGOING Update your Deletion Form for all objects
+    - DONE Update your Deletion Form for all objects
     - DONE Implement [Delete; Restore;] to your Trash View List
 
 - Forget Password

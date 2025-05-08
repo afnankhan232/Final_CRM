@@ -4,6 +4,7 @@ from .models import Project
 from .models import Document
 from .models import Contact
 from .models import ProjectAccessPermission
+from .models import Task
 
 # Importing Leads model(/table) from model.py
 from .models import Lead
@@ -22,3 +23,5 @@ admin.site.register(Project)
 admin.site.register(Contact)
 
 admin.site.register(ProjectAccessPermission)
+
+admin.site.register(Task)

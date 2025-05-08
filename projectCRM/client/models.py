@@ -134,7 +134,7 @@ class Project(BaseModel):
 
     # dunder str method, so we get better naming at the admin page [DEVELOPMENT SPECIFIC]
     def __str__(self):
-        return f'{self.name} -> {self.user.company_email}'
+        return f'{self.name}'
 
 class ProjectAccessPermission(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="shared_project_permissions")
@@ -250,6 +250,40 @@ class Document(BaseModel):
     def __str__(self):
         return self.document_name
 
+class Task(models.Model):
+    STATUS_CHOICES = [
+        ('New', 'New'),
+        ('In-Progress', 'In-Progress'),
+        ('Completed', 'Completed'),
+    ]
+    PRIORITY_CHOICES = [
+        ('Normal', 'Normal'),
+        ('Urgent', 'Urgent'),
+        ('Low', 'Low'),
+    ]
+    TYPE_CHOICES = [
+        ('Call', 'Call'),
+        ('WhatsApp', 'WhatsApp'),
+        ('Gmail', 'Gmail'),
+        ('Other', 'Other'),
+    ]
+
+    task_name = models.CharField(max_length=255)
+    description = models.TextField(null = True, blank = True)
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='New')
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Normal')
+    owner = models.ForeignKey(BusinessUser, related_name='owned_tasks' ,on_delete=models.CASCADE)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+
+    related_to = models.ForeignKey(Client, on_delete=models.CASCADE)
+    due_date = models.DateField()
+    due_time = models.TimeField()
+
+    user = models.ForeignKey(BusinessUser, related_name='assigned_tasks', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.task_name} ({self.status})'
 
 # This should be deleted!
 class Contact(models.Model):

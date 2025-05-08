@@ -15,12 +15,83 @@
 
 	<hr style="margin: 20px 0;">
 
+	<button class="btn btn-dark" type="button" onclick="openProjectFormPopUp()">Add Tasks</button>
 
 {% endblock contentBody1 %}
 
+<!-- Some extra css property for this specific page -->
+{% block addCSSlink %}
+
+	<!-- Specific for Project pop-up  -->
+	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
+{% endblock addCSSlink %}
+
+<!-- There GOES the POP-UP Window for Project Form -->
+{% block addPopUp1 %}
+	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
+	<div class="add-pop-up-window" id="tasks-pop-up-window-element">
+
+		<span class="close-popup-btn" onclick="closeProjectFormPopUp()">&times;</span>
+
+		<form method="post">
+			{% csrf_token %}
+			<div class="form-group">
+				<label>Due Date</label>
+				<input type="date" id="due-date">
+				<div class="date-buttons">
+				<button type="button" onclick="addDays(5)">+5 days</button>
+				<button type="button" onclick="addDays(7)">+7 days</button>
+				<button type="button" onclick="addDays(14)">+14 days</button>
+				<button type="button" onclick="addDays(21)">+21 days</button>
+				</div>
+			</div>
+
+			<button type="submit">Add Task</button>
+		</form>
+	</div>
+
+	<!-- This div allow us to close the pop-up if we click outside.. -->
+	<div class="popup-overlay" id="popupOverlay" onclick="closeProjectFormPopUp()"></div>
+{% endblock addPopUp1 %}
+
+
+<!-- There GOES the extra script that handles the pop-up window [ show / hide ] -->
 {% block extraJS %}
-<script>
 
-</script>
+	<!-- The script is specific for project pop-up -->
+	<script type="text/javascript">
+		let tasksPopUp = document.getElementById('tasks-pop-up-window-element');
+		let tmp = document.getElementById('popupOverlay');
+		
+
+		function openProjectFormPopUp() {
+			const form = tasksPopUp.querySelector('form');
+			form.reset();
+
+			tasksPopUp.classList.add('open-popup');
+			tmp.classList.add('active');
+		}
+
+		function closeProjectFormPopUp() {
+			tasksPopUp.classList.remove('open-popup');
+			tmp.classList.remove('active');
+		}
+
+		// Close popup on ESC key
+		document.addEventListener('keydown', function(event) {
+			if (event.key === 'Escape') {
+				closeProjectFormPopUp();
+			}
+		});
+
+		function addDays(days) {
+			const dateInput = document.getElementById("due-date");
+			const today = new Date();
+			today.setDate(today.getDate() + days);
+			const yyyy = today.getFullYear();
+			const mm = String(today.getMonth() + 1).padStart(2, '0');
+			const dd = String(today.getDate()).padStart(2, '0');
+			dateInput.value = `${yyyy}-${mm}-${dd}`;
+		}
+	</script>
 {% endblock extraJS %}
-
