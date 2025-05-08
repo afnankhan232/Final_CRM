@@ -8,7 +8,6 @@ button.switch-link {
 
 }
 
-a:hover,
 button.switch-link:active,
 button.switch-link:hover{
     text-decoration: underline;

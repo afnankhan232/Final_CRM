@@ -39,10 +39,10 @@
 	<hr style="margin: 20px 0;">
 
 	<div class="container">
-		<div class="row">
+		<div class="column">
 
 			<!-- Roles Section -->
-			<div class="col-md-6">
+			<div class="w-100">
 				<h5 style="font-weight:800">Your Roles</h5>
 				<ul class="list-group mb-3">
 					{% for role in roles %}
@@ -58,8 +58,10 @@
 				<button class="btn btn-dark" type="button" onclick="openRolesFormPopUp()">Add Roles</button>
 			</div>
 
+			<hr style="margin: 20px 0;">
+
 			<!-- Access Section -->
-			<div class="col-md-6">
+			<div class="w-100">
 				<h5 style="font-weight: 800">Shared Access</h5>
 				<ul class="list-group mb-3">
 					{% for access in accesses %}

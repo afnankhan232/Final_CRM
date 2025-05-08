@@ -105,6 +105,16 @@ html {
     width: 60px;
 }
 
+.container-defined.expanded {
+    margin-left: 230px;
+    margin-top: 60px;
+}
+
+.container-defined.collapsed {
+    margin-left: 70px;
+    margin-top: 60px;
+}
+
 /*.menu-logo {
     text-align: center;
     font-size: 24px;

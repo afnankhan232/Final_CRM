@@ -18,7 +18,6 @@
 
 <!-- Some extra css property for this specific page -->
 {% block addCSSlink %}
-
 	<!-- Specific for Project pop-up  -->
 	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
 	<style type="text/css">
@@ -29,8 +28,12 @@
 		.table-striped tbody tr:nth-of-type(even) {
 		  background-color: #f9f9f9 !important;  /* Second row light gray */
 		}
-	</style>
 
+		table {
+		  table-layout: fixed;
+		  width: 100%;
+		}
+	</style>
 {% endblock addCSSlink %}
 
 

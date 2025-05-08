@@ -25,9 +25,9 @@
         <header class="top-header">
 
             <div class="left-nav">
-                <div class="menu-toggle" onclick="toggleSidebar()"> ☰ </div>
+                <div class="menu-toggle" onclick="toggleSidebar()"> &#9776; </div>
                 <a href="{% url 'index' %}"> 
-                    <div class="logo"> CRM </div> 
+                    <div class="logo"> &lt; CTRL &gt; CRM </div>
                 </a>
             </div>
 
@@ -149,7 +149,7 @@
         </main> -->
     </div>
 
-    <div class="container-defined" style="margin-left: 60px; margin-top: 60px;">
+    <div class="container-defined" id="contentBody1">
         {% if messages %}
             <div id="django-messages">
                 {% for message in messages %}
@@ -211,57 +211,63 @@
 
     <!-- Js Script for windows and sidebars [STARTED] -->
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const sidebar = document.getElementById("sidebar");
+        document.addEventListener("DOMContentLoaded", () => {
+            const sidebar = document.getElementById("sidebar");
+            const contentBody = document.getElementById("contentBody1");
 
-        const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+            const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
 
-        if (isCollapsed) {
-            sidebar.classList.add("collapsed");
-        } else {
-            sidebar.classList.add("expanded");
+            if (isCollapsed) {
+                sidebar.classList.add("collapsed");
+                contentBody.classList.add("collapsed")
+            } else {
+                sidebar.classList.add("expanded");
+                contentBody.classList.add("expanded")
+            }
+
+            // Finally, make it visible
+            sidebar.classList.add("ready");
+
+            // Toggle function
+            window.toggleSidebar = function () {
+                sidebar.classList.toggle("collapsed");
+                sidebar.classList.toggle("expanded");
+
+                contentBody.classList.toggle("collapsed")
+                contentBody.classList.toggle("expanded")
+
+                const nowCollapsed = sidebar.classList.contains("collapsed");
+                localStorage.setItem("sidebar-collapsed", nowCollapsed);
+            };
+        });
+
+
+        function toggleAccountPanel() {
+            const panel = document.getElementById("accountPanel");
+            panel.classList.toggle("open");
         }
 
-        // Finally, make it visible
-        sidebar.classList.add("ready");
+        // Close when clicking outside
+        document.addEventListener("click", function (event) {
+            const panel = document.getElementById("accountPanel");
+            const trigger = document.querySelector(".account-trigger");
 
-        // Toggle function
-        window.toggleSidebar = function () {
-            sidebar.classList.toggle("collapsed");
-            sidebar.classList.toggle("expanded");
+            if (!panel.contains(event.target) && !trigger.contains(event.target)) {
+                panel.classList.remove("open");
+            }
+        });
 
-            const nowCollapsed = sidebar.classList.contains("collapsed");
-            localStorage.setItem("sidebar-collapsed", nowCollapsed);
-        };
-    });
+        // // Hide the message after specific amount of time
+        // setTimeout(function() {
+        //     const msgContainer = document.querySelector('#django-messages')
 
+        //     if(msgContainer) {
+        //         msgContainer.style.transition = 'opacity 0.5 ease';
+        //         msgContainer.style.opacity = '0';
 
-    function toggleAccountPanel() {
-        const panel = document.getElementById("accountPanel");
-        panel.classList.toggle("open");
-    }
-
-    // Close when clicking outside
-    document.addEventListener("click", function (event) {
-        const panel = document.getElementById("accountPanel");
-        const trigger = document.querySelector(".account-trigger");
-
-        if (!panel.contains(event.target) && !trigger.contains(event.target)) {
-            panel.classList.remove("open");
-        }
-    });
-
-    // // Hide the message after specific amount of time
-    // setTimeout(function() {
-    //     const msgContainer = document.querySelector('#django-messages')
-
-    //     if(msgContainer) {
-    //         msgContainer.style.transition = 'opacity 0.5 ease';
-    //         msgContainer.style.opacity = '0';
-
-    //         setTimeout(() => msgContainer.remove(), 500);
-    //     }
-    // }, 3000)
+        //         setTimeout(() => msgContainer.remove(), 500);
+        //     }
+        // }, 3000)
 
     </script>
     <!-- Js Script for windows and sidebars [ENDED] -->

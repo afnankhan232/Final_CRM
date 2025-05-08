@@ -114,12 +114,12 @@
         </main> -->
     </div>
 
-    <div class="container-defined" style="margin-left: 60px; margin-top: 60px;">
+    <div class="container-defined" id="contentBody1">
 
         {% if messages %}
 
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}"> {{ message }} </div>
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}"> {{ message }} </div>
             {% endfor %}
 
         {% endif %}
@@ -139,46 +139,51 @@
 
     <!-- Extra JS Features -->
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const sidebar = document.getElementById("sidebar");
+        document.addEventListener("DOMContentLoaded", () => {
+            const sidebar = document.getElementById("sidebar");
+            const contentBody = document.getElementById("contentBody1");
 
-      const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+            const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
 
-      if (isCollapsed) {
-        sidebar.classList.add("collapsed");
-      } else {
-        sidebar.classList.add("expanded");
-      }
+            if (isCollapsed) {
+                sidebar.classList.add("collapsed");
+                contentBody.classList.add("collapsed")
+            } else {
+                sidebar.classList.add("expanded");
+                contentBody.classList.add("expanded")
+            }
 
-      // Finally, make it visible
-      sidebar.classList.add("ready");
+            // Finally, make it visible
+            sidebar.classList.add("ready");
 
-      // Toggle function
-      window.toggleSidebar = function () {
-        sidebar.classList.toggle("collapsed");
-        sidebar.classList.toggle("expanded");
+            // Toggle function
+            window.toggleSidebar = function () {
+                sidebar.classList.toggle("collapsed");
+                sidebar.classList.toggle("expanded");
 
-        const nowCollapsed = sidebar.classList.contains("collapsed");
-        localStorage.setItem("sidebar-collapsed", nowCollapsed);
-      };
-    });
+                contentBody.classList.toggle("collapsed")
+                contentBody.classList.toggle("expanded")
+
+                const nowCollapsed = sidebar.classList.contains("collapsed");
+                localStorage.setItem("sidebar-collapsed", nowCollapsed);
+            };
+        });
 
 
-    function toggleAccountPanel() {
-      const panel = document.getElementById("accountPanel");
-      panel.classList.toggle("open");
-    }
+        function toggleAccountPanel() {
+            const panel = document.getElementById("accountPanel");
+            panel.classList.toggle("open");
+        }
 
-    // Optional: Close when clicking outside
-    document.addEventListener("click", function (event) {
-      const panel = document.getElementById("accountPanel");
-      const trigger = document.querySelector(".account-trigger");
+        // Close Account when clicking outside
+        document.addEventListener("click", function (event) {
+            const panel = document.getElementById("accountPanel");
+            const trigger = document.querySelector(".account-trigger");
 
-      if (!panel.contains(event.target) && !trigger.contains(event.target)) {
-        panel.classList.remove("open");
-      }
-    });
-
+            if (!panel.contains(event.target) && !trigger.contains(event.target)) {
+                panel.classList.remove("open");
+            }
+        });
     </script>
     <!-- Extra JS Features ENDED -->
 

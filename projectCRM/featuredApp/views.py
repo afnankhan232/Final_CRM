@@ -1,7 +1,7 @@
 # ---- ==== Import Statement Goes HERE ==== ----
-
 # Basic
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -49,6 +49,11 @@ def get_active_business_user_with_permission(request, permission_field_name: str
 
     logged_in_user = request.user.businessuser
     active_id = request.session.get('active_business_user_id')
+
+    if(active_id == None):
+        request.session['active_business_user_id'] = request.user.businessuser.id
+        messages.warning(request, "Something Went Wrong - Reverting to own account.")
+
     active_business_user = get_object_or_404(BusinessUser, id=active_id)
 
     if logged_in_user == active_business_user:
@@ -87,11 +92,7 @@ def profile_view(request, *args, **kwargs):
 
     user = request.user.businessuser
 
-    try:
-        request.session.get('active_business_user_id')
-        
-    except:
-        # Don't remove these two lines!
+    if request.session.get('active_business_user_id') == None:
         logged_in_user = request.user.businessuser
         request.session['active_business_user_id'] = logged_in_user.id
 
@@ -113,12 +114,11 @@ def profile_view(request, *args, **kwargs):
 def dashboard_view(request, *args, **kwargs):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
-    try:
-        request.session.get('active_business_user_id')
-    except:
-        # Don't remove these two lines!
+
+    if request.session.get('active_business_user_id') == None:
         logged_in_user = request.user.businessuser
         request.session['active_business_user_id'] = logged_in_user.id
+    
     accessible_accounts = user.accessible_accounts.select_related('owner', 'role')
     context = {
         'businessuser': user,
@@ -135,15 +135,18 @@ def dashboard_view(request, *args, **kwargs):
 from django.core.exceptions import PermissionDenied
 from accounts.models import BusinessUser, AccessPermission
 
+@require_POST
 @login_required
 def switch_account(request, public_id):
     logged_in_user = request.user.businessuser
     target_user = get_object_or_404(BusinessUser, public_id=public_id)
+
     # Trying to access own account
     if target_user == logged_in_user:
         request.session['active_business_user_id'] = logged_in_user.id
         messages.success(request, f"You are now accessing your account!")
         return redirect('appDashboard')
+    
     # Check access permission
     has_access = AccessPermission.objects.filter(
         owner=target_user,
@@ -165,51 +168,43 @@ def contact_view(request, *args, **kwargs):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_contact', show_err='Read')
+
     # Project Creation!!
     if(request.method == "POST"):
         # Possible Values: ['project_form', 'client_form']
         form_type = request.POST.get("form_type")
+
         # Handeling two different form off one view
         if(form_type == 'project_form'):
             # the user arguement pass to the __init__ attribute of the ProjectCreationForm (it's no big deal)
             formA = ProjectCreationForm(request.POST, user = user)
             formB = ClientCreationForm(user = user)
+
             if(formA.is_valid()):
                 # managing AccessPermission!! - adding new contacts
-                if(
-                    active_business_user == logged_in_user or
-                    (
-                        active_business_user != logged_in_user and
-                        get_active_business_user_with_permission(request, 'can_add_project', show_err='Add')[1] == True
-                    )
-                ):
+                if get_active_business_user_with_permission(request, 'can_add_project', show_err='Add')[1] == True:
                     projectValidForm = formA.save(commit = False)
                     projectValidForm.user = active_business_user
                     projectValidForm.save() # Save the form
                     messages.success(request, f"New Project Created Successfully!")
-                    return redirect('appContacts')
-                else:
-                    messages.error(request, "Project Name should be unique!")
-                    return redirect('appContacts')
+            else:
+                messages.error(request, "Project Name should be unique!")
+            return redirect('appContacts')
+        
         elif(form_type == 'client_form'):
             formA = ProjectCreationForm(user = user)
             # the user arguement pass to the __init__ attribute of the ProjectCreationForm (it's no big deal)
             formB = ClientCreationForm(request.POST, user = user)
+
             if(formB.is_valid()):
-                if(
-                    active_business_user == logged_in_user or
-                    (
-                        active_business_user != logged_in_user and
-                        get_active_business_user_with_permission(request, 'can_add_contact', show_err='Add')[1] == True
-                    )
-                ):
+                if get_active_business_user_with_permission(request, 'can_add_contact', show_err='Add')[1] == True:
                     clientValidForm = formB.save(commit = False)
                     clientValidForm.companyAssignee = active_business_user
                     clientValidForm.save()
                     messages.success(request, f"New Client Created Successfully!")
             else:
                 messages.error(request, "PhoneNumber or Email should be provided for Client")
-                return redirect('appContacts')
+            return redirect('appContacts')
     else:
         formA = ProjectCreationForm(user = user)
         formB = ClientCreationForm(user = user)
@@ -224,23 +219,27 @@ def contact_view(request, *args, **kwargs):
         #     shared_project_permissions__can_read_project = True,
         #     user = active_business_user,
         # )
+        # Get all roles that the active user shared with the logged-in user
+        shared_roles = AccessPermission.objects.filter(
+            owner=active_business_user,
+            shared_with=logged_in_user
+        ).values_list('role', flat=True)
+
+        # Get all projects using those shared roles with read access
         projects = Project.objects.filter(
-            shared_project_permissions__role__in=AccessPermission.objects.filter(
-                owner=active_business_user,
-                shared_with=logged_in_user
-            ).values_list('role', flat=True),
+            shared_project_permissions__role__in=shared_roles,
             shared_project_permissions__can_read_project=True,
             user=active_business_user
         ).distinct()
-        print("I am done but here")
+
         contacts = Client.objects.filter(
             list__in = projects,
             companyAssignee=active_business_user,
         )
-    # these two line must be checked!!
-    project_id = request.GET.get('project_id')
-    if project_id:
-        contacts = contacts.filter(list__id = project_id)
+
+    project_name = request.GET.get('project_name')
+    if project_name:
+        contacts = contacts.filter(list__name = project_name)
     
     context = {
         'formA': formA,
@@ -248,8 +247,8 @@ def contact_view(request, *args, **kwargs):
         'contacts': contacts,
         'projects': projects,
         'total_contacts': contacts.count(),
-        'selected_project_id': int(project_id) if project_id else None,
-        'set_to_all': True if project_id is None else False,
+        'selected_project_name': project_name,
+        'set_to_all': True if project_name is None else False,
         'businessuser': user,
     }
     return render (
@@ -263,40 +262,60 @@ def contact_detailed_view(request, pk):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_contact', show_err='Contact Read')
+
     # Retrieving Values from DATABASE [current user / active user]
     if(active_business_user == logged_in_user):
         projects = Project.objects.filter(user = logged_in_user)
         contact = get_object_or_404(Client, companyAssignee = user, pk=pk)
-    else:
+        documents = Document.objects.filter(user = logged_in_user, related_to=contact)
+
+    elif is_success == True:
+        # Get all roles that the active user shared with the logged-in user
+        shared_roles = AccessPermission.objects.filter(
+            owner=active_business_user,
+            shared_with=logged_in_user
+        ).values_list('role', flat=True)
+
+        # Get all projects using those shared roles with read access
         projects = Project.objects.filter(
-            shared_project_permissions__role__in=AccessPermission.objects.filter(
-                owner=active_business_user,
-                shared_with=logged_in_user
-            ).values_list('role', flat=True),
+            shared_project_permissions__role__in=shared_roles,
             shared_project_permissions__can_read_project=True,
             user=active_business_user
         ).distinct()
+
         contact = get_object_or_404(
             Client,
             list__in = projects,
             companyAssignee=active_business_user,
             pk=pk,
         )
+
+        if get_active_business_user_with_permission(request, 'can_read_document', show_err='Contact Read')[1]:
+            documents = Document.objects.filter(user = logged_in_user, related_to=contact)
+        else:
+            documents = None
+    else:
+        return redirect('appContacts')
+    
+    form_type = request.POST.get("form_type")
     # Client Updation Form
     if(request.method == "POST"):
-        formEditClient = ClientCreationForm(request.POST, user = active_business_user, possible_projects = projects, instance = contact)
-        if(formEditClient.is_valid()):
-            if get_active_business_user_with_permission(request, 'can_edit_contact', show_err='Client Edit')[1] == True:
-                formEditClient.last_edit = timezone.now()
-                formEditClient.save()
-                messages.success(request, "Client information Updated!")
-                return redirect('appContactDetail', pk=pk)
-        messages.error(request, "Can't edit the user detail!")
+        if(form_type != None):
+            formEditClient = ClientCreationForm(request.POST, user = active_business_user, possible_projects = projects, instance = contact)
+            if(formEditClient.is_valid()):
+                if get_active_business_user_with_permission(request, 'can_edit_contact', show_err='Client Edit')[1] == True:
+                    formEditClient.last_edit = timezone.now()
+                    formEditClient.save()
+                    messages.success(request, "Client information Updated!")
+            else:
+                messages.error(request, "Can't edit the user detail!")
         return redirect('appContactDetail', pk=pk)
+    
     formEditClient = ClientCreationForm(user = active_business_user, possible_projects = projects, instance = contact)
     context = {
         'contact': contact,
         'form': formEditClient,
+        'documents': documents,
         'businessuser': user,
     }
     return render(
@@ -305,6 +324,7 @@ def contact_detailed_view(request, pk):
         context,
     )
 
+@require_POST
 @login_required
 def contact_delete_view(request, pk):
     user = request.user.businessuser
@@ -313,66 +333,91 @@ def contact_delete_view(request, pk):
 
     if(is_success == False):
         return redirect('appContactDetail', pk=pk)
-    # Only POST request to delete the contact and not the GET request!
-    if(request.method == "POST"):
-            contact = get_object_or_404(Client, companyAssignee = active_business_user, pk=pk)
-            contact_name = contact.name
-            contact.soft_delete()
-            messages.warning(request, f"Client '{contact_name}' is deleted!")
-    else:
-        messages.error(request, f"GET Request is not allowed for this page!")
+    
+    contact = get_object_or_404(Client, companyAssignee = active_business_user, pk=pk)
+    contact_name = contact.name
+    contact.soft_delete()
+    messages.warning(request, f"Client '{contact_name}' is deleted!")
+
     return redirect('appContacts')
 
+@require_POST
 @login_required
 def contact_permanent_delete_view(request, pk):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_permanent_delete_contact', show_err='Permanent Delete')
+
     if(is_success == False):
         return redirect('appTrash')
-    # Only POST request delete the form and not the GET request!
-    if(request.method == "POST"):
-        if(logged_in_user != active_business_user):
-            contact = get_object_or_404(Client.all_objects, companyAssignee = active_business_user, pk=pk)
-        else:
-            contact = get_object_or_404(Client.all_objects, companyAssignee = user, pk=pk)
-        contact_name = contact.name
-        contact.delete()
-        messages.warning(request, f"Client '{contact_name}' is deleted permanently!")
-    else:
-        messages.error(request, f"GET Request is not allowed for this page!")
+    
+    contact = get_object_or_404(Client.all_objects, companyAssignee = active_business_user, pk=pk)
+    contact_name = contact.name
+    contact.delete()
+    messages.warning(request, f"Client '{contact_name}' is deleted permanently!")
     return redirect('appTrash')
 
+@require_POST
 @login_required
 def contact_restore_view(request, pk):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_delete_contact', show_err='Restore')
+
     if(is_success == False):
         return redirect('appTrash')
-    if(request.method == "POST"):
-        if(logged_in_user != active_business_user):
-            contact = get_object_or_404(Client.all_objects, companyAssignee = active_business_user, pk=pk)
-        else:
-            contact = get_object_or_404(Client.all_objects, companyAssignee = user, pk=pk)
-        contact_name = contact.name
-        contact.restore()
-        messages.success(request, f"Restored Contact '{contact_name}")
+
+    contact = get_object_or_404(Client.all_objects, companyAssignee = active_business_user, pk=pk)
+    contact_name = contact.name
+    contact.restore()
+    messages.success(request, f"Restored Contact '{contact_name}")
     return redirect('appTrash')
 
-def project_delete_view(request, id, *args, **kwargs):
+@require_POST
+@login_required
+def project_delete_view(request, name, *args, **kwargs):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+
+    active_id = request.session['active_business_user_id']
+    if(active_id == None):
+        request.session['active_business_user_id'] = request.user.businessuser.id
+
+    active_business_user = get_object_or_404(BusinessUser, id=active_id)
+    
+    project = get_object_or_404(Project, user=active_business_user, name=name)
+    project_name = project.name
+
+    if project_name == "Default" :
+        messages.warning(request, "Default Project can't be deleted")
+        url = reverse('appContacts')
+        redirect_url = f"{url}?project_name={name}"
+        return redirect(redirect_url)
+    
+    messages.warning(request, f"Project '{project_name}' is deleted.")
+    project.soft_delete()
     return redirect('appContacts')
+
+@require_POST
+@login_required
+def project_restore_view(request, id, *args, **kwargs):
+
+    project = Project.all_objects.filter(id = id).first()
+    project_name = project.name
+
+    project.restore()
+    messages.success(request, f"Project {project_name} is recovered.")
+
+    return redirect('appTrash')
 
 # ---- ==== Featured Related to Tasks View ==== ----
 # Include: [tasks_view; ]
 @login_required
 def tasks_view(request, *args, **kwargs):
-
     return render(
         request, 
         'featuredApp/tasks.html',
-        {
-        },
+        {},
     )
 
 # ---- ==== Featured Related to Documents View ==== ----
@@ -387,20 +432,41 @@ def documents_view(request, *args, **kwargs):
         # For the purpose of file upload - we need request.FILES [COOL]
         form = DocumentCreationForm(request.POST, request.FILES, user = user)
 
-        if(form.is_valid() and get_active_business_user_with_permission(request, 'can_edit_documents', show_err='Document Edit')[1]):
-            tmp = form.save(commit = False)
-            tmp.user = user
-            tmp.save()
-            messages.success(request, f"New Document Added!")
-            return redirect('appDocuments')
+        if(form.is_valid()):
+            if(get_active_business_user_with_permission(request, 'can_edit_documents', show_err='Document Edit')[1]):
+                tmp = form.save(commit = False)
+                tmp.user = user
+                tmp.save()
+                messages.success(request, f"New Document Added!")
         else:
-            messages.success(request, f"Something Went Wrong!")
-            return redirect('appDocuments')
+            messages.success(request, f"Can't Create Document")
+        return redirect('appDocuments')
     else:
         form = DocumentCreationForm(user = user)
 
     if(is_success == False):
         documents = None
+    
+    elif(logged_in_user != active_business_user):
+        # Get all roles that the active user shared with the logged-in user
+        shared_roles = AccessPermission.objects.filter(
+            owner=active_business_user,
+            shared_with=logged_in_user
+        ).values_list('role', flat=True)
+
+        # Get all projects using those shared roles with read access
+        projects = Project.objects.filter(
+            shared_project_permissions__role__in=shared_roles,
+            shared_project_permissions__can_read_project=True,
+            user=active_business_user
+        ).distinct()
+
+        # Get All Client Associated with in these projects
+        clients = Client.objects.filter(list__in=projects)
+
+        # Get All Document these Client have
+        documents = Document.objects.filter(related_to__in=clients)
+
     else:
         documents = Document.objects.filter(user=user)
 
@@ -408,7 +474,7 @@ def documents_view(request, *args, **kwargs):
         request, 
         'featuredApp/documents.html',
         {
-            "documents": documents, 
+            "documents": documents,
             'total_documents': documents.count() if documents != None else 0, 
             "form": form,
         }
@@ -419,39 +485,21 @@ def documents_detailed_view(request, pk, *args, **kwargs):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_documents', show_err='Document Read')
+    document = get_object_or_404(Document, user=active_business_user, pk=pk)
+    form_type = request.POST.get("form_type")
 
-    if active_business_user == logged_in_user:
-        document = get_object_or_404(Document, user = user, pk=pk)
-    else:
-        messages.warning("Developer warning!! Check before Proceed!")
-        projects = Project.objects.filter(
-            shared_project_permissions__role__in=AccessPermission.objects.filter(
-                owner=active_business_user,
-                shared_with=logged_in_user
-            ).values_list('role', flat=True),
-            shared_project_permissions__can_read_project=True,
-            user=active_business_user
-        ).distinct()
-        contact = get_object_or_404(
-            Client,
-            list__in = projects,
-            companyAssignee=active_business_user,
-            pk=pk,
-        )
-        current_accessing_document = get_object_or_404(Document, pk=pk)
-        print(current_accessing_document)
-        print(contact)
-        messages.warning("Developer warning!! Check before Proceed!")
-        document = None
-    
+    print(form_type)
+    print(request.method)
+
     if(request.method == "POST"):
-        formEditDocument = DocumentCreationForm(request.POST, user = active_business_user, instance = document)
-        if(formEditDocument.is_valid()):
-            if get_active_business_user_with_permission(request, 'can_edit_document', show_err='Document Edit')[1] == True:
-                formEditDocument.save()
-                messages.success(request, "Document Updated!")
-                return redirect('appDocumentDetail', pk=pk)
-        messages.error(request, "Can't edit the user detail!")
+        if(form_type!=None):
+            formEditDocument = DocumentCreationForm(request.POST, user = active_business_user, instance = document)
+            if(formEditDocument.is_valid()):
+                if get_active_business_user_with_permission(request, 'can_edit_document', show_err='Document Edit')[1] == True:
+                    formEditDocument.save()
+                    messages.success(request, "Document Updated!")
+            else:
+                messages.error(request, "Can't Edit Document!")
         return redirect('appDocumentDetail', pk=pk)
     
     formEditDocument = DocumentCreationForm(user = active_business_user, instance = document)
@@ -487,6 +535,7 @@ def document_permanent_delete_view(request, pk):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_permanent_delete_contact', show_err='Permanent Delete')
+
     if(is_success == False):
         return redirect('appTrash')
 
@@ -497,10 +546,12 @@ def document_permanent_delete_view(request, pk):
     return redirect('appTrash')
 
 @require_POST
+@login_required
 def document_restore_view(request, pk):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_delete_document', show_err='Restore')
+
     if(is_success == False):
         return redirect('appTrash')
 
@@ -509,7 +560,6 @@ def document_restore_view(request, pk):
     document.restore()
     messages.success(request, f"Restored Document '{document_name}")
     return redirect('appTrash')
-
 
 # ---- ==== Featured Related to Activities View ==== ----
 # Include: [activities_view; ]
@@ -528,20 +578,34 @@ def trash_view(request):
     active_business_user = get_object_or_404(BusinessUser, id=active_id)
 
     if(logged_in_user != active_business_user):
-        if(get_active_business_user_with_permission(request, 'can_delete_contact', show_err='Contact Delete')):
+        if(get_active_business_user_with_permission(request, 'can_delete_contact', show_err='Contact Delete')[1]):
             trashed_contacts = Client.all_objects.filter(companyAssignee = active_business_user, is_deleted = True)
-        # if(get_active_business_user_with_permission(request, 'can_delete_project')):
-        #     trashed_project = Project.all_objects.filter(user = active_business_user, is_deleted = True)
-        if(get_active_business_user_with_permission(request, 'can_delete_documents', show_err='Document Delete')):
+        
+        # Get all roles that the active user shared with the logged-in user
+        shared_roles = AccessPermission.objects.filter(
+            owner=active_business_user,
+            shared_with=logged_in_user
+        ).values_list('role', flat=True)
+
+        # Get all projects using those shared roles with delete(restore) access
+        projects = Project.objects.filter(
+            shared_project_permissions__role__in=shared_roles,
+            shared_project_permissions__can_delete_project=True,
+            user=active_business_user
+        ).distinct()
+
+        if(get_active_business_user_with_permission(request, 'can_delete_documents', show_err='Document Delete')[1]):
             trashed_documents = Document.all_objects.filter(user = active_business_user, is_deleted = True)
     else:
-        trashed_contacts = Client.all_objects.filter(companyAssignee = user, is_deleted = True)
-        # trashed_project = Project.all_objects.filter(user = user, is_deleted = True)
-        trashed_documents = Document.all_objects.filter(user = user, is_deleted = True)
+        trashed_contacts = Client.all_objects.filter(companyAssignee=user, is_deleted=True)
+        trashed_projects = Project.all_objects.filter(user=user, is_deleted=True)
+        trashed_documents = Document.all_objects.filter(user=user, is_deleted=True)
 
+    print(trashed_projects)
     context = {
         'trashed_contacts': trashed_contacts,
         'trashed_documents': trashed_documents,
+        'trashed_projects': trashed_projects,
     }
 
     return render(
@@ -556,6 +620,8 @@ from client.forms import ProjectAccessPermissionForm_Client
 from accounts.models import AccessPermission
 from django.forms import modelformset_factory
 # This funciton is valid up to the logged in user!
+# And take about 3 days of debug to create!
+# And 'Roles' form can use some better design!
 @login_required
 def manage_access(request):
     user = request.user.businessuser
@@ -656,6 +722,7 @@ def manage_access(request):
     return render(request, 'featuredApp/manage_access.html', context)
 
 @require_POST
+@login_required
 def delete_role(request, role_id):
     role = get_object_or_404(Role, id=role_id, user=request.user.businessuser)
     role_name = role.name
@@ -664,9 +731,10 @@ def delete_role(request, role_id):
     return redirect('appManageAccess')
 
 @require_POST
+@login_required
 def delete_access(request, access_id):
     access = get_object_or_404(AccessPermission, id=access_id, owner=request.user.businessuser)
-    access.shared_with  # Access for feedback
+    shared_with = access.shared_with  # Access for feedback
     access.delete()
-    messages.warning(request, f"Access revoked for {access.shared_with.company_email}.")
+    messages.warning(request, f"Access revoked for {shared_with.company_email}.")
     return redirect('appManageAccess')

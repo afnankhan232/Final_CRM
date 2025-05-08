@@ -23,9 +23,12 @@
 		<ul>
 			<!-- Self Account -->
 			<li>
-				<a href="{% url 'switch_account' public_id=self_account.public_id %}">
-					My Account
-				</a>
+				<form method="post" action="{% url 'switch_account' public_id=self_account.public_id %}" style="display:inline;">
+	                {% csrf_token %}
+	                <button type="submit" class="switch-link">
+	                    My Account
+	                </button>
+	            </form>
 			</li>
 
 			<!-- Accessible Accounts -->

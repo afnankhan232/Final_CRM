@@ -17,13 +17,9 @@
 {% endblock titleBlock %}
 
 {% block contentBody1 %}
-
 	<h2 class="font-weight-bold">Contact Details</h2>
         
-
 	<hr style="margin: 20px 0;">
-
-	
 
 	<div class="container mt-4">
 
@@ -85,9 +81,18 @@
 
 	        <div class="row">
 	            <div class="col-md-3 text-muted font-weight-bold">Documents:</div>
-	            <div class="col-md-9 h5 text-muted">
-	            	No Document Added
-	            </div>
+	            <div class="col-md-9 h5">
+	            	{% if documents != None %}
+	            		{% for document in documents %}
+	            			<a href="{{ document.file.url }}" download>
+					            {{ document.file.name }}
+					        </a>
+					        <br>
+	            		{% endfor %}
+	            	{% else %}
+	            		<span class="text-muted">No Document</span>
+	            	{% endif %}
+	        	</div>
 	        </div>
 
 	        <hr style="margin: 20px 0;">
@@ -131,7 +136,7 @@
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
 		<div style="margin-top: 20px;" class="content-section">
-			<form method="POST"> 
+			<form method="POST" name="form_type" value="editForm"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
 					<legend class="border-bottom mb-4" style="font-weight: 800;"> Update Client Information </legend>

@@ -21,13 +21,17 @@ urlpatterns = [
     # Detailed View of Clients
     path('contacts/<int:pk>/', views.contact_detailed_view, name='appContactDetail'),
     # Deletion Clients
-    path('contacts/<int:pk>/delete', views.contact_delete_view, name='appContactDelete'),
+    path('contacts/<int:pk>/delete/', views.contact_delete_view, name='appContactDelete'),
     # Permanent Deletion of Client
-    path('contacts/<int:pk>/permanentDelete', views.contact_permanent_delete_view, name='appContactPermanentDelete'),
+    path('contacts/<int:pk>/permanentDelete/', views.contact_permanent_delete_view, name='appContactPermanentDelete'),
     # Restoring Deleted Client
-    path('contacts/<int:pk>/restore', views.contact_restore_view, name='appContactRestore'),
+    path('contacts/<int:pk>/restore/', views.contact_restore_view, name='appContactRestore'),
     # Delete Project
-    path('project/delete/<int:id>/', views.project_delete_view, name='appProjectDelete'),
+    path('project/<str:name>/delete/', views.project_delete_view, name='appProjectDelete'),
+    # Permenent Deletion of Project
+    path('project/<int:id>/permanentDelete/', views.project_restore_view, name='appProjectPermanentDelete'),
+    # Restoring Deleted Project
+    path('project/<int:id>/restore/', views.project_restore_view, name='appProjectRestore'),
 
     # ---- ==== Related to Tasks ==== ----
     # Task - Calendar; Notification; and more!

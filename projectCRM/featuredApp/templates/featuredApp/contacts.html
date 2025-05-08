@@ -60,7 +60,7 @@
 		<!-- Next List of [PROJECTS] -->
 		{% for project in projects|slice:":5" %}
 			<li class="nav-item">
-				<a href="?project_id={{ project.id }}" class="nav-link {% if selected_project_id == project.id %}active{% endif %}">{{ project.name }}</a>
+				<a href="?project_name={{ project.name }}" class="nav-link {% if selected_project_name == project.name %}active{% endif %}">{{ project.name }}</a>
 			</li>
 		{% endfor %}
 
@@ -88,13 +88,13 @@
 		</li>
 
 
-		{% if selected_project_id %}
+		{% if selected_project_name %}
 		<!-- Edit Button -->
 		<button class="add-btn btn btn-sm icon-button edit" type="button" onclick="openProjectFormPopUp()">
 			<i class="fas fa-pen"></i>
 		</button>
 
-		<form action="{% url 'appProjectDelete' selected_project_id %}" method="post">
+		<form action="{% url 'appProjectDelete' selected_project_name %}" method="post">
 			{% csrf_token %}
 			<!-- Delete Button -->
 			<button class="add-btn btn btn-sm icon-button delete" type="submit">
@@ -173,7 +173,7 @@
 			<form method="POST"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
-					<legend class="border-bottom mb-4"> Add NEW PROJECT </legend>
+					<legend class="border-bottom mb-4" style="font-weight: 800"> ADD NEW PROJECT </legend>
 					{{ formA|crispy }}
 				</fieldset>
 
@@ -206,7 +206,7 @@
 			<form method="POST"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
-					<legend class="border-bottom mb-4"> Add new Client </legend>
+					<legend class="border-bottom mb-4" style="font-weight: 800"> ADD NEW CLIENT </legend>
 					
 					<form method="POST">
 						{% csrf_token %}
