@@ -172,7 +172,7 @@
 				    <small class="text-muted d-block mt-1">Set permissions for managing contacts.</small>
 				</div>
 
-				<h5>Project</h5>
+				<h5>List</h5>
 				<div class="border rounded p-2 mb-3 permissions-box">
 		            <div class="form-check form-check-inline">
 				      {{ formA.can_add_project }}
@@ -220,7 +220,7 @@
 				    {% endfor %}
 				    <small class="text-muted d-block mt-1">Set permissions for managing documents.</small>
 				</div>
-				<h5>Project Permissions</h5>
+				<h5>List Permissions</h5>
 				<!-- {{ formset.management_form }} -->
 				{{ formB.management_form }}
 				<div class="border rounded p-2 mb-3 permissions-box">
@@ -242,7 +242,7 @@
 				        {% endfor %}
 					    </div>
 					{% endfor %}
-					<small class="text-muted d-block mt-1">Set permissions for individual project.</small>
+					<small class="text-muted d-block mt-1">Set permissions for individual list.</small>
 				</div>
 			    <button type="submit" class="btn btn-dark w-100" name="form_type" value="role_form">Save Role</button>
 			</form>
@@ -257,8 +257,8 @@
 
 {% block extraJS %}
 
-	<!-- The script is specific for project pop-up -->
 	<script type="text/javascript">
+		// The script is specific for Role / Access pop-up
 		let accessPopUp = document.getElementById('access-pop-up-window-element');
 		let rolesPopUp = document.getElementById('roles-pop-up-window-element');
 		let overLay1 = document.getElementById('popupOverlay-1');
@@ -303,6 +303,95 @@
 				closeAccessFormPopUp();
 			}
 		});
+
+		// Improving Form UI
+		const mainContactElement = document.getElementById('id_can_read_contact');
+		const everyContactElement = document.querySelectorAll('[id^="id_can_"][id$="_contact"]');
+		everyContactElement.forEach((e, i)=>{
+			if(e.id !== 'id_can_read_contact') {
+				e.disabled = true;
+			}
+		});
+		mainContactElement.addEventListener('change', (e)=>{
+			if(mainContactElement.checked) {
+				everyContactElement.forEach((e, i)=>{
+					if(e.id !== 'id_can_read_contact') {
+						e.disabled = false;
+					}
+				});
+			} else {
+				everyContactElement.forEach((e, i)=>{
+					if(e.id !== 'id_can_read_contact') {
+						e.disabled = true;
+					}
+				});
+			}
+		});
+
+		const mainTasksElement = document.getElementById('id_can_read_tasks');
+		const everyTasksElement = document.querySelectorAll('[id^="id_can_"][id$="_tasks"]');
+		everyTasksElement.forEach((e, i)=>{
+			if(e.id !== 'id_can_read_tasks') {
+				e.disabled = true;
+			}
+		});
+		mainTasksElement.addEventListener('change', (e)=>{
+			if(mainTasksElement.checked) {
+				everyTasksElement.forEach((e, i)=>{
+					if(e.id !== 'id_can_read_tasks') {
+						e.disabled = false;
+					}
+				});
+			} else {
+				everyTasksElement.forEach((e, i)=>{
+					if(e.id !== 'id_can_read_tasks') {
+						e.disabled = true;
+					}
+				});
+			}
+		});
+
+		const mainDocumentElement = document.getElementById('id_can_read_documents');
+		const everyDocumentElement = document.querySelectorAll('[id^="id_can_"][id$="_documents"]');
+		everyDocumentElement.forEach((e, i)=>{
+			if(e.id !== 'id_can_read_documents') {
+				e.disabled = true;
+			}
+		});
+		mainDocumentElement.addEventListener('change', (e)=>{
+			if(mainDocumentElement.checked) {
+				everyDocumentElement.forEach((e, i)=>{
+					if(e.id !== 'id_can_read_documents') {
+						e.disabled = false;
+					}
+				});
+			} else {
+				everyDocumentElement.forEach((e, i)=>{
+					if(e.id !== 'id_can_read_documents') {
+						e.disabled = true;
+					}
+				});
+			}
+		});
+
+
+		const everyProjectElement = document.querySelectorAll('[id$="-can_read_project"]');
+		console.log(everyProjectElement.length);
+		// Initialize every project as disabled -> unless it have read_project ending
+
+		// everyProjectElement.forEach(function(checkbox) {
+		//     checkbox.addEventListener('change', function() {
+		//         console.log(`${this.id} changed: ${this.checked}`);
+		//     });
+		// });
+
+		// mainTasksElement.addEventListener('change', (e)=>{
+		// 	console.log('tasks view is changeed');
+		// });
+		// mainDocumentElement.addEventListener('change', (e)=>{
+		// 	console.log('document view is changeed');
+		// });
+
 	</script>
 {% endblock extraJS %}
 
