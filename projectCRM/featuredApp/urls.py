@@ -36,6 +36,8 @@ urlpatterns = [
     # ---- ==== Related to Tasks ==== ----
     # Task - Calendar; Notification; and more!
     path('tasks/', views.tasks_view, name='appTasks'),
+    # Detailed Tasks
+    path('tasks/detail/<int:pk>/', views.task_detailed_view, name='appTaskDetail'),
 
     # ---- ==== Related to Documents ==== ----
     # Documents List View

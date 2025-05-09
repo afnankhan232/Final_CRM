@@ -1,0 +1,73 @@
+{% extends 'featuredApp/base.html' %}
+
+{% load static %}
+
+{% block titleBlock %} 
+	<title> Tasks </title>
+{% endblock titleBlock %}
+
+{% block addCSSlink %}
+
+	<!-- Specific for Project pop-up  -->
+	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/dashboard.css' %}">
+
+{% endblock addCSSlink %}
+
+{% block contentBody1 %}
+
+<h2>Tasks</h2>
+    <p class="text-muted">Track and manage all your tasks effortlessly.</p>
+
+    <table class="table table-bordered table-hover">
+        <th class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Priority</th>
+                <th>Related To</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                <th>Added By</th>
+            </tr>
+        </th>
+        <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.name }}</td>
+                    <td>{{ task.owner }}</td>
+                    <td>
+                        {% if task.priority == 'Urgent' %}
+                            <span class="dot"></span>
+                        {% endif %}
+                        {{ task.priority }}
+                    </td>
+                    <td>{{ task.related_to }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>{{ task.due_date }}</td>
+                    <td>{{ task.added_by }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7">No tasks available. Please add a task to get started.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock contentBody1 %}
+
+{% block contentBody2 %}
+
+<tbody>
+    {% for task in tasks %}
+    <tr onclick="loadTaskDetail({{ task.id }})" style="cursor: pointer;">
+        <td>{{ task.name }}</td>
+        <td>{{ task.owner }}</td>
+        <td>{{ task.priority }}</td>
+        <td>{{ task.related_to }}</td>
+        <td>{{ task.status }}</td>
+        <td>{{ task.due_date }}</td>
+        <td>{{ task.added_by }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+{% endblock contentBody2 %}

@@ -65,7 +65,7 @@
     - DONE Move to Trash for deleted Documents
 
 - Tasks App
-    - Create Database Model(
+    - DONE Create Database Model(   
         task_name; 
         description; 
         status[New; In-Progress; Completed]; 
@@ -76,10 +76,12 @@
         Due_date;
         Due_time;
     )
-    - Views page
-        - List of Tasks
-    - Form for creating new Tasks
+    - DONE Views page
+        - DONE List of Tasks
+        - DONE Task Detail
+    - DONE Form for creating new Tasks
     - Deletion of Tasks
+    - Edit Tasks
 
 - Implement Solution for Teams
 

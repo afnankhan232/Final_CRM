@@ -5,6 +5,8 @@ from django import forms
 # For Displaying [country_code] and [phone_number] side-by-side
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Field, Fieldset, Div
+from accounts.models import AccessPermission
+from accounts.models import BusinessUser
 
 # ---- ==== Form for CREATING new Project / UPDATING existing Project ==== ----
 from .models import Project
@@ -160,12 +162,53 @@ class TaskCreationForm(forms.ModelForm):
             # 'due_time',
         ]
     # We have to improve it based on current account!
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if user:
+            print(Client.objects.filter(companyAssignee = user))
             self.fields['related_to'].queryset = Client.objects.filter(companyAssignee = user)
-            self.fields['owner'].queryset = AccessPermission.objects.filter(owner=user)
+            self.fields['owner'].queryset = BusinessUser.objects.filter(pk = user.pk)
+        
+        self.fields['task_name'].widget.attrs.update({
+            'placeholder': 'Enter task name'
+        })
+        self.fields['description'].widget.attrs.update({
+            'placeholder': 'Enter task description'
+        })
+        self.fields['related_to'].empty_label = 'Select a contact'
+
+
+#Task Edit Form
+
+class TaskEditForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = [
+            'task_name',
+            'description',
+            'status',
+            'priority',
+            'owner',
+            'type',
+            'related_to',
+            'due_date',
+            'due_time',
+        ]
+        widgets = {
+            'due_date': forms.DateInput(attrs={'type': 'date'}),
+            'due_time': forms.TimeInput(attrs={'type': 'time'}),
+        }
+    # We have to improve it based on current account!
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            print(Client.objects.filter(companyAssignee = user))
+            self.fields['related_to'].queryset = Client.objects.filter(companyAssignee = user)
+            self.fields['owner'].queryset = BusinessUser.objects.filter(pk = user.pk)
         
         self.fields['task_name'].widget.attrs.update({
             'placeholder': 'Enter task name'

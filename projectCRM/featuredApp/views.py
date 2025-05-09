@@ -24,6 +24,8 @@ from client.forms import DocumentCreationForm
 # from client
 from client.models import ProjectAccessPermission
 from client.forms import TaskCreationForm
+from client.forms import TaskEditForm
+from client.models import Task
 
 # Date Time Field
 from django.utils import timezone
@@ -413,23 +415,67 @@ def project_restore_view(request, id, *args, **kwargs):
     return redirect('appTrash')
 
 # ---- ==== Featured Related to Tasks View ==== ----
-# Include: [tasks_view; ]
+# Include: [tasks_view; ]\
+from accounts.models import AccessPermission
 @login_required
 def tasks_view(request, *args, **kwargs):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_tasks', show_err='Task Read')
     form = TaskCreationForm()
+    print(active_business_user)
+    if request.method == "POST":
+        # For the purpose of file upload - we need request.FILES [COOL]
+        form = TaskCreationForm(request.POST, user = user)
+        if(form.is_valid()):
+            due_date = request.POST.get('due_date')  # format: 'YYYY-MM-DD'
+            due_time = request.POST.get('due_time')  # format: 'HH:MM'
+            if(get_active_business_user_with_permission(request, 'can_edit_tasks', show_err='Task Edit')[1]):
+                tmp = form.save(commit = False)
+                tmp.user = user
+                tmp.due_date = due_date
+                tmp.due_time = due_time
+                tmp.save()
+                messages.success(request, f"New Task Added!")
+        else:
+            messages.success(request, f"Can't Create Task")
+        return redirect('appTasks')
+    else:
+        form = TaskCreationForm(user = user)
+    if logged_in_user == active_business_user:
+        tasks = Task.objects.filter(user = logged_in_user)
+        
 
     context = {
         'form': form,
         'businessuser': user,
+        'tasks' : tasks,
     }
     return render(
         request, 
         'featuredApp/tasks.html',
         context,
     )
-
+@login_required
+def task_detailed_view(request, pk, *args, **kwargs):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_tasks', show_err='Task Read')
+    task = get_object_or_404(Task, user = active_business_user, pk=pk)
+    if request.method == 'POST':
+        form = TaskEditForm(request.POST, instance = task)
+        if form.is_valid():
+            formObject = form.save(commit=False)
+            formObject.user=active_business_user
+            formObject.save()
+    form = TaskEditForm(instance = task)
+    print(form.instance.due_date)
+    context = {'task':task, 'form': form}
+    return render(
+        request, 
+        'featuredApp/task_detailed.html',
+        context,
+    ) 
 # ---- ==== Featured Related to Documents View ==== ----
 # Include: [document_view; ]
 @login_required

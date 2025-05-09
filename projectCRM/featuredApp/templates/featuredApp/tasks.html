@@ -16,6 +16,16 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
 
 	<style>
+
+        .dot {
+            height: 10px;
+            width: 10px;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
 		.due-date-class:hover {
 			cursor: pointer;
 		}
@@ -29,11 +39,50 @@
 
 {% block contentBody1 %}
 
-	<h2 style="font-weight: bolder;"> Tasks </h2>
+    <h2 style="font-weight: bolder;">Tasks</h2>
 
-	<hr style="margin: 20px 0;">
+    <hr style="margin: 20px 0;">
 
-	<button class="btn btn-dark" type="button" onclick="openTaskFormPopUp()">Add Tasks</button>
+    <div class="d-flex justify-content-end my-2">
+        <button class="btn btn-dark" type="button" onclick="openTaskFormPopUp()">Add Tasks</button>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Priority</th>
+                <th>Related To</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td><a href="{% url 'appTaskDetail' task.id %}">{{ task.task_name }}</a></td>
+                    <td>{{ task.owner }}</td>
+                    <td>
+                        {% if task.priority == 'Urgent' %}
+                            <span class="dot"></span>
+                        {% endif %}
+                        {{ task.priority }}
+                    </td>
+                    <td>{{ task.related_to }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>{{ task.due_date }}</td>
+                    
+                </tr>
+            {% empty %}
+                <tr><td colspan="7">No tasks available. Please add a task to get started.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Optional: Only include this if you want a red dot for "Urgent" -->
+   
 
 {% endblock contentBody1 %}
 
