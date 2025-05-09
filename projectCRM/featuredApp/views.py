@@ -27,6 +27,8 @@ from client.forms import TaskCreationForm
 from client.forms import TaskEditForm
 from client.models import Task
 
+from client.models import ActivityLog
+
 # Date Time Field
 from django.utils import timezone
 
@@ -114,20 +116,73 @@ def profile_view(request, *args, **kwargs):
 
 # ---- ==== Featured Related to Dashboard View ==== ----
 # Include: [dashboard_view; ]
+# Variable: [total_client; pending_tasks; completed_tasks; total_documents; ]
+# Form: None
 @login_required
 def dashboard_view(request, *args, **kwargs):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
 
+    query = request.GET.get("q")
+    search_result = []
+    find_client_by_query = None
+    find_tasks_by_query = None
+    find_document_by_query = None
+
     if request.session.get('active_business_user_id') == None:
         logged_in_user = request.user.businessuser
         request.session['active_business_user_id'] = logged_in_user.id
+        active_business_user = logged_in_user
+    else:
+        active_id = request.session.get('active_business_user_id')
+        active_business_user = get_object_or_404(BusinessUser, id=active_id)
+
+    if get_active_business_user_with_permission(request, 'can_read_contact', show_err='Contact Read')[1]:
+        total_client = len(Client.objects.filter(companyAssignee = active_business_user))
+        if query:
+            find_client_by_query = Client.objects.filter(name__icontains=query, companyAssignee = active_business_user)
+            search_result += list(find_client_by_query)
+    else:
+        total_client = None
     
+    if get_active_business_user_with_permission(request, 'can_read_task', show_err='Task Read')[1]:
+        total_tasks_object = Task.objects.filter(user = active_business_user)
+        completed_tasks = len(total_tasks_object.filter(status='Completed'))
+        pending_tasks = len(total_tasks_object) - completed_tasks
+
+        if query:
+            find_tasks_by_query = Task.objects.filter(task_name__icontains = query, user = active_business_user)
+            search_result += list(find_tasks_by_query)
+    else:
+        pending_tasks = None
+        completed_tasks = None
+    
+    if get_active_business_user_with_permission(request, 'can_read_document', show_err='Document Read')[1]:
+        total_documents = len(Document.objects.filter(user = active_business_user))
+
+        if query:
+            find_document_by_query = Document.objects.filter(document_name__icontains = query, user = active_business_user)
+            search_result += list(find_document_by_query)
+    else:
+        total_documents = None
+    
+    print(search_result)
     accessible_accounts = user.accessible_accounts.select_related('owner', 'role')
     context = {
+        "search_results": search_result,
+        "find_client_by_query" : find_client_by_query,
+        "find_tasks_by_query" : find_tasks_by_query,
+        "find_document_by_query" : find_document_by_query,
+
+        "query": query,
+
         'businessuser': user,
         'accessible_accounts': accessible_accounts,
         'self_account': user,
+        'total_clients': total_client,
+        'pending_tasks': pending_tasks,
+        'completed_tasks': completed_tasks,
+        'total_documents': total_documents,
     }
     return render(
         request, 
@@ -149,6 +204,7 @@ def switch_account(request, public_id):
     if target_user == logged_in_user:
         request.session['active_business_user_id'] = logged_in_user.id
         messages.success(request, f"You are now accessing your account!")
+        ActivityLog.objects.create(user=logged_in_user, action=f"Switched to My Account")
         return redirect('appDashboard')
     
     # Check access permission
@@ -159,6 +215,7 @@ def switch_account(request, public_id):
     if has_access:
         request.session['active_business_user_id'] = target_user.id
         messages.success(request, f"You are now accessing: {target_user.user.email}")
+        ActivityLog.objects.create(user=logged_in_user, action=f"switched to {target_user.user.email} account")
         return redirect('appDashboard')
 
     else:
@@ -184,15 +241,16 @@ def contact_view(request, *args, **kwargs):
             formA = ProjectCreationForm(request.POST, user = user)
             formB = ClientCreationForm(user = user)
 
-            if(formA.is_valid()):
+            if get_active_business_user_with_permission(request, 'can_add_project', show_err='Add')[1] == True:
                 # managing AccessPermission!! - adding new contacts
-                if get_active_business_user_with_permission(request, 'can_add_project', show_err='Add')[1] == True:
+                if(formA.is_valid()):
                     projectValidForm = formA.save(commit = False)
                     projectValidForm.user = active_business_user
                     projectValidForm.save() # Save the form
-                    messages.success(request, f"New Project Created Successfully!")
-            else:
-                messages.error(request, "Project Name should be unique!")
+                    messages.success(request, f"New List Created Successfully!")
+                    ActivityLog.objects.create(user=logged_in_user, action=f"Created New List")
+                else:
+                    messages.error(request, "Project Name should be unique!")
             return redirect('appContacts')
         
         elif(form_type == 'client_form'):
@@ -200,14 +258,15 @@ def contact_view(request, *args, **kwargs):
             # the user arguement pass to the __init__ attribute of the ProjectCreationForm (it's no big deal)
             formB = ClientCreationForm(request.POST, user = user)
 
-            if(formB.is_valid()):
-                if get_active_business_user_with_permission(request, 'can_add_contact', show_err='Add')[1] == True:
+            if get_active_business_user_with_permission(request, 'can_add_contact', show_err='Add')[1] == True:
+                if(formB.is_valid()):
                     clientValidForm = formB.save(commit = False)
                     clientValidForm.companyAssignee = active_business_user
                     clientValidForm.save()
                     messages.success(request, f"New Client Created Successfully!")
-            else:
-                messages.error(request, "PhoneNumber or Email should be provided for Client")
+                    ActivityLog.objects.create(user=logged_in_user, action=f"Created New Client")
+                else:
+                    messages.error(request, "PhoneNumber or Email should be provided for Client")
             return redirect('appContacts')
     else:
         formA = ProjectCreationForm(user = user)
@@ -306,13 +365,14 @@ def contact_detailed_view(request, pk):
     if(request.method == "POST"):
         if(form_type != None):
             formEditClient = ClientCreationForm(request.POST, user = active_business_user, possible_projects = projects, instance = contact)
-            if(formEditClient.is_valid()):
-                if get_active_business_user_with_permission(request, 'can_edit_contact', show_err='Client Edit')[1] == True:
+            if get_active_business_user_with_permission(request, 'can_edit_contact', show_err='Client Edit')[1] == True:
+                if(formEditClient.is_valid()):
                     formEditClient.last_edit = timezone.now()
                     formEditClient.save()
                     messages.success(request, "Client information Updated!")
-            else:
-                messages.error(request, "Can't edit the user detail!")
+                    ActivityLog.objects.create(user=logged_in_user, action=f"Updated Contact Information")
+                else:
+                    messages.error(request, "Can't edit the user detail!")
         return redirect('appContactDetail', pk=pk)
     
     formEditClient = ClientCreationForm(user = active_business_user, possible_projects = projects, instance = contact)
@@ -375,6 +435,7 @@ def contact_restore_view(request, pk):
     contact_name = contact.name
     contact.restore()
     messages.success(request, f"Restored Contact '{contact_name}")
+    ActivityLog.objects.create(user=logged_in_user, action=f"Restored Contact '{contact_name}' from Trash")
     return redirect('appTrash')
 
 @require_POST
@@ -405,12 +466,14 @@ def project_delete_view(request, name, *args, **kwargs):
 @require_POST
 @login_required
 def project_restore_view(request, id, *args, **kwargs):
-
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
     project = Project.all_objects.filter(id = id).first()
     project_name = project.name
 
     project.restore()
     messages.success(request, f"Project {project_name} is recovered.")
+    ActivityLog.objects.create(user=logged_in_user, action=f"Recovered '{project_name}' List from Trash")
 
     return redirect('appTrash')
 
@@ -423,29 +486,30 @@ def tasks_view(request, *args, **kwargs):
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_tasks', show_err='Task Read')
     form = TaskCreationForm()
-    print(active_business_user)
+    
     if request.method == "POST":
-        # For the purpose of file upload - we need request.FILES [COOL]
         form = TaskCreationForm(request.POST, user = user)
-        if(form.is_valid()):
+        if(get_active_business_user_with_permission(request, 'can_edit_tasks', show_err='Task Edit')[1]):
             due_date = request.POST.get('due_date')  # format: 'YYYY-MM-DD'
             due_time = request.POST.get('due_time')  # format: 'HH:MM'
-            if(get_active_business_user_with_permission(request, 'can_edit_tasks', show_err='Task Edit')[1]):
+            if(form.is_valid()):
                 tmp = form.save(commit = False)
                 tmp.user = user
                 tmp.due_date = due_date
                 tmp.due_time = due_time
                 tmp.save()
                 messages.success(request, f"New Task Added!")
-        else:
-            messages.success(request, f"Can't Create Task")
+                ActivityLog.objects.create(user=logged_in_user, action=f"Created New Task")
+            else:
+                messages.error(request, f"Can't Create Task")
         return redirect('appTasks')
-    else:
-        form = TaskCreationForm(user = user)
-    if logged_in_user == active_business_user:
-        tasks = Task.objects.filter(user = logged_in_user)
-        
 
+    form = TaskCreationForm(user = active_business_user)
+    if is_success:
+        tasks = Task.objects.filter(user = active_business_user)
+    else:
+        tasks = None
+        
     context = {
         'form': form,
         'businessuser': user,
@@ -456,26 +520,106 @@ def tasks_view(request, *args, **kwargs):
         'featuredApp/tasks.html',
         context,
     )
+
 @login_required
 def task_detailed_view(request, pk, *args, **kwargs):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_tasks', show_err='Task Read')
+
     task = get_object_or_404(Task, user = active_business_user, pk=pk)
     if request.method == 'POST':
         form = TaskEditForm(request.POST, instance = task)
-        if form.is_valid():
-            formObject = form.save(commit=False)
-            formObject.user=active_business_user
-            formObject.save()
+        if get_active_business_user_with_permission(request, 'can_read_tasks', show_err='Task Read')[1]:
+            if form.is_valid():
+                formObject = form.save(commit=False)
+                formObject.user = active_business_user
+                formObject.save()
+                messages.success(request, 'Updated the Task')
+                ActivityLog.objects.create(user=logged_in_user, action=f"Updated Task Info")
+            else:
+                messages.error(request, "Please Enter Valid Information")
+        return redirect('appTaskDetail', pk)
+        
     form = TaskEditForm(instance = task)
-    print(form.instance.due_date)
-    context = {'task':task, 'form': form}
+    context = {
+        'task':task, 
+        'form': form,
+    }
     return render(
         request, 
         'featuredApp/task_detailed.html',
         context,
-    ) 
+    )
+
+@require_POST
+@login_required
+def task_mark_completed_view(request, pk, *args, **kwargs):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_view_tasks', show_err='Task Delete')
+
+    if(is_success == False):
+        return redirect('appTaskDetail', pk=pk)
+
+    task = get_object_or_404(Task, user = active_business_user, pk=pk)
+    task_name = task.task_name
+    # Essence
+    task.status = "Completed";
+    task.save()
+    messages.success(request, f"{task_name} marked as completed!")
+    ActivityLog.objects.create(user=logged_in_user, action=f"Marked '{task_name}' as Completed.")
+    return redirect('appTaskDetail', pk=pk)
+
+@require_POST
+@login_required
+def task_delete_view(request, pk, *args, **kwargs):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_delete_tasks', show_err='Task Delete')
+
+    if(is_success == False):
+        return redirect('appTaskDetail', pk=pk)
+
+    task = get_object_or_404(Task, user = active_business_user, pk=pk)
+    task_name = task.task_name
+    task.delete()
+    messages.warning(request, f"Task '{task_name}' is deleted!")
+    return redirect('appTasks')
+
+
+@require_POST
+@login_required
+def task_restore_view(request, *args, **kwargs):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_delete_tasks', show_err='Task Restore')
+
+    if(is_success == False):
+        return redirect('appTaskDetail', pk=pk)
+
+    task = get_object_or_404(Task, user = active_business_user, pk=pk)
+    task_name = task.task_name
+    task.restore()
+    messages.success(request, f"Task '{task_name}' is recovered!")
+    return redirect('appTasks')
+
+@require_POST
+@login_required
+def task_permanent_delete_view(request, *args, **kwargs):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    active_business_user, is_success = get_active_business_user_with_permission(request, 'can_delete_tasks', show_err='Task Delete')
+
+    if(is_success == False):
+        return redirect('appTrash')
+
+    task = get_object_or_404(Task, user = active_business_user, pk=pk)
+    task_name = task.task_name
+    task.delete()
+    messages.warning(request, f"Task '{task_name}' is deleted!")
+    return redirect('appTasks')
+
 # ---- ==== Featured Related to Documents View ==== ----
 # Include: [document_view; ]
 @login_required
@@ -494,8 +638,9 @@ def documents_view(request, *args, **kwargs):
                 tmp.user = user
                 tmp.save()
                 messages.success(request, f"New Document Added!")
+                ActivityLog.objects.create(user=logged_in_user, action=f"Created New Document.")
         else:
-            messages.success(request, f"Can't Create Document")
+            messages.error(request, f"Can't Create Document")
         return redirect('appDocuments')
     else:
         form = DocumentCreationForm(user = user)
@@ -552,6 +697,7 @@ def documents_detailed_view(request, pk, *args, **kwargs):
                 if get_active_business_user_with_permission(request, 'can_edit_document', show_err='Document Edit')[1] == True:
                     formEditDocument.save()
                     messages.success(request, "Document Updated!")
+                    ActivityLog.objects.create(user=logged_in_user, action=f"Updated Document.")
             else:
                 messages.error(request, "Can't Edit Document!")
         return redirect('appDocumentDetail', pk=pk)
@@ -614,6 +760,7 @@ def document_restore_view(request, pk):
     document_name = document.document_name
     document.restore()
     messages.success(request, f"Restored Document '{document_name}")
+    ActivityLog.objects.create(user=logged_in_user, action=f"Recovered '{document_name}' from Trash")
     return redirect('appTrash')
 
 # ---- ==== Featured Related to Activities View ==== ----
@@ -644,6 +791,8 @@ def trash_view(request):
     if(logged_in_user != active_business_user):
         if(get_active_business_user_with_permission(request, 'can_delete_contact', show_err='Contact Delete')[1]):
             trashed_contacts = Client.all_objects.filter(companyAssignee = active_business_user, is_deleted = True)
+        else:
+            trashed_contacts = None
         
         # Get all roles that the active user shared with the logged-in user
         shared_roles = AccessPermission.objects.filter(
@@ -651,15 +800,20 @@ def trash_view(request):
             shared_with=logged_in_user
         ).values_list('role', flat=True)
 
-        # Get all projects using those shared roles with delete(restore) access
+        # Get all projects using those shared roles
         projects = Project.objects.filter(
             shared_project_permissions__role__in=shared_roles,
             shared_project_permissions__can_delete_project=True,
             user=active_business_user
         ).distinct()
 
+        # Select Deleted Project
+        trashed_projects = projects.filter(is_deleted = True)
+
         if(get_active_business_user_with_permission(request, 'can_delete_documents', show_err='Document Delete')[1]):
             trashed_documents = Document.all_objects.filter(user = active_business_user, is_deleted = True)
+        else:
+            trashed_documents = None
     else:
         trashed_contacts = Client.all_objects.filter(companyAssignee=user, is_deleted=True)
         trashed_projects = Project.all_objects.filter(user=user, is_deleted=True)
@@ -694,6 +848,8 @@ def manage_access(request):
     roles = Role.objects.filter(user=user)
     accesses = AccessPermission.objects.filter(owner=user)
 
+    logged_in_user = request.user.businessuser
+
     # Forms
     role_form = RolesCreationForm_Account(user=user)
     permission_formset_factory = modelformset_factory(
@@ -722,6 +878,7 @@ def manage_access(request):
                         permission_instance.save()
 
                     messages.success(request, f"The role '{role_instance.name}' has been created successfully.")
+                    ActivityLog.objects.create(user=logged_in_user, action=f"Created new role: {role_instance.name}")
                     return redirect('appManageAccess')
 
                 except Exception as e:
@@ -756,6 +913,7 @@ def manage_access(request):
 
             if success:
                 messages.success(request, "Access shared successfully.")
+                ActivityLog.objects.create(user=logged_in_user, action=f"Share Access of My Account")
             return redirect('appManageAccess')
 
     # GET request - prepare empty formset with initial values

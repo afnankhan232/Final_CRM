@@ -11,6 +11,42 @@
 	<!-- Specific for Project pop-up  -->
 	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/dashboard.css' %}">
 
+    <style type="text/css">
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f8ff, #e0f7fa);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: slideFadeIn 1s ease-out;
+        }
+
+        .welcome-box h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #0d6efd;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-box p {
+            font-size: 1.25rem;
+            color: #495057;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        @keyframes slideFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
 {% endblock addCSSlink %}
 
 {% block contentBody1 %}
@@ -19,156 +55,158 @@
 
 	<hr style="margin: 20px 0;">
 
+
 	
-<div class="mb-4">
-    <style>
-    .welcome-box {
-        background: linear-gradient(135deg, #f0f8ff, #e0f7fa);
-        padding: 2.5rem;
-        border-radius: 20px;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        animation: slideFadeIn 1s ease-out;
-    }
+    <div class="mb-4">
 
-    .welcome-box h2 {
-        font-size: 2.8rem;
-        font-weight: 800;
-        color: #0d6efd;
-        margin-bottom: 1rem;
-    }
-
-    .welcome-box p {
-        font-size: 1.25rem;
-        color: #495057;
-        font-style: italic;
-        font-weight: 600;
-    }
-
-    @keyframes slideFadeIn {
-        0% {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-</style>
-
-<div class="welcome-box">
-    <h2>Welcome back, {{ user.first_name }}! 👋</h2>
-    <p>✨ "Push yourself, because no one else is going to do it for you."</p>
-</div>
-
-</div>
-
-<div class="row text-white">
-    <div class="col-md-3 mb-3">
-        <div class="card bg-primary p-3">
-            <h5>Total Clients</h5>
-            <p>{{ total_clients }}</p>
+        <div class="welcome-box">
+            <h2>Welcome back, {{ user.first_name }}! </h2>
+            <p>"Push yourself, because no one else is going to do it for you."</p>
         </div>
+
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card bg-warning p-3">
-            <h5>Pending Tasks</h5>
-            <p>{{ pending_tasks }}</p>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card bg-success p-3">
-            <h5>Completed Tasks</h5>
-            <p>{{ completed_tasks }}</p>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card bg-info p-3">
-            <h5>Documents Uploaded</h5>
-            <p>{{ total_documents }}</p>
-        </div>
-    </div>
-</div>
 
-<div class="d-flex justify-content-between my-4">
-    <a class="btn btn-outline-success" href="{% url 'appContacts' %}">+ Add Client</a>
-    <a class="btn btn-outline-primary" href="{% url 'appTasks' %}">+ Add Task</a>
-    <a class="btn btn-outline-secondary" href="{% url 'appDocuments' %}">+ Upload Document</a>
-
-    <form class="d-flex" method="get" action="#">
-        <input class="form-control me-2" name="q" type="search" placeholder="Search clients/tasks...">
-        <button class="btn btn-dark" type="submit">Search</button>
-    </form>
-</div>
-
-<h4>Upcoming Tasks</h4>
-<ul class="list-group mb-4">
-    {% for task in upcoming_tasks %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ task.title }} — <span class="badge bg-primary">{{ task.due_date }}</span>
-        </li>
-    {% empty %}
-        <li class="list-group-item text-muted">No upcoming tasks.</li>
-    {% endfor %}
-</ul>
-
-<h4>Recent Activities</h4>
-<ul class="list-group">
-    {% for activity in recent_activities %}
-        <li class="list-group-item">
-            <strong>{{ activity.user }}</strong> {{ activity.action }} <small class="text-muted">{{ activity.timestamp }}</small>
-        </li>
-    {% empty %}
-        <li class="list-group-item text-muted">No recent activities found.</li>
-    {% endfor %}
-</ul>
-
-
-{% endblock contentBody1 %}
-<!-- 
-
-
-{% block content %}
-<div class="container mt-4">
-    <h2>Dashboard</h2>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Tasks</h5>
-                    <p class="card-text">{{ task_count }} total tasks</p>
-                </div>
+    <div class="row text-white">
+        <!-- Client Section  -->
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary p-3">
+                <h5>Total Clients</h5>
+                <p>{{ total_clients }}</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Clients</h5>
-                    <p class="card-text">{{ client_count }} total clients</p>
-                </div>
+
+        <!-- PENDING: Tasks Section  -->
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning p-3">
+                <h5>Pending Tasks</h5>
+                <p>{{ pending_tasks }}</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Documents</h5>
-                    <p class="card-text">{{ document_count }} total documents</p>
-                </div>
+
+        <!-- COMPLETED: Task Section -->
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success p-3">
+                <h5>Completed Tasks</h5>
+                <p>{{ completed_tasks }}</p>
+            </div>
+        </div>
+
+        <!-- Document Section -->
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info p-3">
+                <h5>Documents Uploaded</h5>
+                <p>{{ total_documents }}</p>
             </div>
         </div>
     </div>
 
-    <h4 class="mt-4">Recent Tasks</h4>
-    <ul class="list-group">
-        {% for task in recent_tasks %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ task.title }}
-            <span class="badge badge-primary badge-pill">{{ task.status }}</span>
-        </li>
-        {% empty %}
-        <li class="list-group-item">No recent tasks.</li>
+    <div class="d-flex justify-content-between my-4">
+        <a class="btn btn-outline-success" href="{% url 'appContacts' %}">+ Add Client</a>
+        <a class="btn btn-outline-primary" href="{% url 'appTasks' %}">+ Add Task</a>
+        <a class="btn btn-outline-secondary" href="{% url 'appDocuments' %}">+ Upload Document</a>
+
+        <form class="d-flex" method="get" action="#">
+            <input class="form-control me-2" name="q" type="search" placeholder="Search clients/tasks...">
+            <button class="btn btn-dark" type="submit">Search</button>
+        </form>
+    </div>
+
+    {% if search_results %}
+        <h4>Search Results</h4>
+
+        {% if find_client_by_query %}
+        <ul class="list-group mb-4">
+            {% for result in find_client_by_query %}
+                <li class="list-group-item">
+                    <a href="{% url 'appContactDetail' result.id%}"> Contact: {{result.name}} </a>
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if find_tasks_by_query %}
+        <ul class="list-group mb-4">
+            {% for result in find_tasks_by_query %}
+                <li class="list-group-item">
+                    <a href="{% url 'appTaskDetail' result.id%}"> Task: {{result.task_name}} </a>
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if find_document_by_query %}
+        <ul class="list-group mb-4">
+            {% for result in find_document_by_query %}
+                <li class="list-group-item">
+                    <a href="{% url 'appDocumentDetail' result.id%}"> Document: {{result.document_name}} </a>
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+
+    {% elif query %}
+        <p class="text-muted">No results found for "{{ query }}".</p>
+    {% endif %}
+
+    <h4>Upcoming Tasks</h4>
+    <ul class="list-group mb-4">
+
+        {% for task in upcoming_tasks %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ task.title }} — 
+                <span class="badge bg-primary">{{ task.due_date }}</span>
+            </li>
+
+            {% empty %}
+            <li class="list-group-item text-muted">No upcoming tasks.</li>
         {% endfor %}
     </ul>
-</div>
-{% endblock %} -->
+
+    <h4>Recent Activities</h4>
+    <ul class="list-group mb-4">
+        {% for activity in recent_activities %}
+            <li class="list-group-item">
+                <strong>{{ activity.user }}</strong> 
+                {{ activity.action }} 
+                <small class="text-muted">{{ activity.timestamp }}</small>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-muted">No recent activities found.</li>
+        {% endfor %}
+    </ul>
+
+
+    <h4>Switch Account</h4>
+    <ul class="list-group">
+            <!-- Self Account -->
+            <li class="list-group-item">
+                <form method="post" action="{% url 'switch_account' public_id=self_account.public_id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="switch-link">
+                        My Account
+                    </button>
+                </form>
+            </li>
+
+        <!-- Accessible Accounts -->
+        
+        {% for shared_user in accessible_accounts %}
+            <li class="list-group-item">
+                {% if shared_user.owner.public_id %}
+                    <form method="post" action="{% url 'switch_account' public_id=shared_user.owner.public_id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="switch-link">
+                            Switch to <strong>{{ shared_user.owner.company_email }}</strong>
+                        </button>
+                    </form>
+                {% else %}
+                    <span>{{ shared_user.user.email }} (no public ID)</span>
+                {% endif %}
+            </li>
+            {% empty %}
+                <li class="list-group-item text-danger">No shared access yet.</li>
+        {% endfor %}
+        </ul>
+
+{% endblock contentBody1 %}

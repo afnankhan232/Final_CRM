@@ -98,19 +98,26 @@
 	            	{{ task.due_time }}
 	        	</div>
 	        </div>
+	    </div>
+	  	<div class="mt-4m">
+		<div class="mt-4 d-flex flex-wrap" style="gap: 10px;">
 
-	    <div class="mt-4 d-flex justify-content-start" style="column-gap: 10px;">
+			<button class="btn btn-info" type="button" onclick="openEditTaskFormPopUp()">
+				Edit
+			</button>
 
-		    <button class="btn btn-outline-info" type="submit" onclick="openEditTaskFormPopUp()">
-		    	Edit
-		    </button>
-		    
-		    <form action="#" method="post">
-		    	{% csrf_token %}
-		    	<button class="btn btn-outline-danger" type="submit">Delete</button>
-		    </form>
-		</div> 
+			<form method="post" action="{% url 'appTaskDelete' task.id%}" style="display: inline;">
+				{% csrf_token %}
+				<button type="submit" class="btn btn-danger">Delete</button>
+			</form>
 
+			{% if task.status != "Completed" %}
+				<form method="post" action="{% url 'appTaskMarkComplete' task.id %}" style="display: inline;">
+					{% csrf_token %}
+					<button type="submit" class="btn btn-success">Mark as Completed</button>
+				</form>
+			{% endif %}
+		</div>
 	</div>
 
 
@@ -210,7 +217,7 @@
 		}
 
 		// Close popup on ESC key
-		Task.addEventListener('keydown', function(event) {
+		document.addEventListener('keydown', function(event) {
 			if (event.key === 'Escape') {
 				closeEditTaskFormPopUp();
 			}

@@ -295,3 +295,13 @@ class Contact(models.Model):
     tags = models.CharField(max_length=255, blank=True)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
     owner = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
+
+# Tracking Activities
+class ActivityLog(models.Model):
+
+    user = models.ForeignKey(BusinessUser, on_delete=models.CASCADE)
+    action = models.CharField(max_length = 255)
+    timestamp = models.DateTimeField(auto_now_add = True)
+
+    def __str__(self):
+        return f"{self.name} - {self.action}"

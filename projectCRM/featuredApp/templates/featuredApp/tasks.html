@@ -50,6 +50,7 @@
     <table class="table">
         <thead>
             <tr>
+            	<th><input type="checkbox" /></th>
                 <th>Name</th>
                 <th>Owner</th>
                 <th>Priority</th>
@@ -62,18 +63,17 @@
         <tbody>
             {% for task in tasks %}
                 <tr>
+                	<td><input type="checkbox" /></td>
                     <td><a href="{% url 'appTaskDetail' task.id %}">{{ task.task_name }}</a></td>
                     <td>{{ task.owner }}</td>
-                    <td>
-                        {% if task.priority == 'Urgent' %}
-                            <span class="dot"></span>
-                        {% endif %}
+                    <td class="{% if task.priority == 'Urgent' %}text-danger{%endif%}">
                         {{ task.priority }}
                     </td>
                     <td>{{ task.related_to }}</td>
-                    <td>{{ task.status }}</td>
+                    <td class="{% if task.status == 'Completed' %}text-success{%endif%}">
+                    	{{ task.status }}
+                    </td>
                     <td>{{ task.due_date }}</td>
-                    
                 </tr>
             {% empty %}
                 <tr><td colspan="7">No tasks available. Please add a task to get started.</td></tr>

@@ -1,5 +1,6 @@
 # Basic Import
 from django import forms
+from django.db.models import Q
 
 # no active use
 # For Displaying [country_code] and [phone_number] side-by-side
@@ -167,9 +168,13 @@ class TaskCreationForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if user:
-            print(Client.objects.filter(companyAssignee = user))
             self.fields['related_to'].queryset = Client.objects.filter(companyAssignee = user)
-            self.fields['owner'].queryset = BusinessUser.objects.filter(pk = user.pk)
+            owner01 = BusinessUser.objects.filter(pk = user.pk).first()
+            owner021 = AccessPermission.objects.filter(owner = user)
+            owner022 = owner021.values_list('shared_with', flat=True)
+            self.fields['owner'].queryset = BusinessUser.objects.filter(
+                Q(id=owner01.id) | Q(id__in = owner022)
+            ).distinct()
         
         self.fields['task_name'].widget.attrs.update({
             'placeholder': 'Enter task name'

@@ -178,7 +178,7 @@
 				      {{ formA.can_add_project }}
 				      <label class="form-check-label">Create</label>
 				    </div>
-				    <small class="text-muted d-block mt-1">Set permissions for managing projects.</small>
+				    <small class="text-muted d-block mt-1">Set permissions for managing lists.</small>
 				</div>
 
 				<h5>Tasks</h5>
@@ -374,10 +374,36 @@
 			}
 		});
 
-
+		// individual list
 		const everyProjectElement = document.querySelectorAll('[id$="-can_read_project"]');
-		console.log(everyProjectElement.length);
-		// Initialize every project as disabled -> unless it have read_project ending
+		for(let projectElementIterator=0; projectElementIterator < everyProjectElement.length; ++projectElementIterator) {
+			let find_project_element_specific_id = `id_form-${projectElementIterator}`
+			let find_project_element_specific_id_js_element = document.querySelectorAll(`[id^="${find_project_element_specific_id}"]`);
+
+			// first disable everything unless view
+			find_project_element_specific_id_js_element.forEach((e, i)=>{
+				if(e.id !== `${find_project_element_specific_id}-can_read_project`) {
+					e.disabled = true;
+				}
+			});
+
+			// set seperate event listener for each project - with id can_read_project
+			let project_read_with_current_form_name = `${find_project_element_specific_id}-can_read_project`;
+			let project_read_with_current_form_js_element = document.getElementById(project_read_with_current_form_name);
+			console.log(project_read_with_current_form_js_element);
+			project_read_with_current_form_js_element.addEventListener('change', ()=>{
+				find_project_element_specific_id_js_element.forEach((e, i)=>{
+					if(e.id !== project_read_with_current_form_name) {
+						if(project_read_with_current_form_js_element.checked) {
+							e.disabled = false;
+						} else {
+							e.disabled = true;
+						}
+					}
+				});
+			});
+		}
+		
 
 		// everyProjectElement.forEach(function(checkbox) {
 		//     checkbox.addEventListener('change', function() {
