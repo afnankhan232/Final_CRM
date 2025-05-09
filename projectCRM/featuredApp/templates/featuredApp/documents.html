@@ -66,7 +66,7 @@
 <!-- There GOES the POP-UP Window for Document Form -->
 {% block addPopUp1 %}
 	<!-- The Following defined the POP-UP WINDOW for adding new Document to the model -->
-	<div class="add-pop-up-window" id="pop-up-doc-window-element">
+	<div class="add-pop-up-window" id="pop-up-doc-window-element" style="max-width: 600px;">
 
 		<span class="close-popup-btn" onclick="closeDocumentFormPopUp()">&times;</span>
 
@@ -77,18 +77,38 @@
 			<form method="POST" enctype="multipart/form-data"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
-					<legend class="border-bottom mb-4"> Add a new Document </legend>
-					{{ form|crispy }}
+					<legend class="border-bottom mb-4"> Add Document 
+						<div class="text-muted" style="font-size: 12px; line-height: 1.1; font-weight: 300; margin-bottom: 8px">
+							Add a new document to a contact’s profile to keep important files, agreements, or notes in one place.
+						</div>
+					</legend>
+
+					<div class="form-group">
+						{{ form.document_name|as_crispy_field }}
+					</div>
+
+					<div class="form-group">
+						{{ form.file|as_crispy_field }}
+					</div>
+
+					<div class="text-muted" style="font-size: 12px; margin-bottom: 10px">
+						Supported formats for upload: .pdf, .doc, .docx, .png, .svg, .jpg, .jpeg, .xlsx, .csv
+					</div>
+					
+					<div class="form-group">
+						{{ form.related_to|as_crispy_field }}
+					</div>
+
+					<div class="form-group">
+						{{ form.description|as_crispy_field }}
+					</div>
+
+					<div class="form-group">
+						<button class="btn btn-dark w-100" type="submit">Upload</button>
+					</div>
 				</fieldset>
-
-				<div class="form-group">
-					<button class="btn btn-dark w-100" type="submit">Upload</button>
-
-				</div>
 			</form>
-			
 		</div>
-
 	</div>
 
 	<!-- This div allow us to close the pop-up if we click outside.. -->

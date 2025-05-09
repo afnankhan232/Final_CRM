@@ -129,25 +129,65 @@
 <!-- There GOES the POP-UP Window for Project Form -->
 {% block addPopUp1 %}
 	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
-	<div class="add-pop-up-window" id="contact-edit-pop-up-window-element">
+	<div class="add-pop-up-window" id="contact-edit-pop-up-window-element" style="max-width: 600px;">
 
 		<span class="close-popup-btn" onclick="closeEditContactFormPopUp()">&times;</span>
 
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
 		<div style="margin-top: 20px;" class="content-section">
-			<form method="POST" name="form_type" value="editForm"> 
+			<form method="POST"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
-					<legend class="border-bottom mb-4" style="font-weight: 800;"> Update Client Information </legend>
-					{{ form|crispy }}
+					<legend class="border-bottom mb-4" style="font-weight: 800;"> 
+						Update Client Information
+						<br>
+						<div style="font-size: 12px; line-height: 1.1; font-weight: 300; margin-bottom: 8px;">
+							Update client profiles to track the latest changes in their needs, preferences, or engagement history.
+						</div>
+					</legend>
+					
+					<form method="POST">
+						{% csrf_token %}
+						<div class="form-group">
+							{{ form.name|as_crispy_field }}
+						</div>
+
+						<div class="form-group">
+							{{ form.email|as_crispy_field }}
+						</div>
+
+						<!-- Side-by-side layout -->
+						<div class="form-row">
+							<div class="form-group col-sm-3">
+								{{ form.country_code|as_crispy_field }}
+							</div>
+							<div class="form-group col-sm-9">
+								{{ form.phone|as_crispy_field }}
+							</div>
+						</div>
+
+						<div class="form-group">
+							{{ form.address|as_crispy_field }}
+						</div>
+
+						<div class="form-group">
+							{{ form.description|as_crispy_field }}
+						</div>
+
+						<div class="form-group">
+							{{ form.list|as_crispy_field }}
+						</div>
+
+						<div class="form-group">
+							<button class="w-100 btn btn-info" type="submit" name="form_type" value="client_form">Update</button>
+						</div>
+						
+					</form>
+
 				</fieldset>
 
-				<div class="form-group">
-					<button class="btn btn-outline-info" type="submit" name="form_type" value="editClientForm">
-						Update
-					</button>
-				</div>
+				
 			</form>
 			
 		</div>

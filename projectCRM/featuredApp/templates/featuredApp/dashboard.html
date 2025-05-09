@@ -20,34 +20,87 @@
 	<hr style="margin: 20px 0;">
 
 	<h3>Switch Account</h3>
-		<ul>
-			<!-- Self Account -->
-			<li>
-				<form method="post" action="{% url 'switch_account' public_id=self_account.public_id %}" style="display:inline;">
-	                {% csrf_token %}
-	                <button type="submit" class="switch-link">
-	                    My Account
-	                </button>
-	            </form>
-			</li>
+	<ul>
+		<!-- Self Account -->
+		<li>
+			<form method="post" action="{% url 'switch_account' public_id=self_account.public_id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="switch-link">
+                    My Account
+                </button>
+            </form>
+		</li>
 
-			<!-- Accessible Accounts -->
-			{% for shared_user in accessible_accounts %}
-				<li>
-					{% if shared_user.owner.public_id %}
-					    <form method="post" action="{% url 'switch_account' public_id=shared_user.owner.public_id %}" style="display:inline;">
-			                {% csrf_token %}
-			                <button type="submit" class="switch-link">
-			                    Switch to <strong>{{ shared_user.owner.company_email }}</strong>
-			                </button>
-			            </form>
-					{% else %}
-					    <span>{{ shared_user.user.email }} (no public ID)</span>
-					{% endif %}
-				</li>
-				{% empty %}
-					<li class="text-danger">No shared access yet.</li>
-			{% endfor %}
-		</ul>
+		<!-- Accessible Accounts -->
+		{% for shared_user in accessible_accounts %}
+			<li>
+				{% if shared_user.owner.public_id %}
+				    <form method="post" action="{% url 'switch_account' public_id=shared_user.owner.public_id %}" style="display:inline;">
+		                {% csrf_token %}
+		                <button type="submit" class="switch-link">
+		                    Switch to <strong>{{ shared_user.owner.company_email }}</strong>
+		                </button>
+		            </form>
+				{% else %}
+				    <span>{{ shared_user.user.email }} (no public ID)</span>
+				{% endif %}
+			</li>
+			{% empty %}
+				<li class="text-danger">No shared access yet.</li>
+		{% endfor %}
+	</ul>
+
+	<!-- Welcome back: {user-name} A motivational message or quote. -->
+	<!-- Upcoming tasks -->
+	<!-- Recent Activity [Login By other user; deletion; updation; creation of new instance] -->
+	<!-- ADD new client, document, task button (at glance) for easy access -->
+	<!-- completed task; pending tasks; total client; documents uploaded -->
+	<!-- Search bar for quick look-up -->
 
 {% endblock contentBody1 %}
+<!-- 
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Dashboard</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Tasks</h5>
+                    <p class="card-text">{{ task_count }} total tasks</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Clients</h5>
+                    <p class="card-text">{{ client_count }} total clients</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Documents</h5>
+                    <p class="card-text">{{ document_count }} total documents</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mt-4">Recent Tasks</h4>
+    <ul class="list-group">
+        {% for task in recent_tasks %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ task.title }}
+            <span class="badge badge-primary badge-pill">{{ task.status }}</span>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No recent tasks.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %} -->

@@ -65,6 +65,9 @@ class RolesCreationForm_Account(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)  # fallback to None
         super().__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({
+            'placeholder': 'Enter role name'
+        })
     
     # Since we need the name of the each form to be unique for a user
     # we need to over-ride the [clean] method

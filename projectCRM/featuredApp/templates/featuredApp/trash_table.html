@@ -35,7 +35,6 @@
                         Restore
                     </button>
                 </form>
-
                 <form method="post" action='{% url "app"|add:model|add:"PermanentDelete" item.pk %}' style="display:inline;">
                     {% csrf_token %}
                     <button class="btn btn-sm btn-outline-danger">

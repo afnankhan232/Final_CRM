@@ -95,7 +95,7 @@
 <!-- There GOES the POP-UP Window for Project Form -->
 {% block addPopUp1 %}
 	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
-	<div class="add-pop-up-window" id="Document-edit-pop-up-window-element">
+	<div class="add-pop-up-window" id="Document-edit-pop-up-window-element" style="max-width: 600px;">
 		<span class="close-popup-btn" onclick="closeEditDocumentFormPopUp()">&times;</span>
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
@@ -103,7 +103,12 @@
 			<form method="POST" enctype="multipart/form-data" name="form_type" value="edit_form"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
-					<legend class="border-bottom mb-4" style="font-weight: 800;"> Update Document </legend>
+					<legend class="border-bottom mb-4" style="font-weight: 800;"> Update Document 
+					<br>
+					<div class="text-muted" style="font-size: 12px; line-height: 1.1; font-weight: 300; margin-bottom: 8px">
+						Update your document with the latest information.
+					</div>
+					</legend>
 					{{ form|crispy }}
 				</fieldset>
 				<div class="form-group">

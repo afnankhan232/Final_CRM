@@ -36,6 +36,10 @@
 	    .icon-button.delete:hover {
 	        color: red;
 	    }
+
+	    .active-more {
+	    	color: red;
+	    }
 	</style>
 
 
@@ -74,7 +78,9 @@
 		                </button>
 		                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
 		                    {% for project in projects|slice:"5:" %}
-		                        <a class="dropdown-item" href="?project_id={{ project.id }}">{{ project.name }}</a>
+		                        <a class="dropdown-item {% if selected_project_name == project.name %}active-more{% endif %}" href="?project_name={{ project.name }}">
+			                        {{ project.name }}
+			                	</a>
 		                    {% endfor %}
 		                </div>
 		            </div>
@@ -90,11 +96,11 @@
 
 		{% if selected_project_name %}
 		<!-- Edit Button -->
-		<button class="add-btn btn btn-sm icon-button edit" type="button" onclick="openProjectFormPopUp()">
+		<button class="add-btn btn btn-sm icon-button edit" type="button" onclick="openProjectFormPopUp()" style="margin-left: 4px">
 			<i class="fas fa-pen"></i>
 		</button>
 
-		<form action="{% url 'appProjectDelete' selected_project_name %}" method="post">
+		<form action="{% url 'appProjectDelete' selected_project_name %}" method="post" style="padding-left: 4px">
 			{% csrf_token %}
 			<!-- Delete Button -->
 			<button class="add-btn btn btn-sm icon-button delete" type="submit">
@@ -163,7 +169,7 @@
 <!-- There GOES the POP-UP Window for Project Form -->
 {% block addPopUp1 %}
 	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
-	<div class="add-pop-up-window" id="prj-pop-up-window-element">
+	<div class="add-pop-up-window" id="prj-pop-up-window-element" style="max-width: 600px;">
 
 		<span class="close-popup-btn" onclick="closeProjectFormPopUp()">&times;</span>
 
@@ -173,7 +179,12 @@
 			<form method="POST"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
-					<legend class="border-bottom mb-4" style="font-weight: 800"> ADD NEW PROJECT </legend>
+					<legend class="border-bottom mb-4" style="font-weight: 800"> 
+						Add List 
+						<div style="font-size: 12px; line-height: 1.1; font-weight: 300; margin-bottom: 8px;">
+							Add a new list to group contacts by project, region, or interest. Use lists to run targeted campaigns and manage communication more effectively across your CRM.
+						</div>
+					</legend>
 					{{ formA|crispy }}
 				</fieldset>
 
@@ -195,7 +206,7 @@
 <!-- A pop-up Window for creating new Client/Contact -->
 {% block addPopUp2 %}
 	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
-	<div class="add-pop-up-window" id="client-pop-up-window-element">
+	<div class="add-pop-up-window" id="client-pop-up-window-element" style="max-width: 600px;">
 
 		<span class="close-popup-btn" onclick="closeDocumentFormPopUp()">&times;</span>
 
@@ -206,53 +217,50 @@
 			<form method="POST"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
-					<legend class="border-bottom mb-4" style="font-weight: 800"> ADD NEW CLIENT </legend>
-					
-					<form method="POST">
-						{% csrf_token %}
-						<div class="form-group">
-							{{ formB.name|as_crispy_field }}
+					<legend class="border-bottom mb-4" style="font-weight: 800"> 
+						Add New Client 
+						<br>
+						<div class="text-muted" style="font-size: 12px; line-height: 1.1; font-weight: 300; margin-bottom: 8px">
+							Create and manage client profiles effortlessly by adding essential information in one place. Maintain a complete history of interactions, preferences, and key business details.
 						</div>
+					</legend>
 
-						<div class="form-group">
-							{{ formB.email|as_crispy_field }}
+					<div class="form-group">
+						{{ formB.name|as_crispy_field }}
+					</div>
+
+					<div class="form-group">
+						{{ formB.email|as_crispy_field }}
+					</div>
+
+					<!-- Side-by-side layout -->
+					<div class="form-row">
+						<div class="form-group col-sm-3">
+							{{ formB.country_code|as_crispy_field }}
 						</div>
-
-						<!-- Side-by-side layout -->
-						<div class="form-row">
-							<div class="form-group col-md-2">
-								{{ formB.country_code|as_crispy_field }}
-							</div>
-							<div class="form-group col-md-10">
-								{{ formB.phone|as_crispy_field }}
-							</div>
+						<div class="form-group col-sm-9">
+							{{ formB.phone|as_crispy_field }}
 						</div>
+					</div>
 
-						<div class="form-group">
-							{{ formB.address|as_crispy_field }}
-						</div>
+					<div class="form-group">
+						{{ formB.address|as_crispy_field }}
+					</div>
 
-						<div class="form-group">
-							{{ formB.description|as_crispy_field }}
-						</div>
+					<div class="form-group">
+						{{ formB.description|as_crispy_field }}
+					</div>
 
-						<div class="form-group">
-							{{ formB.list|as_crispy_field }}
-						</div>
+					<div class="form-group">
+						{{ formB.list|as_crispy_field }}
+					</div>
 
-						<div class="form-group">
-							<button class="w-100 btn btn-dark" type="submit" name="form_type" value="client_form">Save</button>
-						</div>
-						
-					</form>
-
+					<div class="form-group">
+						<button class="w-100 btn btn-dark" type="submit" name="form_type" value="client_form">Save</button>
+					</div>
 				</fieldset>
-
-				
 			</form>
-			
 		</div>
-
 	</div>
 
 	<!-- This div allow us to close the pop-up if we click outside.. -->

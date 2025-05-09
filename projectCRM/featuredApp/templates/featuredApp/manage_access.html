@@ -9,6 +9,8 @@
 <!-- As we are loading crispy form Hence Import crispy_forms_tags -->
 {% load crispy_forms_tags %}
 
+<!-- Let me add the class filter over the form -->
+{% load widget_tweaks %}
 
 <!-- A nice title -->
 {% block titleBlock %} 
@@ -44,7 +46,7 @@
 			<!-- Roles Section -->
 			<div class="w-100">
 				<h5 style="font-weight:800">Your Roles</h5>
-				<ul class="list-group mb-3">
+				<ul class="list-group mb-3" style="max-width: 800px;">
 					{% for role in roles %}
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							{{ role.name }}
@@ -63,7 +65,7 @@
 			<!-- Access Section -->
 			<div class="w-100">
 				<h5 style="font-weight: 800">Shared Access</h5>
-				<ul class="list-group mb-3">
+				<ul class="list-group mb-3" style="max-width: 800px">
 					{% for access in accesses %}
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							{{ access.shared_with.company_email }} — {{ access.role.name }}
@@ -81,7 +83,7 @@
 {% endblock contentBody1 %}
 
 {% block addPopUp1 %}
-	<div class="add-pop-up-window" id="access-pop-up-window-element">
+	<div class="add-pop-up-window" id="access-pop-up-window-element" style="max-width: 800px;">
 
 		<span class="close-popup-btn" onclick="closeAccessFormPopUp()">&times;</span>
 
@@ -94,12 +96,12 @@
 
 				<template id="access-permission-template">
 					<div class="border rounded p-2 mb-3 access-block">
-					    <div class="row mb-2">
+					    <div class="row mb-2" style="margin-bottom: 8px;">
 					        <div class="col-md-6">
 								<label class="form-label">User Email</label>
 								<input type="email" name="shared_with_emails" class="form-control shared-email" placeholder="user@example.com" required>
 					        </div>
-					        <div class="col-md-3">
+					        <div class="col-md-4" style="margin-bottom: 8px;">
 					            <label class="form-label">Role</label>
 					            <select name="roles" class="form-control" required>
 					                {% for role in roles %}
@@ -107,7 +109,7 @@
 					                {% endfor %}
 					            </select>
 					        </div>
-					        <div class="col-md-3 d-flex align-items-end">
+					        <div class="col-md-2 d-flex align-items-end" style="margin-bottom: 9px;">
 					            <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('.access-block').remove()">Remove</button>
 					        </div>
 					    </div>
@@ -130,7 +132,7 @@
 <!-- A pop-up Window for creating new Client/Contact -->
 {% block addPopUp2 %}
 	<!-- The Following defined the POP-UP WINDOW for adding new project to the model -->
-	<div class="add-pop-up-window" id="roles-pop-up-window-element">
+	<div class="add-pop-up-window" id="roles-pop-up-window-element" style="max-width: 600px">
 
 		<span class="close-popup-btn" onclick="closeRolesFormPopUp()">&times;</span>
 
@@ -146,7 +148,8 @@
 
 			    <div class="mb-3">
 			        <label for="{{ form.name.id_for_label }}" class="form-label">Role Name</label>
-			        {{ formA.name }}
+			        <br>
+			        {{ formA.name|add_class:"w-100" }}
 			    </div>
 
 			    <h5>Contacts</h5>

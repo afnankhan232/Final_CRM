@@ -21,7 +21,9 @@ from client.forms import ProjectCreationForm
 from client.models import Document
 from client.forms import DocumentCreationForm
 
+# from client
 from client.models import ProjectAccessPermission
+from client.forms import TaskCreationForm
 
 # Date Time Field
 from django.utils import timezone
@@ -414,10 +416,18 @@ def project_restore_view(request, id, *args, **kwargs):
 # Include: [tasks_view; ]
 @login_required
 def tasks_view(request, *args, **kwargs):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    form = TaskCreationForm()
+
+    context = {
+        'form': form,
+        'businessuser': user,
+    }
     return render(
         request, 
         'featuredApp/tasks.html',
-        {},
+        context,
     )
 
 # ---- ==== Featured Related to Documents View ==== ----
@@ -477,6 +487,7 @@ def documents_view(request, *args, **kwargs):
             "documents": documents,
             'total_documents': documents.count() if documents != None else 0, 
             "form": form,
+            'businessuser': user,
         }
     )
 
@@ -487,9 +498,6 @@ def documents_detailed_view(request, pk, *args, **kwargs):
     active_business_user, is_success = get_active_business_user_with_permission(request, 'can_read_documents', show_err='Document Read')
     document = get_object_or_404(Document, user=active_business_user, pk=pk)
     form_type = request.POST.get("form_type")
-
-    print(form_type)
-    print(request.method)
 
     if(request.method == "POST"):
         if(form_type!=None):
@@ -506,6 +514,7 @@ def documents_detailed_view(request, pk, *args, **kwargs):
     context = {
         'document': document,
         'form': formEditDocument,
+        'businessuser': user,
     }
     return render(
         request,
@@ -565,7 +574,16 @@ def document_restore_view(request, pk):
 # Include: [activities_view; ]
 @login_required
 def activities_view(request, *args, **kwargs):
-    return render(request, 'featuredApp/activities.html')
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    context = {
+        'businessuser': user,
+    }
+    return render(
+        request, 
+        'featuredApp/activities.html',
+        context,
+    )
 
 # ---- ==== Featured Related to Trash View ==== ----
 # Include: [trash_view; ]
@@ -606,6 +624,7 @@ def trash_view(request):
         'trashed_contacts': trashed_contacts,
         'trashed_documents': trashed_documents,
         'trashed_projects': trashed_projects,
+        'businessuser': user,
     }
 
     return render(
@@ -718,6 +737,7 @@ def manage_access(request):
         'project_queryset': projects,
         'roles': roles,
         'accesses': accesses,
+        'businessuser': user,
     }
     return render(request, 'featuredApp/manage_access.html', context)
 

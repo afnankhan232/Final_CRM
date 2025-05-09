@@ -26,6 +26,8 @@ html {
     margin: 0px;
     color: indianred; 
     cursor: pointer;
+
+    font-weight: 800;
 }
 
 .l-own:hover {
@@ -33,7 +35,7 @@ html {
 }
 
 .l-own:active {
-    font-weight: 500;
+    font-weight: 800;
 }
 
 /*.layout {
