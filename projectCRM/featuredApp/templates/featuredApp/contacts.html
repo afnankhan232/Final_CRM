@@ -96,10 +96,6 @@
 
 		{% if selected_project_name %}
 		<!-- Edit Button -->
-		<button class="add-btn btn btn-sm icon-button edit" type="button" onclick="openProjectFormPopUp()" style="margin-left: 4px">
-			<i class="fas fa-pen"></i>
-		</button>
-
 		<form action="{% url 'appProjectDelete' selected_project_name %}" method="post" style="padding-left: 4px">
 			{% csrf_token %}
 			<!-- Delete Button -->

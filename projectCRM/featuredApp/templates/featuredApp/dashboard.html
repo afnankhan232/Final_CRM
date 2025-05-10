@@ -45,6 +45,10 @@
                 transform: translateY(0);
             }
         }
+
+        .no-animation {
+            animation: none !important;
+        }
     </style>
 
 {% endblock addCSSlink %}
@@ -55,13 +59,11 @@
 
 	<hr style="margin: 20px 0;">
 
-
-	
     <div class="mb-4">
 
-        <div class="welcome-box">
+        <div class="welcome-box" id="welcomeBox">
             <h2>Welcome back, {{ user.first_name }}! </h2>
-            <p>"Push yourself, because no one else is going to do it for you."</p>
+            <p>"Stay on top of your business — check your upcoming tasks, recent activity, and client updates all in one place."</p>
         </div>
 
     </div>
@@ -154,8 +156,8 @@
 
         {% for task in upcoming_tasks %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ task.title }} — 
-                <span class="badge bg-primary">{{ task.due_date }}</span>
+                {{ task.task_name }} — 
+                <span class="">{{ task.due_date }}</span>
             </li>
 
             {% empty %}
@@ -210,3 +212,16 @@
         </ul>
 
 {% endblock contentBody1 %}
+
+{% block extraJS %}
+    <script>
+        // Check if the animation has already been shown
+        if (!localStorage.getItem('welcomeShown')) {
+            // Set the flag so it doesn't show again
+            localStorage.setItem('welcomeShown', 'true');
+        } else {
+            // Add class to prevent the animation
+            document.getElementById('welcomeBox').classList.add('no-animation');
+        }
+    </script>
+{% endblock extraJS %}

@@ -123,12 +123,6 @@ def dashboard_view(request, *args, **kwargs):
     user = request.user.businessuser
     logged_in_user = request.user.businessuser
 
-    query = request.GET.get("q")
-    search_result = []
-    find_client_by_query = None
-    find_tasks_by_query = None
-    find_document_by_query = None
-
     if request.session.get('active_business_user_id') == None:
         logged_in_user = request.user.businessuser
         request.session['active_business_user_id'] = logged_in_user.id
@@ -136,6 +130,22 @@ def dashboard_view(request, *args, **kwargs):
     else:
         active_id = request.session.get('active_business_user_id')
         active_business_user = get_object_or_404(BusinessUser, id=active_id)
+
+    query = request.GET.get("q")
+    search_result = []
+    find_client_by_query = None
+    find_tasks_by_query = None
+    find_document_by_query = None
+
+    recent_activities = ActivityLog.objects.order_by('-timestamp')[:10]  # latest 10
+
+    today = timezone.now().date()
+    upcoming_tasks = Task.objects.filter(
+        user=logged_in_user,
+        due_date__gte=today,
+    ).exclude(status="Completed").order_by('due_date')[:5]
+
+    print(upcoming_tasks)
 
     if get_active_business_user_with_permission(request, 'can_read_contact', show_err='Contact Read')[1]:
         total_client = len(Client.objects.filter(companyAssignee = active_business_user))
@@ -166,7 +176,6 @@ def dashboard_view(request, *args, **kwargs):
     else:
         total_documents = None
     
-    print(search_result)
     accessible_accounts = user.accessible_accounts.select_related('owner', 'role')
     context = {
         "search_results": search_result,
@@ -175,6 +184,10 @@ def dashboard_view(request, *args, **kwargs):
         "find_document_by_query" : find_document_by_query,
 
         "query": query,
+
+        "recent_activities": recent_activities,
+
+        'upcoming_tasks': upcoming_tasks,
 
         'businessuser': user,
         'accessible_accounts': accessible_accounts,
@@ -477,6 +490,19 @@ def project_restore_view(request, id, *args, **kwargs):
 
     return redirect('appTrash')
 
+@require_POST
+@login_required
+def project_permanent_delete_view(request, id, *args, **kwargs):
+    user = request.user.businessuser
+    logged_in_user = request.user.businessuser
+    project = Project.all_objects.filter(id = id).first()
+    project_name = project.name
+
+    project.delete()
+    messages.warning(request, f"Project {project_name} is deleted.")
+
+    return redirect('appTrash')
+
 # ---- ==== Featured Related to Tasks View ==== ----
 # Include: [tasks_view; ]\
 from accounts.models import AccessPermission
@@ -514,6 +540,7 @@ def tasks_view(request, *args, **kwargs):
         'form': form,
         'businessuser': user,
         'tasks' : tasks,
+        'total_tasks': 0 if tasks == None else len(tasks),
     }
     return render(
         request, 

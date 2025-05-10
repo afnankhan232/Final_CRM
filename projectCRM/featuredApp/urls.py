@@ -29,7 +29,7 @@ urlpatterns = [
     # Delete Project
     path('list/<str:name>/delete/', views.project_delete_view, name='appProjectDelete'),
     # Permenent Deletion of Project
-    path('list/<int:id>/permanentDelete/', views.project_restore_view, name='appProjectPermanentDelete'),
+    path('list/<int:id>/permanentDelete/', views.project_permanent_delete_view, name='appProjectPermanentDelete'),
     # Restoring Deleted Project
     path('list/<int:id>/restore/', views.project_restore_view, name='appProjectRestore'),
 
