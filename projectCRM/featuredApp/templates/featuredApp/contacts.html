@@ -29,6 +29,16 @@
 			outline: none;
 		}
 
+		.more-btn,
+		.icon-button {
+			background-color: var(--featuredApp-contacts-icon-button-background-color);
+			color: var(--featuredApp-contacts-icon-button-color);
+		}
+
+		.more-btn:hover {
+			color: green;
+		}
+
 	    .icon-button.edit:hover {
 	        color: green;
 	    }
@@ -40,6 +50,56 @@
 	    .active-more {
 	    	color: red;
 	    }
+
+	    .division-line-h2 {
+            margin: 20px 0; 
+            border-color: var(--featuredApp-dashboard-division-line-h2);
+        }
+
+	    table tr, table td {
+			border-bottom: 1px solid var(--featuredApp-contacts-table-border-color);
+		}
+
+		a:hover {
+			color: var(--featuredApp-contacts-a-hover);
+		}
+
+		input[type="checkbox"] {
+			accent-color: var(--featuredApp-contacts-checkbox-accent-color);
+		}
+
+		.form-control {
+			background-color: var(--featuredApp-contacts-form-control-input-bg);
+			color: var(--featuredApp-contacts-form-control-input-color);
+			border: 1px solid var(--featuredApp-contacts-form-control-input-border);
+			caret-color: var(--featuredApp-contacts-form-control-input-caret-color);
+		}
+
+		.form-control::placeholder {
+			color: var(--featuredApp-contacts-form-control-input-placeholder);
+		}
+
+		.form-control:focus {
+			background-color: var(--featuredApp-contacts-form-control-input-bg);
+			color: var(--featuredApp-contacts-form-control-input-color);
+			/*border-color: var(--featuredApp-contacts-form-control-input-focus-border);*/
+		}
+
+		.close-popup-btn,
+		.content-section,
+		.add-pop-up-window {
+			background-color: var(--featuredApp-contacts-form-add-pop-up-window-background-color);
+			color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+		}
+
+		.close-popup-btn:hover {
+			color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+		}
+
+		.content-section {
+			outline: none;
+			border: none;
+		}
 	</style>
 
 
@@ -51,7 +111,7 @@
 {% block contentBody1 %}
 	<h2 style="font-weight: bolder;"> Contacts </h2>
 
-	<hr style="margin: 20px 0;">
+	<hr class="division-line-h2" style="">
 
 	<!-- Displaying SET of projects -->
 	<!-- These are clickable -->
@@ -59,7 +119,8 @@
 
 		<!-- First List Item as [ALL] -->
 		<li class="nav-item">
-			<a class="nav-link {% if set_to_all == True %}active{% endif %}" href="{% url 'appContacts' %}">All</a></li>
+			<a class="nav-link {% if set_to_all == True %}active{% endif %}" href="{% url 'appContacts' %}">All</a>
+		</li>
 
 		<!-- Next List of [PROJECTS] -->
 		{% for project in projects|slice:":5" %}
@@ -90,7 +151,9 @@
 
 		<!-- Last we have [Add Button] -->
 		<li class="nav-item" style="padding-left: 4px;">
-			<button class="add-btn btn btn-sm icon-button edit" type="button" onclick="openProjectFormPopUp()"><i class="fas fa-plus"></i></button>
+			<button class="add-btn btn btn-sm icon-button edit" type="button" onclick="openProjectFormPopUp()">
+				<i class="fas fa-plus"></i>
+			</button>
 		</li>
 
 
@@ -148,7 +211,7 @@
 		</thead>
 		<tbody>
 			{% for contact in contacts %}
-				<tr">
+				<tr>
 					<td><input type="checkbox" /></td>
 					<td><a href="{% url 'appContactDetail' contact.id %}">{{ contact.name }}</a></td>
 					<td>{{ contact.email }}</td>
@@ -171,7 +234,7 @@
 
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
-		<div style="margin-top: 20px;" class="content-section">
+		<div class="content-section">
 			<form method="POST"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
@@ -208,7 +271,7 @@
 
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
-		<div style="margin-top: 20px;" class="content-section">
+		<div class="content-section">
 			<!-- Added enctype - cause we need file to be loaded -->
 			<form method="POST"> 
 				{% csrf_token %}
@@ -216,7 +279,7 @@
 					<legend class="border-bottom mb-4" style="font-weight: 800"> 
 						Add New Client 
 						<br>
-						<div class="text-muted" style="font-size: 12px; line-height: 1.1; font-weight: 300; margin-bottom: 8px">
+						<div style="font-size: 12px; line-height: 1.1; font-weight: 300; margin-bottom: 8px">
 							Create and manage client profiles effortlessly by adding essential information in one place. Maintain a complete history of interactions, preferences, and key business details.
 						</div>
 					</legend>

@@ -1,5 +1,156 @@
-body, 
-html {
+/* --- Setting up variable for Dark and Light Theme --- */
+:root {
+    --heading-color: black;
+    --body-background-color: #ffffff;
+    --body-color: #222;
+
+    --top-header-background-color: #ffffff;
+    --top-header-color: #222;
+
+    --sidebar-background-color: #f4f4f4;
+    --sidebar-color: #222;
+
+    --sidebar-border-right-color: #e0e0e0;
+
+    --menu-items-a-color: #222;
+    --menu-items-a-i-color: #555;
+    --menu-items-a-hover-background-color: #e0e0e0;
+    --menu-items-a-hover-border-right-color: darkgray;
+
+    --top-header-background-color: #ffffff;
+    --top-header-menu-toggle-color: black;
+    --top-header-logo-color: black;
+    --top-header-right-nav-account-icon: #333;
+    --top-header-box-shadow-color: rgba(0,0,0,0.05);
+
+    --account-panel-background-color: #fff;
+    --account-panel-border-left-color: #e5e5e5;
+    --account-panel-company-name-color: #222;
+    --account-panel-company-email-color: #777;
+    --account-panel-body-a-hover: #007bff;
+    --account-panel-header-border-bottom: #eee;
+    --account-panel-header-profile-link-color: #0000EE;
+    --account-panel-body-menu-background-color: #e0e0e0;
+
+    --account-panel-appearance-color: black;
+    --account-panel-appearance-background-color: #fff;
+    --account-panel-appearance-border-left-color: #e5e5e5;
+    --account-panel-appearance-back-img: black;
+    --account-panel-appearance-menu-hover-background-color: #eee;
+
+    --featuredApp-dashboard-welcome-box: linear-gradient(135deg, #f0f8ff, #e0f7fa);
+    --featuredApp-dashboard-welcome-box-p-color: #adb5bd;
+    --featuredApp-dashboard-division-line-h2: #444;
+    --featuredApp-dashboard-ul-list-item-background-color: white;
+    --featuredApp-dashboard-ul-list-item-color: black;
+    --featuredApp-dashboard-ul-list-item-border-color: #e5e5e5;
+    --featuredApp-dashboard-ul-list-item-a-hover: #007bff;
+
+    --featuredApp-contacts-table-border-color: #e0e0e0;
+    --featuredApp-contacts-a-hover: #007bff;
+    --featuredApp-contacts-checkbox-accent-color: #007bff;
+    --featuredApp-contacts-icon-button-background-color: white;
+    --featuredApp-contacts-icon-button-color: black;
+    --featuredApp-contacts-form-control-input-bg: #ffffff;
+    --featuredApp-contacts-form-control-input-color: #222222;
+    --featuredApp-contacts-form-control-input-border: #ccc;
+    --featuredApp-contacts-form-control-input-placeholder: #888;
+    --featuredApp-contacts-form-control-input-focus-border: #007bff;
+    --featuredApp-contacts-form-control-input-caret-color: #222;
+
+    /* Things are dependend on this value! Change Wisely */
+    --featuredApp-contacts-form-add-pop-up-window-background-color: white;
+    /* Things are dependend on this value! Change Wisely */
+    --featuredApp-contacts-form-add-pop-up-window-color: black;
+
+    --featuredApp-tasks-date-and-time: invert(0);
+
+    --featuredApp-trash-table-striped-odd-background-color: #fff;
+    --featuredApp-trash-table-striped-odd-color: #f9f9f9;
+
+    /*--background-color: white;
+    --text-color: #222;
+    --card-bg: #f7f7f7;
+    --border-color: #ddd;*/
+}
+
+body.theme-dark {
+    --heading-color: white;
+    --body-background-color: #121212;
+    --body-color: #e0e0e0;
+
+    --top-header-background-color: #1e1e1e;
+    --top-header-color: #e0e0e0; 
+
+    --sidebar-background-color: #1a1a1a;
+    --sidebar-color: #e0e0e0;
+
+    --sidebar-border-right-color: #222222;
+
+    --menu-items-a-color: white;
+    --menu-items-a-i-color: white;
+    --menu-items-a-hover-background-color: #666;
+    --menu-items-a-hover-border-right-color: #888;
+
+    --top-header-background-color: #121212;
+    --top-header-menu-toggle-color: #ffffff;
+    --top-header-logo-color: white;
+    --top-header-right-nav-account-icon: white;
+    --top-header-box-shadow-color: rgba(255,255,255,0.1);
+
+    --account-panel-background-color: #1e1e1e;
+    --account-panel-border-left-color: #333;
+    --account-panel-company-name-color: #e0e0e0;
+    --account-panel-company-email-color: #999999;
+    --account-panel-body-a-hover: #4dabf7;
+    --account-panel-header-border-bottom: #444444;
+    --account-panel-header-profile-link-color: #4dabf7;
+    --account-panel-body-menu-background-color: #444;
+
+    --account-panel-appearance-color: white;
+    --account-panel-appearance-background-color: #1e1e1e;
+    --account-panel-appearance-border-left-color: #2a2a2a;
+    --account-panel-appearance-back-img: white;
+    --account-panel-appearance-menu-hover-background-color: #444;
+
+    --featuredApp-dashboard-welcome-box: linear-gradient(135deg, #1e1e2f, #2a2a3d);
+    --featuredApp-dashboard-welcome-box-p-color: white;
+    --featuredApp-dashboard-division-line-h2: #444;
+    --featuredApp-dashboard-ul-list-item-background-color: black;
+    --featuredApp-dashboard-ul-list-item-color: white;
+    --featuredApp-dashboard-ul-list-item-border-color: #444444;
+    --featuredApp-dashboard-ul-list-item-a-hover: #4dabf7;
+
+    --featuredApp-contacts-table-border-color: #444444;
+    --featuredApp-contacts-a-hover: #4dabf7;
+    --featuredApp-contacts-checkbox-accent-color: #4dabf7;
+    --featuredApp-contacts-icon-button-background-color: black;
+    --featuredApp-contacts-icon-button-color: white;
+    --featuredApp-contacts-form-control-input-bg: #1e1e1e;
+    --featuredApp-contacts-form-control-input-color: #e0e0e0;
+    --featuredApp-contacts-form-control-input-border: #444;
+    --featuredApp-contacts-form-control-input-placeholder: #aaa;
+    --featuredApp-contacts-form-control-input-focus-border: #4dabf7;
+    --featuredApp-contacts-form-control-input-caret-color: #e0e0e0;
+
+    /* Things are dependend on this value! Change Wisely */
+    --featuredApp-contacts-form-add-pop-up-window-background-color: black; 
+    /* Things are dependend on this value! Change Wisely */
+    --featuredApp-contacts-form-add-pop-up-window-color: white;
+
+    --featuredApp-tasks-date-and-time: invert(1);
+
+    --featuredApp-trash-table-striped-odd-background-color: #1e1e1e;
+    --featuredApp-trash-table-striped-odd-color: #242424;
+
+    /*--background-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg: #1e1e1e;
+    --border-color: #333;*/
+}
+
+html,
+body {
 
     font-size: 12px;
 
@@ -8,8 +159,18 @@ html {
 
     font-family: sans-serif;
 
-    background-color: #ffffff;
-    color: #222;
+    height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--heading-color);
+}
+
+.handle-body-level {
+    background-color: var(--body-background-color);
+    color: var(--body-color);
+
+    padding-bottom: 200px;
 }
 
 .container-defined {
@@ -24,7 +185,7 @@ html {
     font: inherit; 
     padding: 0px;
     margin: 0px;
-    color: indianred; 
+    color: indianred;
     cursor: pointer;
 
     font-weight: 800;
@@ -44,15 +205,14 @@ html {
 }*/
 
 .top-header {
-
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: 50px;
 
-    background-color: #ffffff;
-    color: #222;
+    background-color: var(--top-header-background-color);
+    color: var(--top-header-color);
 
     display: flex;
     align-items: center;
@@ -68,8 +228,7 @@ html {
     }
 }
 
-.menu-toggle {
-
+.site-header .top-header .left-nav .menu-toggle {
     cursor: pointer;
     font-size: 24px;
     margin-right: 15px;
@@ -77,9 +236,8 @@ html {
 
 /* Sidebar */
 .sidebar {
-
-    background-color: #f4f4f4;
-    color: #222;
+    background-color: var(--sidebar-background-color);
+    color: var(--sidebar-color);
 
     padding-top: 60px;
 
@@ -95,8 +253,9 @@ html {
 
     z-index: 999;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.01);
+    /*box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);*/
 
-    border-right: 1px solid #e0e0e0;
+    border-right: 1px solid var(--sidebar-border-right-color);
 }
 
 .sidebar.expanded {
@@ -123,27 +282,27 @@ html {
     margin-bottom: 20px;
 }*/
 
-.menu-items a {
+.site-header .sidebar .menu-items a {
     display: flex;
     align-items: center;
     padding: 10px 20px;
     text-decoration: none;
-    color: #222;
+    color: var(--menu-items-a-color);
     white-space: nowrap;
     transition: background-color 0.2s;
 }
 
-.menu-items a i {
+.site-header .sidebar .menu-items a i {
     margin-right: 12px;
     min-width: 20px;
     text-align: center;
     font-size: 16px;
-    color: #555;
+    color: var(--menu-items-a-i-color);
     transition: color 0.2s;
 }
 
-.menu-items a:hover {
-    background-color: #e0e0e0;
+.site-header .sidebar .menu-items a:hover {
+    background-color: var(--menu-items-a-hover-background-color);
     border-radius: 4px;
 }
 
@@ -151,7 +310,7 @@ html {
     color: #007bff;
 }*/
 
-.menu-label {
+.site-header .sidebar .menu-label {
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
@@ -162,11 +321,16 @@ html {
 }
 
 /* Active Link */
-.menu-items a.active {
+.site-header .sidebar .menu-items a.active {
     background-color: #e0e0e0;
+    color: black;
     font-weight: 600;
-    border-right: 2px solid darkgray;
+    border-right: 2px solid var(--menu-items-a-hover-border-right-color);
     border-radius: 2px;
+
+    i {
+        color: black;
+    }
 }
 
 /*.menu-items a.active i {
@@ -202,17 +366,17 @@ html {
     left: 0;
     right: 0;
     height: 50px;
-    background-color: #ffffff;
+    background-color: var(--top-header-background-color);
     color: #222;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 15px;
     z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px var(--top-header-box-shadow-color);
 }
 
-.left-nav {
+.top-header .left-nav {
     display: flex;
     align-items: center;
 
@@ -232,15 +396,19 @@ html {
     }
 }
 
-.menu-toggle {
+.top-header .left-nav .menu-toggle {
     cursor: pointer;
     font-size: 24px;
     margin-right: 15px;
+
+    color: var(--top-header-menu-toggle-color);
 }
 
-.logo {
+.top-header .left-nav .logo {
     font-size: 18px;
     font-weight: bold;
+
+    color: var(--top-header-logo-color);
 
     text-decoration: none;
 }
@@ -253,139 +421,284 @@ html {
 
 .right-nav .account-link:hover {
     color: #007bff;
-}*//* --- Slide Panel Container --- */
+}
+*/
+
+/* --- Slide Panel Container --- */
 .account-panel {
-  position: fixed;
-  top: 0;
-  right: -320px; /* Hidden by default */
-  width: 300px;
-  height: 100%;
-  background-color: #fff;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
-  border-left: 1px solid #e5e5e5;
-  transition: right 0.3s ease;
-  z-index: 3000;
-  display: flex;
-  flex-direction: column;
+    position: fixed;
+    top: 40px;
+    right: -320px; /* Hidden by default */
+    width: 300px;
+    /*height: 100%;*/
+    background-color: var(--account-panel-background-color);
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+    border-left: 1px solid var(--account-panel-border-left-color);
+    border-radius: 10px;
+    transition: right 0.3s ease;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
 }
 
 /* --- Open State --- */
 .account-panel.open {
-  right: 0;
+    right: 20px;
 }
 
 /* --- Header with Company Info --- */
-.account-panel-header {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 18px 38px 12px;
-  border-bottom: 1px solid #eee;
-  background-color: #f9f9f9;
+.account-panel .account-panel-header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 10px 18px 10px;
+    border-bottom: 1px solid var(--account-panel-header-border-bottom);
+    /*background-color: #f9f9f9;*/
 }
 
 /* --- Company Logo --- */
-.company-logo {
-  width: 45px;
-  height: 45px;
-  border-radius: 8px;
-  object-fit: cover;
+.account-panel .account-panel-header .company-logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
 /* --- Company Details --- */
-.company-details {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+.account-panel .account-panel-header .company-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-.company-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: #222;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.account-panel .account-panel-header .company-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--account-panel-company-name-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.company-email {
-  font-size: 13px;
-  color: #777;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.account-panel .account-panel-header .company-email {
+    font-size: 13px;
+    color: var(--account-panel-company-email-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* --- Close Button (×) --- */
 .close-btn {
-  background: none;
-  border: none;
-  font-size: 22px;
-  line-height: 1;
-  color: #888;
-  cursor: pointer;
-  padding: 0;
+    background: none;
+    border: none;
+    font-size: 22px;
+    line-height: 1;
+    color: #888;
+    cursor: pointer;
+    padding: 0;
+}
+
+.account-panel .account-panel-header .profile-link:hover {
+    text-decoration: none;
+    color: var(--account-panel-header-profile-link-color);
 }
 
 /* --- Body Links --- */
-.account-panel-body {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+.account-panel .account-panel-body {
+    /*padding: 20px;*/
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
-.account-panel-body a {
-  display: block;
-  padding: 10px 0;
-  font-size: 15px;
-  color: #333;
-  text-decoration: none;
-  transition: color 0.2s;
+.account-panel .account-panel-body a {
+    display: block;
+    padding: 10px 0;
+    font-size: 15px;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.2s;
 }
 
-.account-panel-body a:hover {
-  color: #007bff;
+.account-panel.account-panel-body a:hover {
+    color: var(--account-panel-body-a-hover);
 }
 
 
 /* --- Right Nav Container --- */
-.right-nav {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  padding-right: 10px;
+.top-header .right-nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
 }
 
 /* --- Account Trigger Icon Area --- */
-.account-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer; /*  This makes it a pointer */
-  padding: 8px;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
+.top-header .right-nav .account-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
 }
 
-/* Optional hover effect */
-.account-trigger:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+.top-header .right-nav .account-trigger:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Account menu option */
+.account-panel .account-panel-body .account-menu {
+    font-weight: 100;
+    font-size: 14px;
+    padding: 10px 14px;
+}
+
+.account-panel .account-panel-body .two-element {
+    display: flex; 
+    flex-direction: row; 
+    align-items: center; 
+    column-gap: 12px;
+}
+
+.account-panel .account-panel-body .two-different-elements {
+    display: flex; 
+    flex-direction: row; 
+    align-items: center; 
+    justify-content: space-between;
+}
+
+.account-panel .account-panel-body .account-menu:hover {
+    background-color: var(--account-panel-body-menu-background-color);
+    cursor: pointer;
 }
 
 /* --- Account Icon Styling --- */
-.account-icon {
-  font-size: 22px;
-  color: #333;
+.top-header .right-nav .account-icon {
+    font-size: 22px;
+    color: var(--top-header-right-nav-account-icon);
 }
 
+/* --- Slide Panel Container Appearance --- */
+.account-panel-appearance {
+    position: fixed;
+    top: 40px;
+    right: -320px; /* Hidden by default */
+    width: 300px;
 
+    color: var(--account-panel-appearance-color);
+    background-color: var(--account-panel-appearance-background-color);
+
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+    border-left: 1px solid var(--account-panel-appearance-border-left-color);
+    border-radius: 10px;
+    transition: right 0.3s ease;
+    z-index: 2800;
+    display: flex;
+    flex-direction: column;
+    visibility: none;
+}
+
+.account-panel-appearance .account-panel-appearance-header {
+    font-size: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 12px;
+    border-bottom: 1px solid #eee;
+    padding: 18px 38px 12px 10px;
+}
+
+.account-panel-appearance #go-back-account-panel {
+    cursor: pointer;
+    background: none; 
+    border: none; 
+    padding: 0; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.account-panel-appearance #go-back-account-panel-img {
+    color: var(--account-panel-appearance-back-img);
+}
+
+.account-panel-appearance #go-back-account-panel:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* appearance option */
+.account-panel-appearance .account-panel-appearance-body {
+    display: flex;
+    flex-direction: column;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.account-panel-appearance-body .account-menu {
+    font-weight: 100;
+    font-size: 14px;
+
+    padding: 10px 14px;
+}
+
+.account-panel-appearance-body .account-menu:hover {
+    background-color: var(--account-panel-appearance-menu-hover-background-color);
+    cursor: pointer;
+}
+
+/* --- Open State --- */
+.account-panel-appearance.open {
+    right: 20px;
+    visibility: true;
+}
 
 .sidebar {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .sidebar.ready {
-  visibility: visible;
+    visibility: visible;
+}
+
+/* --- Appearance Panel --- */
+.account-panel-appearance .account-panel-appearance-body .account-menu.active .tick-mark::before {
+    content: "✓";
+    color: green;
+}
+
+.account-panel-appearance .account-panel-appearance-body .account-menu {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    gap: 10px;
+}
+
+.account-panel-appearance .account-panel-appearance-body .tick-mark {
+    width: 16px;
+    height: 1em; /* align with text height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Blank space by default */
+.account-panel-appearance .account-panel-appearance-body .tick-mark::before {
+    content: "";
+}
+
+/* Show tick when selected */
+.account-panel-appearance .account-panel-appearance-body .account-menu.active .tick-mark::before {
+    content: "✓";
 }

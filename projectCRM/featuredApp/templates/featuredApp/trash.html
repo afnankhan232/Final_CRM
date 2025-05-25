@@ -1,38 +1,52 @@
 <!-- Extend from base.html  -->
 {% extends 'featuredApp/base.html' %}
 
-
 <!-- Loading CSS files from static (path defined at settings.py)-->
 {% load static %}
 
-
 <!-- As we are loading crispy form Hence Import crispy_forms_tags -->
 {% load crispy_forms_tags %}
-
 
 <!-- A nice title -->
 {% block titleBlock %} 
 	<title> Trash </title>
 {% endblock titleBlock %}
 
-
 <!-- Some extra css property for this specific page -->
 {% block addCSSlink %}
 	<!-- Specific for Project pop-up  -->
 	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
 	<style type="text/css">
+		.division-line-h2 {
+            margin: 20px 0; 
+            border-color: var(--featuredApp-dashboard-division-line-h2);
+        }
+
 		.table-striped tbody tr:nth-of-type(odd) {
-		  background-color: #fff !important;  /* First row white */
+			background-color: var(--featuredApp-trash-table-striped-odd-background-color) !important;  /* First row white */
 		}
 
 		.table-striped tbody tr:nth-of-type(even) {
-		  background-color: #f9f9f9 !important;  /* Second row light gray */
+			background-color: var(--featuredApp-trash-table-striped-odd-color) !important;  /* Second row light gray */
 		}
 
 		table {
-		  table-layout: fixed;
-		  width: 100%;
+			table-layout: fixed;
+			width: 100%;
 		}
+
+		.table .thead-light th {
+			background-color: var(--featuredApp-contacts-form-add-pop-up-window-background-color);
+			color: var(--featuredApp-contacts-form-control-input-color);
+
+			border-color: var(--featuredApp-contacts-table-border-color);
+		}
+
+		.table .tbody-light td {
+			border-color: var(--featuredApp-contacts-table-border-color);
+		}
+
+
 	</style>
 {% endblock addCSSlink %}
 
@@ -42,7 +56,7 @@
 {% block contentBody1 %}
 	<h2 style="font-weight: bolder;"> Trash </h2>
 
-	<hr style="margin: 20px 0;">
+	<hr class="division-line-h2" style="">
 
 	<!-- CONTACTS -->
 	<h4>Contacts</h4>

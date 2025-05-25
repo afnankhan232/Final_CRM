@@ -30,6 +30,55 @@
 	    .button:focus {
 	    	outline: None;
 	    }
+
+	    .division-line-h2 {
+            margin: 20px 0; 
+            border-color: var(--featuredApp-dashboard-division-line-h2);
+        }
+
+        .form-control {
+			background-color: var(--featuredApp-contacts-form-control-input-bg);
+			color: var(--featuredApp-contacts-form-control-input-color);
+			border: 1px solid var(--featuredApp-contacts-form-control-input-border);
+			caret-color: var(--featuredApp-contacts-form-control-input-caret-color);
+		}
+
+		.form-control::placeholder {
+			color: var(--featuredApp-contacts-form-control-input-placeholder);
+		}
+
+		.form-control:focus {
+			background-color: var(--featuredApp-contacts-form-control-input-bg);
+			color: var(--featuredApp-contacts-form-control-input-color);
+			/*border-color: var(--featuredApp-contacts-form-control-input-focus-border);*/
+		}
+
+		.close-popup-btn,
+		.content-section,
+		.add-pop-up-window {
+			background-color: var(--featuredApp-contacts-form-add-pop-up-window-background-color);
+			color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+		}
+
+		.close-popup-btn:hover {
+			color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+		}
+
+		.content-section {
+			outline: none;
+			border: none;
+		}
+
+		.manage-access-ul-list-item {
+            background-color: var(--featuredApp-dashboard-ul-list-item-background-color);
+            color: var(--featuredApp-dashboard-ul-list-item-color);
+
+            border-color: var(--featuredApp-dashboard-ul-list-item-border-color);
+        }
+
+        .manage-access-ul-list-item a:hover {
+            color: var(--featuredApp-dashboard-ul-list-item-a-hover);
+        }
 	</style>
 
 {% endblock addCSSlink %}
@@ -38,7 +87,7 @@
 {% block contentBody1 %}
 	<h2 style="font-weight: bolder;"> Manage Access </h2>
 
-	<hr style="margin: 20px 0;">
+	<hr class="division-line-h2" style="">
 
 	<div class="container">
 		<div class="column">
@@ -48,7 +97,7 @@
 				<h5 style="font-weight:800">Your Roles</h5>
 				<ul class="list-group mb-3" style="max-width: 800px;">
 					{% for role in roles %}
-						<li class="list-group-item d-flex justify-content-between align-items-center">
+						<li class="list-group-item d-flex justify-content-between align-items-center manage-access-ul-list-item">
 							{{ role.name }}
 							<form method="post" action="{% url 'delete_role' role.id %}">
 								{% csrf_token %}
@@ -67,7 +116,7 @@
 				<h5 style="font-weight: 800">Shared Access</h5>
 				<ul class="list-group mb-3" style="max-width: 800px">
 					{% for access in accesses %}
-						<li class="list-group-item d-flex justify-content-between align-items-center">
+						<li class="list-group-item d-flex justify-content-between align-items-center manage-access-ul-list-item">
 							{{ access.shared_with.company_email }} — {{ access.role.name }}
 							<form method="post" action="{% url 'delete_access' access.id %}">
 								{% csrf_token %}
@@ -117,7 +166,7 @@
 			    </template>
 
 				<button type="submit" class="btn btn-dark w-100" name="form_type" value="access_form">Submit</button>
-			    <small class="text-muted d-block mt-1" name="form_type" value="access_form">
+			    <small class=" d-block mt-1" name="form_type" value="access_form">
 			    	Share data access by assigning roles to user emails.
 				</small>
 			</form>
@@ -138,18 +187,18 @@
 
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
-		<div style="margin-top: 20px;" class="content-section">
+		<div class="content-section">
 			<!-- Added enctype - cause we need file to be loaded -->
 			<form method="post">
 			    {% csrf_token %}
 			    
 			    <h3>Create New Role</h3>
-			    <p class="text-muted">Define a new role and set its permissions.</p>
+			    <p class="">Define a new role and set its permissions.</p>
 
 			    <div class="mb-3">
 			        <label for="{{ form.name.id_for_label }}" class="form-label">Role Name</label>
 			        <br>
-			        {{ formA.name|add_class:"w-100" }}
+			        {{ formA.name|add_class:"w-100 form-control" }}
 			    </div>
 
 			    <h5>Contacts</h5>
@@ -169,7 +218,7 @@
 				            </div>
 				        {% endif %}
 				    {% endfor %}
-				    <small class="text-muted d-block mt-1">Set permissions for managing contacts.</small>
+				    <small class=" d-block mt-1">Set permissions for managing contacts.</small>
 				</div>
 
 				<h5>List</h5>
@@ -178,7 +227,7 @@
 				      {{ formA.can_add_project }}
 				      <label class="form-check-label">Create</label>
 				    </div>
-				    <small class="text-muted d-block mt-1">Set permissions for managing lists.</small>
+				    <small class=" d-block mt-1">Set permissions for managing lists.</small>
 				</div>
 
 				<h5>Tasks</h5>
@@ -198,7 +247,7 @@
 				            </div>
 				        {% endif %}
 				    {% endfor %}
-				    <small class="text-muted d-block mt-1">Set permissions for managing tasks.</small>
+				    <small class=" d-block mt-1">Set permissions for managing tasks.</small>
 				</div>
 
 				<h5>Documents</h5>
@@ -218,7 +267,7 @@
 				            </div>
 				        {% endif %}
 				    {% endfor %}
-				    <small class="text-muted d-block mt-1">Set permissions for managing documents.</small>
+				    <small class=" d-block mt-1">Set permissions for managing documents.</small>
 				</div>
 				<h5>List Permissions</h5>
 				<!-- {{ formset.management_form }} -->
@@ -242,7 +291,7 @@
 				        {% endfor %}
 					    </div>
 					{% endfor %}
-					<small class="text-muted d-block mt-1">Set permissions for individual list.</small>
+					<small class=" d-block mt-1">Set permissions for individual list.</small>
 				</div>
 			    <button type="submit" class="btn btn-dark w-100" name="form_type" value="role_form">Save Role</button>
 			</form>

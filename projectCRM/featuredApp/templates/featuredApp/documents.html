@@ -9,6 +9,58 @@
 <!-- Some extra css property for this specific page -->
 {% block addCSSlink %}
 	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
+
+	<style>
+		.division-line-h2 {
+            margin: 20px 0; 
+            border-color: var(--featuredApp-dashboard-division-line-h2);
+        }
+
+	    table tr, table td {
+			border-bottom: 1px solid var(--featuredApp-contacts-table-border-color);
+		}
+
+		a:hover {
+			color: var(--featuredApp-contacts-a-hover);
+		}
+
+		input[type="checkbox"] {
+			accent-color: var(--featuredApp-contacts-checkbox-accent-color);
+		}
+
+		.form-control {
+			background-color: var(--featuredApp-contacts-form-control-input-bg);
+			color: var(--featuredApp-contacts-form-control-input-color);
+			border: 1px solid var(--featuredApp-contacts-form-control-input-border);
+			caret-color: var(--featuredApp-contacts-form-control-input-caret-color);
+		}
+
+		.form-control::placeholder {
+			color: var(--featuredApp-contacts-form-control-input-placeholder);
+		}
+
+		.form-control:focus {
+			background-color: var(--featuredApp-contacts-form-control-input-bg);
+			color: var(--featuredApp-contacts-form-control-input-color);
+			/*border-color: var(--featuredApp-contacts-form-control-input-focus-border);*/
+		}
+
+		.close-popup-btn,
+		.content-section,
+		.add-pop-up-window {
+			background-color: var(--featuredApp-contacts-form-add-pop-up-window-background-color);
+			color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+		}
+
+		.close-popup-btn:hover {
+			color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+		}
+
+		.content-section {
+			outline: none;
+			border: none;
+		}
+	</style>
 {% endblock addCSSlink %}
 
 
@@ -20,7 +72,7 @@
 
 	<h2 style="font-weight: bolder;"> Documents </h2>
 
-	<hr style="margin: 20px 0;">
+	<hr class="division-line-h2" style="">
 
 	<div class="d-flex justify-content-between my-2" style="align-items: flex-end;">
 		<div>
@@ -72,13 +124,13 @@
 
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
-		<div style="margin-top: 20px;" class="content-section">
+		<div class="content-section">
 			<!-- Added enctype - cause we need file to be loaded -->
 			<form method="POST" enctype="multipart/form-data"> 
 				{% csrf_token %}
 				<fieldset class="form-group">
 					<legend class="border-bottom mb-4"> Add Document 
-						<div class="text-muted" style="font-size: 12px; line-height: 1.1; font-weight: 300; margin-bottom: 8px">
+						<div class="" style="font-size: 12px; line-height: 1.1; font-weight: 300; margin-bottom: 8px">
 							Add a new document to a contact’s profile to keep important files, agreements, or notes in one place.
 						</div>
 					</legend>
@@ -91,7 +143,7 @@
 						{{ form.file|as_crispy_field }}
 					</div>
 
-					<div class="text-muted" style="font-size: 12px; margin-bottom: 10px">
+					<div class="" style="font-size: 12px; margin-bottom: 10px">
 						Supported formats for upload: .pdf, .doc, .docx, .png, .svg, .jpg, .jpeg, .xlsx, .csv
 					</div>
 					

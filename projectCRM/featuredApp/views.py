@@ -594,7 +594,7 @@ def task_mark_completed_view(request, pk, *args, **kwargs):
     # Essence
     task.status = "Completed";
     task.save()
-    messages.success(request, f"{task_name} marked as completed!")
+    messages.success(request, f"'{task_name}' marked as completed!")
     ActivityLog.objects.create(user=logged_in_user, action=f"Marked '{task_name}' as Completed.")
     return redirect('appTaskDetail', pk=pk)
 

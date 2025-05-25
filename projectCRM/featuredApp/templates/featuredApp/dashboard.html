@@ -13,7 +13,7 @@
 
     <style type="text/css">
         .welcome-box {
-            background: linear-gradient(135deg, #f0f8ff, #e0f7fa);
+            background: var(--featuredApp-dashboard-welcome-box);
             padding: 2.5rem;
             border-radius: 20px;
             text-align: center;
@@ -30,7 +30,7 @@
 
         .welcome-box p {
             font-size: 1.25rem;
-            color: #495057;
+            color: var(--featuredApp-dashboard-welcome-box-p-color);
             font-style: italic;
             font-weight: 600;
         }
@@ -49,6 +49,22 @@
         .no-animation {
             animation: none !important;
         }
+
+        .division-line-h2 {
+            margin: 20px 0; 
+            border-color: var(--featuredApp-dashboard-division-line-h2);
+        }
+
+        .dashboard-ul-list-item {
+            background-color: var(--featuredApp-dashboard-ul-list-item-background-color);
+            color: var(--featuredApp-dashboard-ul-list-item-color);
+
+            border-color: var(--featuredApp-dashboard-ul-list-item-border-color);
+        }
+
+        .dashboard-ul-list-item a:hover {
+            color: var(--featuredApp-dashboard-ul-list-item-a-hover);
+        }
     </style>
 
 {% endblock addCSSlink %}
@@ -57,7 +73,7 @@
 
 	<h2 style="font-weight: bolder;"> Dashboard </h2>
 
-	<hr style="margin: 20px 0;">
+	<hr class="division-line-h2" style="">
 
     <div class="mb-4">
 
@@ -119,7 +135,7 @@
         {% if find_client_by_query %}
         <ul class="list-group mb-4">
             {% for result in find_client_by_query %}
-                <li class="list-group-item">
+                <li class="list-group-item dashboard-ul-list-item">
                     <a href="{% url 'appContactDetail' result.id%}"> Contact: {{result.name}} </a>
                 </li>
             {% endfor %}
@@ -129,7 +145,7 @@
         {% if find_tasks_by_query %}
         <ul class="list-group mb-4">
             {% for result in find_tasks_by_query %}
-                <li class="list-group-item">
+                <li class="list-group-item dashboard-ul-list-item">
                     <a href="{% url 'appTaskDetail' result.id%}"> Task: {{result.task_name}} </a>
                 </li>
             {% endfor %}
@@ -139,42 +155,41 @@
         {% if find_document_by_query %}
         <ul class="list-group mb-4">
             {% for result in find_document_by_query %}
-                <li class="list-group-item">
+                <li class="list-group-item dashboard-ul-list-item">
                     <a href="{% url 'appDocumentDetail' result.id%}"> Document: {{result.document_name}} </a>
                 </li>
             {% endfor %}
         </ul>
         {% endif %}
 
-
     {% elif query %}
-        <p class="text-muted">No results found for "{{ query }}".</p>
+        <p class="text-muted dashboard-ul-list-item">No results found for "{{ query }}".</p>
     {% endif %}
 
     <h4>Upcoming Tasks</h4>
     <ul class="list-group mb-4">
 
         {% for task in upcoming_tasks %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
+            <li class="list-group-item d-flex justify-content-between align-items-center dashboard-ul-list-item">
                 {{ task.task_name }} — 
                 <span class="">{{ task.due_date }}</span>
             </li>
 
             {% empty %}
-            <li class="list-group-item text-muted">No upcoming tasks.</li>
+            <li class="list-group-item text-muted dashboard-ul-list-item">No upcoming tasks.</li>
         {% endfor %}
     </ul>
 
     <h4>Recent Activities</h4>
     <ul class="list-group mb-4">
         {% for activity in recent_activities %}
-            <li class="list-group-item">
+            <li class="list-group-item dashboard-ul-list-item">
                 <strong>{{ activity.user }}</strong> 
                 {{ activity.action }} 
                 <small class="text-muted">{{ activity.timestamp }}</small>
             </li>
         {% empty %}
-            <li class="list-group-item text-muted">No recent activities found.</li>
+            <li class="list-group-item text-muted dashboard-ul-list-item">No recent activities found.</li>
         {% endfor %}
     </ul>
 
@@ -182,7 +197,7 @@
     <h4>Switch Account</h4>
     <ul class="list-group">
             <!-- Self Account -->
-            <li class="list-group-item">
+            <li class="list-group-item dashboard-ul-list-item">
                 <form method="post" action="{% url 'switch_account' public_id=self_account.public_id %}" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="switch-link">
@@ -194,7 +209,7 @@
         <!-- Accessible Accounts -->
         
         {% for shared_user in accessible_accounts %}
-            <li class="list-group-item">
+            <li class="list-group-item dashboard-ul-list-item">
                 {% if shared_user.owner.public_id %}
                     <form method="post" action="{% url 'switch_account' public_id=shared_user.owner.public_id %}" style="display:inline;">
                         {% csrf_token %}
@@ -207,7 +222,7 @@
                 {% endif %}
             </li>
             {% empty %}
-                <li class="list-group-item text-danger">No shared access yet.</li>
+                <li class="list-group-item text-danger dashboard-ul-list-item">No shared access yet.</li>
         {% endfor %}
         </ul>
 

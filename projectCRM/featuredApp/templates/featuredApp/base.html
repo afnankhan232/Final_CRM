@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
 
 </head>
-<body>
+<body class="handle-body-level">
 
     <div class="site-header layout">
 
@@ -170,7 +170,7 @@
         {% block addPopUp4 %} {% endblock addPopUp4 %}
     </div>
 
-    <div style="margin-top: 100px;"></div>
+    <div style="padding-bottom: 100px;"></div>
 
 
 
@@ -180,26 +180,100 @@
         <!-- This is the company info at top of the panel -->
         <div class="account-panel-header company-info">
             <img src="{{ businessuser.company_logo.url }}" alt="Company Logo" class="company-logo">
-                <div class="company-details">
-                    <div class="company-name">{{ businessuser.company_name }}</div>
-                    <div class="company-email">{{ businessuser.company_email }}</div>
-                </div>
-            <button class="close-btn" onclick="toggleAccountPanel()">&times;</button>
+            <div class="company-details">
+                <div class="company-name">{{ businessuser.company_name }}</div>
+                <div class="company-email">{{ businessuser.company_email }}</div>
+                <a href="{% url 'profile' %}" class="profile-link"> View your Profile</a>
+            </div>
+            <!-- <button class="close-btn" onclick="toggleAccountPanel()">&times;</button> -->
         </div>
 
-      <!-- Menu Links -->
-      <div class="account-panel-body">
-        <a href="{% url 'profile' %}"> Go to Profile</a>
+        <!-- Menu Links -->
+        <div class="account-panel-body">
 
-        <form action="{% url 'logout' %}" method="post" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="l-own" style="font-size: 14px">Logout</button>
-        </form>
+            <!-- SWITCH ACCOUNT -->
+            <!-- Further window -->
+            <div class="account-menu two-different-elements">
+                <div class="two-element">
+                    <i class="fas fa-repeat"></i>
+                    <div> Switch Account </div>
+                </div>
+                <div>
+                    <i class="fas fa-angle-right"></i>
+                </div>
+            </div>
 
+            <!-- SIGN OUT -->
+            <div class="account-menu two-element">
+                <i class="fas fa-sign-out-alt"></i>
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="l-own" style="font-size: 14px">Sign Out</button>
+                </form>
+            </div>
+            
+            <div style="border-bottom: 1px solid #eee; margin: 4px 0px 4px 0px;"></div>
+            
+            <!-- APPEARANCE -->
+            <!-- Further window -->
+            <div class="account-menu two-different-elements" onclick="openAccountPanelAppearance()">
+                <div class="two-element">
+                    <i class="fas fa-moon"></i>
+                    <!-- <i class="fas fa-sun"></i> -->
+                    <div>Appearance</div>
+                </div>
+                <div>
+                    <i class="fas fa-angle-right"></i>
+                </div>
+            </div>
+
+            <!-- SETTINGS -->
+            <div class="account-menu two-element">
+                <i class="fas fa-gear"></i>
+                <div>Settings</div>
+            </div>
+
+            <div style="border-bottom: 1px solid #eee; margin: 4px 0px 4px 0px;"></div>
+
+            <!-- HELP -->
+            <div class="account-menu two-element">
+                <i class="fas fa-question-circle"></i>
+                <div>Help</div>
+            </div>
+
+            <!-- SEND FEEDBACK -->
+            <div class="account-menu two-element">
+                <i class="fas fa-paper-plane"></i>
+                <div>Send Feedback</div>
+            </div>
+
+        </div>
     </div>
+
+    <!-- Account Slide Panel Appearance Section -->
+    <div class="account-panel-appearance" id="accountPanelAppearance">
+        <div class="account-panel-appearance-header">
+            <button id="go-back-account-panel" class="icon-button" aria-label="Go back" onclick="closeAccountPanelAppearance()">
+                <i class="fas fa-angle-left" id="go-back-account-panel-img"></i>
+            </button>
+            <div> Appearance </div>
+        </div>
+
+        <div class="account-panel-appearance-body">
+            <div class="account-menu" data-theme="system">
+                <div class="tick-mark"></div>
+                <div>Use device theme</div>
+            </div>
+            <div class="account-menu" data-theme="dark">
+                <div class="tick-mark"></div>
+                <div>Dark theme</div>
+            </div>
+            <div class="account-menu" data-theme="light">
+                <div class="tick-mark"></div>
+                <div>Light theme</div>
+            </div>
+        </div>
     </div>
-
-
 
 
     <!-- JS files attached below -->
@@ -246,13 +320,42 @@
             panel.classList.toggle("open");
         }
 
+        function openAccountPanelAppearance() {
+            toggleAccountPanel();
+            const appearancePanel = document.getElementById("accountPanelAppearance");
+            appearancePanel.classList.add("open");
+        }
+
+        function closeAccountPanelAppearance() {
+            toggleAccountPanel();
+            const appearancePanel = document.getElementById("accountPanelAppearance");
+            appearancePanel.classList.remove("open");
+        }
+
         // Close when clicking outside
         document.addEventListener("click", function (event) {
             const panel = document.getElementById("accountPanel");
             const trigger = document.querySelector(".account-trigger");
+            const appearancePanel = document.getElementById("accountPanelAppearance");
 
-            if (!panel.contains(event.target) && !trigger.contains(event.target)) {
+            if (!panel || !trigger || !appearancePanel) return;
+
+            if (
+                !panel.contains(event.target) && 
+                !trigger.contains(event.target) && 
+                panel.classList.contains("open") &&
+                (event.target.id !== "go-back-account-panel" && event.target.id !== "go-back-account-panel-img")
+            ) {
                 panel.classList.remove("open");
+            }
+
+            if(
+                !panel.contains(event.target) && 
+                !appearancePanel.contains(event.target) && 
+                appearancePanel.classList.contains("open")
+            ) {
+                
+                appearancePanel.classList.remove("open");
             }
         });
 
@@ -267,6 +370,44 @@
         //         setTimeout(() => msgContainer.remove(), 500);
         //     }
         // }, 3000)
+
+        const themePanel = document.getElementById("accountPanelAppearance");
+        const themeOptions = themePanel.querySelectorAll("[data-theme]");
+        const savedTheme = localStorage.getItem("theme") || "system";
+
+        applyTheme(savedTheme);
+        highlightActiveTheme(savedTheme);
+
+        themeOptions.forEach(option => {
+            option.addEventListener("click", () => {
+                const selectedTheme = option.getAttribute("data-theme");
+                localStorage.setItem("theme", selectedTheme);
+                applyTheme(selectedTheme);
+                highlightActiveTheme(selectedTheme);
+            });
+        });
+
+        function applyTheme(theme) {
+            document.body.classList.remove("theme-dark", "theme-light");
+            if (theme === "dark") {
+                document.body.classList.add("theme-dark");
+            } else if (theme === "light") {
+                document.body.classList.add("theme-light");
+            } else {
+                // Use system preference
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add("theme-dark");
+                } else {
+                    document.body.classList.add("theme-light");
+                }
+            }
+        }
+
+        function highlightActiveTheme(theme) {
+            themeOptions.forEach(option => {
+                option.classList.toggle("active", option.getAttribute("data-theme") === theme);
+            });
+        }
 
     </script>
     <!-- Js Script for windows and sidebars [ENDED] -->

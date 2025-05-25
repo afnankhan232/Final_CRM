@@ -9,6 +9,47 @@
 <!-- Some extra css property for this specific page -->
 {% block addCSSlink %}
 	<link rel="stylesheet" type="text/css" href="{% static 'featuredApp/pop_up.css' %}">
+
+	<style>
+		.division-line-h2 {
+            margin: 20px 0; 
+            border-color: var(--featuredApp-dashboard-division-line-h2);
+        }
+
+		.form-control {
+			background-color: var(--featuredApp-contacts-form-control-input-bg);
+			color: var(--featuredApp-contacts-form-control-input-color);
+			border: 1px solid var(--featuredApp-contacts-form-control-input-border);
+			caret-color: var(--featuredApp-contacts-form-control-input-caret-color);
+		}
+
+		.form-control::placeholder {
+			color: var(--featuredApp-contacts-form-control-input-placeholder);
+		}
+
+		.form-control:focus {
+			background-color: var(--featuredApp-contacts-form-control-input-bg);
+			color: var(--featuredApp-contacts-form-control-input-color);
+			/*border-color: var(--featuredApp-contacts-form-control-input-focus-border);*/
+		}
+
+		.container-theme,
+		.close-popup-btn,
+		.content-section,
+		.add-pop-up-window {
+			background-color: var(--featuredApp-contacts-form-add-pop-up-window-background-color);
+			color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+		}
+
+		.close-popup-btn:hover {
+			color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+		}
+
+		.content-section {
+			outline: none;
+			border: none;
+		}
+	</style>
 {% endblock addCSSlink %}
 
 
@@ -19,21 +60,18 @@
 {% block contentBody1 %}
 
 	<h2 class="font-weight-bold">Document Detail</h2>
-        
 
-	<hr style="margin: 20px 0;">
-
-	
+	<hr class="division-line-h2" style="">
 
 	<div class="container mt-4">
 
-		<a href="{% url 'appDocuments' %}" class="btn btn-light border font-weight-bold">
+		<a href="{% url 'appDocuments' %}" class="btn border font-weight-bold">
 			← Back
 		</a>
 
 		<div style="padding-bottom: 20px;"></div>
 
-	    <div class="card p-4 shadow-sm">
+	    <div class="card p-4 shadow-sm container-theme">
 	        <div class="row mb-3">
 	            <div class="col-md-3 text-muted font-weight-bold">Name:</div>
 	            <div class="col-md-9 h5">{{ document.document_name }}</div>
@@ -66,7 +104,7 @@
 			    </div>
 			</div>
 
-	        <hr style="margin: 20px 0;">
+	        <hr class="division-line-h2" style="">
 
 	        <div class="row mb-3">
 	            <div class="col-md-3 text-muted font-weight-bold">Created At:</div>
@@ -99,7 +137,7 @@
 		<span class="close-popup-btn" onclick="closeEditDocumentFormPopUp()">&times;</span>
 		<!-- There GOES the form -->
 		<!-- Referenced From accounts/register.html -->
-		<div style="margin-top: 20px;" class="content-section">
+		<div class="content-section">
 			<form method="POST" enctype="multipart/form-data" name="form_type" value="edit_form"> 
 				{% csrf_token %}
 				<fieldset class="form-group">

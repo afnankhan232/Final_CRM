@@ -21,10 +21,14 @@
     - Edit Info Form
     - Delete Account Form
 
-- Dashboard App
-    - Views page for Dashboard
+- DONE Dashboard App
+    - DONE Views page for Dashboard
+    - DONE Show Number [total contacts; total documents; total tasks(pending && completed);]
+    - DONE Search Input
+    - DONE Upcomming Tasks
+    - DONE Previous Activities
 
-- Leads App
+- REJECTED Leads App
     - DONE Database Model
     - Views pages for leads
         - List of leads
@@ -34,13 +38,13 @@
     - Deletion of leads 
     - Move to Trash for deleted Leads
 
-- Contacts App
+- DONE Contacts App
     - Project (store client based on project)
         - DONE DataBase Model
         - DONE Create Signal to trigger and create a -> [default project]
         - DONE Creation From for Project
         - DONE A Pop-up window views for creating new project
-        - REMOVE Edit Form for Project
+        - REMOVED Edit Form for Project
         - DONE Deletion Form for Project
 
     - DONE Client (store the contact info)
@@ -56,15 +60,15 @@
 
 - DONE Documents App
     - DONE create model [document_name; file; related_to; description;]
-    - Views pages for documents
+    - DONE Views pages for documents
         - DONE List of documents
-        - Detailed View page for each Document
+        - DONE Detailed View page for each Document
     - DONE Form for creation of documents
     - DONE Form for updation of documents
     - DONE Deletion for documents 
     - DONE Move to Trash for deleted Documents
 
-- Tasks App
+- DONE Tasks App
     - DONE Create Database Model(   
         task_name; 
         description; 
@@ -80,14 +84,18 @@
         - DONE List of Tasks
         - DONE Task Detail
     - DONE Form for creating new Tasks
-    - Deletion of Tasks
-    - Edit Tasks
+    - DONE Deletion of Tasks
+    - DONE Edit Tasks
 
 - Implement Solution for Teams
 
-- Track Activities
+- DONE Track Activities
 
 - Seach Bar
+    - DONE Main Page
+    - Specific to Contacts
+    - Specific to Docuements
+    - Specific to Tasks
 
 - Connecting Multiple User
 
@@ -98,23 +106,23 @@
         - DONE Shared_with [who is accessing;]
         - DONE role [from Role Model]
 
-    - BYPASS Form for Roles
-        - BYPASS Creating New Role
+    - DONE Form for Roles
+        - DONE Creating New Role
         - BYPASS Updating Existing Role
 
-    - BYPASS Form for AccessPermission Model
-        - BYPASS Creating New AccessPermission
+    - DONE Form for AccessPermission Model
+        - DONE Creating New AccessPermission
         - BYPASS Update Exiting AccessPermission
 
     - DONE Deletion of Roles
 
     - DONE Deletion of AccessPermission
 
-    - Building User Management UI 
-        - Manage User Views
-            - Form to invite / grant access to another user
-                - INPUT: Email + Role
-                - ON SUBMIT: create AccessPermission record
+    - DONE Building User Management UI 
+        - DONE Manage User Views
+            - DONE Form to invite / grant access to another user
+                - DONE INPUT: Email + Role
+                - DONE ON SUBMIT: create AccessPermission record
     
     - DONE Switch Accounts
         - DONE DEFAULT: My Account
@@ -151,4 +159,52 @@
     - Forward Email
     - ...
 
+- Account SideBar
+    - Includes: [Switch Account; Logout; Appearance; Settings; Help; Send Feedback]
+
+    - Scrollable (part below account info section)
+
+    - ONGOING Switch Account
+        - Further clickable window
+        - Back button send to Account Sidebar
+        - List View 
+            - My Account
+            - Others
+        - Sign Out button
+     
+    - DONE Logout
+
+    - Appearance
+        - DONE Layout For Theme Selector
+            - DONE Clickable div
+            - DONE Tick mark (for active theme)
+        - DONE Back button to Account Sidebar
+        - DONE Click outside to close everything
+        - DONE Options
+            - DONE Default: System
+            - DONE Dark Theme
+            - DONE Light Theme
+        
+        - DONE CSS Change
+            - DONE Add class theme-dark
+            - DONE Add Variables
+        
+        - DONE JS Theme Handler
+            - DONE localStorage
+            - DONE class = "theme-dark" (through variables)
+    
+    - Settings
+        - Delete Account
+        - Data Export* (optional)
+    
+    - Send Feedback
+        - New Window
+        - Includes: [Describe everything; Capture Screenshot; Send Button(apply after the valid information is entered)]
+        - Connect to crm-mail author
+
 - Deploy
+    - Get PythonAnywhere Subscription
+    - Follow Django Deployment Procedure
+    - Add Docker if valid
+    - Add Apache License
+    - ...
