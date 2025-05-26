@@ -165,8 +165,8 @@
     - Scrollable (part below account info section)
 
     - ONGOING Switch Account
-        - Further clickable window
-        - Back button send to Account Sidebar
+        - DONE Further clickable window
+        - DONE Back button send to Account Sidebar
         - List View 
             - My Account
             - Others

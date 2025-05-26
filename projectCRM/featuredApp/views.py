@@ -145,8 +145,6 @@ def dashboard_view(request, *args, **kwargs):
         due_date__gte=today,
     ).exclude(status="Completed").order_by('due_date')[:5]
 
-    print(upcoming_tasks)
-
     if get_active_business_user_with_permission(request, 'can_read_contact', show_err='Contact Read')[1]:
         total_client = len(Client.objects.filter(companyAssignee = active_business_user))
         if query:
@@ -213,12 +211,15 @@ def switch_account(request, public_id):
     logged_in_user = request.user.businessuser
     target_user = get_object_or_404(BusinessUser, public_id=public_id)
 
+    next_url = request.POST.get('next') or 'appDashboard'
+    print(next_url)
+
     # Trying to access own account
     if target_user == logged_in_user:
         request.session['active_business_user_id'] = logged_in_user.id
         messages.success(request, f"You are now accessing your account!")
         ActivityLog.objects.create(user=logged_in_user, action=f"Switched to My Account")
-        return redirect('appDashboard')
+        return redirect(next_url)
     
     # Check access permission
     has_access = AccessPermission.objects.filter(
@@ -229,11 +230,11 @@ def switch_account(request, public_id):
         request.session['active_business_user_id'] = target_user.id
         messages.success(request, f"You are now accessing: {target_user.user.email}")
         ActivityLog.objects.create(user=logged_in_user, action=f"switched to {target_user.user.email} account")
-        return redirect('appDashboard')
+        return redirect(next_url)
 
     else:
         messages.error(request, "You do not have access to this account.")
-        return redirect('appDashboard')
+        return redirect(next_url)
 
 # ---- ===== Featured Related to Contact View ==== ----
 # Include: [contact_view; contact_detailed_view; contact_delete_view; contact_delete_permanently_view; contact_restore_view;]

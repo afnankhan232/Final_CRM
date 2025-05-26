@@ -80,6 +80,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                # Custom processor
+                'featuredApp.context_processor.accessible_accounts',
             ],
         },
     },

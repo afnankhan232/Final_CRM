@@ -702,3 +702,117 @@ h1, h2, h3, h4, h5, h6 {
 .account-panel-appearance .account-panel-appearance-body .account-menu.active .tick-mark::before {
     content: "✓";
 }
+
+
+
+
+/* --- Switch Account Panel --- */
+.account-panel-switchAccount {
+    position: fixed;
+    top: 40px;
+    right: -320px; /* Hidden by default */
+    width: 300px;
+
+    color: var(--account-panel-appearance-color);
+    background-color: var(--account-panel-appearance-background-color);
+
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+    border-left: 1px solid var(--account-panel-appearance-border-left-color);
+    border-radius: 10px;
+    transition: right 0.3s ease;
+    z-index: 2800;
+    display: flex;
+    flex-direction: column;
+    visibility: none;
+}
+
+.account-panel-switchAccount .account-panel-switchAccount-header {
+    font-size: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 12px;
+    border-bottom: 1px solid #eee;
+    padding: 18px 38px 12px 10px;
+}
+
+.account-panel-switchAccount #go-back-account-panel-from-switchAccount {
+    cursor: pointer;
+    background: none; 
+    border: none; 
+    padding: 0; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.account-panel-appearance #go-back-account-panel-img-from-switchAccount {
+    color: var(--account-panel-appearance-back-img);
+}
+
+.account-panel-switchAccount #go-back-account-panel-from-switchAccount:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* appearance option */
+.account-panel-switchAccount .account-panel-switchAccount-body {
+    display: flex;
+    flex-direction: column;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.account-panel-switchAccount-body .account-menu {
+    font-weight: 100;
+    font-size: 14px;
+
+    padding: 10px 14px;
+}
+
+.account-panel-switchAccount-body .account-menu:hover {
+    background-color: var(--account-panel-appearance-menu-hover-background-color);
+    cursor: pointer;
+}
+
+/* --- Open State --- */
+.account-panel-switchAccount.open {
+    right: 20px;
+    visibility: true;
+}
+
+.account-panel-switchAccount .account-panel-switchAccount-body .account-menu.active .tick-mark::before {
+    content: "✓";
+    color: green;
+}
+
+.account-panel-switchAccount .account-panel-switchAccount-body .account-menu {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    gap: 10px;
+}
+
+.account-panel-switchAccount .account-panel-switchAccount-body .tick-mark {
+    width: 16px;
+    height: 1em; /* align with text height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Blank space by default */
+.account-panel-switchAccount .account-panel-switchAccount-body .tick-mark::before {
+    content: "";
+}
+
+/* Show tick when selected */
+.account-panel-switchAccount .account-panel-switchAccount-body .account-menu.active .tick-mark::before {
+    content: "✓";
+}

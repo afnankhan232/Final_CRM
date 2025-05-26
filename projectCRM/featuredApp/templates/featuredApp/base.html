@@ -193,7 +193,7 @@
 
             <!-- SWITCH ACCOUNT -->
             <!-- Further window -->
-            <div class="account-menu two-different-elements">
+            <div class="account-menu two-different-elements" onclick="openAccountPanelSwitchAccount()">
                 <div class="two-element">
                     <i class="fas fa-repeat"></i>
                     <div> Switch Account </div>
@@ -275,6 +275,78 @@
         </div>
     </div>
 
+    <!-- Slide Panel Switch Account Section -->
+    <div class="account-panel-switchAccount" id="accountPanelSwitchAccount">
+        <div class="account-panel-switchAccount-header">
+            <button id="go-back-account-panel-from-switchAccount" class="icon-button" aria-label="Go back" onclick="closeAccountPanelSwitchAccount()">
+                <i class="fas fa-angle-left" id="go-back-account-panel-img-from-switchAccount"></i>
+            </button>
+            <div> Switch Account </div>
+        </div>
+
+        
+        <div class="account-panel-switchAccount-body">
+            <!-- Covering My Account -->
+            <div class="account-menu" onclick="document.getElementById('switch-account-form').submit();" style="cursor: pointer;">
+                <div class="tick-mark"></div>
+
+                <!-- Form wrapped with ID, button hidden -->
+                <form 
+                    id="switch-account-form" 
+                    method="post" 
+                    action="{% url 'switch_account' public_id=self_account.public_id %}" 
+                    style="display: none;"
+                    >
+
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button type="submit" class="switch-link">My Account</button>
+                </form>
+
+                <span class="switch-link">My Account</span>
+            </div>
+
+            <!-- Accessible Accounts -->
+            {% for shared_user in accessible_accounts %}
+                {% if shared_user.owner.public_id %}
+                    <div class="account-menu" 
+                    onclick="document.getElementById('switch-form-{{ forloop.counter }}').submit();" 
+                    style="cursor: pointer;">
+
+                        <div class="tick-mark"></div>
+
+                        <!-- Hidden Form -->
+                        <form 
+                            id="switch-form-{{ forloop.counter }}" 
+                            method="post" 
+                            action="{% url 'switch_account' public_id=shared_user.owner.public_id %}" 
+                            style="display: none;"
+                            >
+
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                            <button type="submit" class="switch-link">
+                                Switch to <strong>{{ shared_user.owner.company_email }}</strong>
+                            </button>
+                        </form>
+
+                        <!-- Visible label -->
+                        <span class="switch-link">Switch to <strong>{{ shared_user.owner.company_email }}</strong></span>
+                    </div>
+                {% else %}
+                    <div class="account-menu">
+                        <span>{{ shared_user.user.email }} (no public ID)</span>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <div class="account-menu" >
+                    <div class="tick-mark"></div>
+                    <span class="switch-link text-danger">No shared access yet.</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
 
     <!-- JS files attached below -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -320,16 +392,28 @@
             panel.classList.toggle("open");
         }
 
+        // Appearance Switch
         function openAccountPanelAppearance() {
             toggleAccountPanel();
             const appearancePanel = document.getElementById("accountPanelAppearance");
             appearancePanel.classList.add("open");
         }
-
         function closeAccountPanelAppearance() {
             toggleAccountPanel();
             const appearancePanel = document.getElementById("accountPanelAppearance");
             appearancePanel.classList.remove("open");
+        }
+
+        // Account Switch
+        function openAccountPanelSwitchAccount() {
+            toggleAccountPanel();
+            const switchAccountPanel = document.getElementById("accountPanelSwitchAccount");
+            switchAccountPanel.classList.add("open");
+        }
+        function closeAccountPanelSwitchAccount() {
+            toggleAccountPanel();
+            const switchAccountPanel = document.getElementById("accountPanelSwitchAccount");
+            switchAccountPanel.classList.remove("open");
         }
 
         // Close when clicking outside
@@ -337,14 +421,16 @@
             const panel = document.getElementById("accountPanel");
             const trigger = document.querySelector(".account-trigger");
             const appearancePanel = document.getElementById("accountPanelAppearance");
+            const switchAccountPanel = document.getElementById("accountPanelSwitchAccount");
 
-            if (!panel || !trigger || !appearancePanel) return;
+            if (!panel || !trigger || !appearancePanel || !switchAccountPanel) return;
 
             if (
                 !panel.contains(event.target) && 
                 !trigger.contains(event.target) && 
                 panel.classList.contains("open") &&
-                (event.target.id !== "go-back-account-panel" && event.target.id !== "go-back-account-panel-img")
+                (event.target.id !== "go-back-account-panel" && event.target.id !== "go-back-account-panel-img") &&
+                (event.target.id !== "go-back-account-panel-from-switchAccount" && event.target.id !== "go-back-account-panel-img-from-switchAccount")
             ) {
                 panel.classList.remove("open");
             }
@@ -356,6 +442,15 @@
             ) {
                 
                 appearancePanel.classList.remove("open");
+            }
+
+            if(
+                !panel.contains(event.target) && 
+                !switchAccountPanel.contains(event.target) && 
+                switchAccountPanel.classList.contains("open")
+            ) {
+                
+                switchAccountPanel.classList.remove("open");
             }
         });
 
