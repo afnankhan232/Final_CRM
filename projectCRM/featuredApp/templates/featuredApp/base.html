@@ -204,12 +204,19 @@
             </div>
 
             <!-- SIGN OUT -->
-            <div class="account-menu two-element">
+            <div class="account-menu two-element"
+                onclick="document.getElementById('logout-form').submit();"
+                style="cursor: pointer;">
+
                 <i class="fas fa-sign-out-alt"></i>
-                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+
+                <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
                     {% csrf_token %}
                     <button type="submit" class="l-own" style="font-size: 14px">Sign Out</button>
                 </form>
+
+                <!-- Visisble label -->
+                <span class="l-own" style="font-size: 14px">Sign Out</span>
             </div>
             
             <div style="border-bottom: 1px solid #eee; margin: 4px 0px 4px 0px;"></div>
