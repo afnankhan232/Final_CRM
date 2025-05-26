@@ -33,6 +33,7 @@ from client.models import ActivityLog
 from django.utils import timezone
 
 from accounts.models import Role
+from accounts.forms import BusinessUserUpdationForm
 
 # MORE SECURITY
 def get_active_business_user_with_permission(request, permission_field_name: str, show_err = None, fallback = False):
@@ -102,13 +103,26 @@ def profile_view(request, *args, **kwargs):
         logged_in_user = request.user.businessuser
         request.session['active_business_user_id'] = logged_in_user.id
 
+    if(request.method == "POST"):
+        form = BusinessUserUpdationForm(request.POST, request.FILES, instance = user)
+        if(form.is_valid()):
+            form.save()
+            messages.success(request, 'Updated Profile.')
+        else:
+            messages.error(request, "Enter Valid Information")
+
+        return redirect('profile')
+
+    form = BusinessUserUpdationForm(instance = user)
+
     context = {
         'businessuser': user,
+        'form': form,
     }
 
     return render(
         request, 
-        'users/profile.html',
+        'accounts/profile.html',
         context,
     )
 
@@ -212,7 +226,6 @@ def switch_account(request, public_id):
     target_user = get_object_or_404(BusinessUser, public_id=public_id)
 
     next_url = request.POST.get('next') or 'appDashboard'
-    print(next_url)
 
     # Trying to access own account
     if target_user == logged_in_user:
@@ -720,7 +733,7 @@ def documents_detailed_view(request, pk, *args, **kwargs):
 
     if(request.method == "POST"):
         if(form_type!=None):
-            formEditDocument = DocumentCreationForm(request.POST, user = active_business_user, instance = document)
+            formEditDocument = DocumentCreationForm(request.POST, request.FILES, user = active_business_user, instance = document)
             if(formEditDocument.is_valid()):
                 if get_active_business_user_with_permission(request, 'can_edit_document', show_err='Document Edit')[1] == True:
                     formEditDocument.save()

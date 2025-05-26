@@ -1,8 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms.widgets import FileInput
 from .models import BusinessUser
 from .models import Role
+from .models import BusinessUser
 
 class CompanyUserCreationForm(UserCreationForm):
 
@@ -36,6 +38,26 @@ class CompanyUserCreationForm(UserCreationForm):
                 }
             )
         return user
+
+class BusinessUserUpdationForm(forms.ModelForm):
+    
+    class Meta:
+        model = BusinessUser
+        fields = [
+            'company_name',
+            'company_logo',
+            'industry',
+            'job_title',
+            'employees',
+            'website',
+            'address',
+            'country',
+            'phone',
+        ]
+
+        widget = {
+            'company_logo': FileInput(),
+        }
     
 class RolesCreationForm_Account(forms.ModelForm):
     class Meta:

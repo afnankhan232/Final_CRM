@@ -8,7 +8,9 @@ from django.conf.urls.static import static
 from accounts.views import indexView
 from accounts.views import aboutView
 from accounts.views import registrationView
-from accounts.views import profileView
+
+# Views from featuredApp
+from featuredApp.views import profile_view
 
 # for Authentication - Login and Logout
 from django.contrib.auth import views as auth_views
@@ -32,7 +34,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
     # Profile View
-    path('accounts/profile/', profileView, name='profile'),
+    path('accounts/profile/', profile_view, name='profile'),
 
     # Admin Page for Local Development
     path('admin/', admin.site.urls),

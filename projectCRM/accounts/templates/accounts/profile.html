@@ -7,18 +7,107 @@
 {% block contentTitle %}
 {% endblock contentTitle %}
 
+{% block addCSSlink %}
+<style>
+    .division-line-h2 {
+        margin: 20px 0; 
+        border-color: var(--featuredApp-dashboard-division-line-h2);
+    }
+
+    .content-section {
+        background-color: var(--featuredApp-contacts-form-add-pop-up-window-background-color);
+        color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+        padding: 20px;
+        border: 1px solid var(--featuredApp-dashboard-ul-list-item-border-color);
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .accounts-img {
+        height: 125px;
+        width: 125px;
+        margin-right: 20px;
+        margin-bottom: 16px;
+        object-fit: cover;
+        border: 2px solid var(--featuredApp-dashboard-ul-list-item-border-color);
+    }
+
+    .account-heading {
+        font-size: 2.5rem;
+        color: var(--featuredApp-contacts-form-add-pop-up-window-color);
+        margin-bottom: 5px;
+    }
+
+    .text-secondary {
+        color: #aaa !important;
+    }
+
+    .media {
+        display: flex;
+        align-items: center;
+    }
+
+    .media-body {
+        flex: 1;
+    }
+
+    .form-control {
+        background-color: var(--featuredApp-contacts-form-control-input-bg);
+        color: var(--featuredApp-contacts-form-control-input-color);
+        border: 1px solid var(--featuredApp-contacts-form-control-input-border);
+        caret-color: var(--featuredApp-contacts-form-control-input-caret-color);
+    }
+
+    .form-control::placeholder {
+        color: var(--featuredApp-contacts-form-control-input-placeholder);
+    }
+
+    .form-control:focus {
+        background-color: var(--featuredApp-contacts-form-control-input-bg);
+        color: var(--featuredApp-contacts-form-control-input-color);
+        /*border-color: var(--featuredApp-contacts-form-control-input-focus-border);*/
+    }
+
+    input[type="checkbox"][id$="-clear_id"] {
+    display: none;
+    }
+    label[for$="-clear_id"] {
+        display: none;
+    }
+</style>
+{% endblock addCSSlink %}
+
 {% block contentBody1 %}
     <div class="content-section">
         <div class="media">
-            <img width="100px" class="rounded-circle accounts-img" src="{{ businessuser.company_logo.url }}">
-            <div class="media-body">
-                <h2 class="account-heading">{{ businessuser.company_name }}</h2>
-                <p class="text-secondary">{{ businessuser.company_email }}</p>
+            <img class="rounded-circle accounts-img" src="{{ businessuser.company_logo.url }}" alt="Company Logo">
 
+            <div class="media-body">
+                <h2 class="account-heading">{{ businessuser.company_name|capfirst }}</h2>
+                <p class="text-secondary">{{ businessuser.company_email }}</p>
                 <!-- <div class="last-login">Last login: {{ last_login|date:"M d, Y H:i" }}</div> -->
-                
             </div>
         </div>
+
     </div>
 
+    <div class="content-section">
+
+        <form method="POST" enctype="multipart/form-data"> 
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="" style="font-weight: 800;"> Update Your Profile</legend>
+                    <hr class="division-line-h2" style="">
+
+                    {{ form|crispy}}
+
+                    <div class="form-group">
+                        <button class="btn btn-dark w-100" type="submit">Update Profile</button>
+                    </div>
+
+                </fieldset>
+        </form>
+        
+    </div>
+    
 {% endblock contentBody1 %}
