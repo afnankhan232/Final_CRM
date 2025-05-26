@@ -219,7 +219,7 @@
                 <span class="l-own" style="font-size: 14px">Sign Out</span>
             </div>
             
-            <div style="border-bottom: 1px solid #eee; margin: 4px 0px 4px 0px;"></div>
+            <div style="border-bottom: 1px solid var(--account-panel-header-border-bottom); margin: 4px 0px 4px 0px;"></div>
             
             <!-- APPEARANCE -->
             <!-- Further window -->
@@ -240,7 +240,7 @@
                 <div>Settings</div>
             </div>
 
-            <div style="border-bottom: 1px solid #eee; margin: 4px 0px 4px 0px;"></div>
+            <div style="border-bottom: 1px solid var(--account-panel-header-border-bottom); margin: 4px 0px 4px 0px;"></div>
 
             <!-- HELP -->
             <div class="account-menu two-element">
@@ -313,6 +313,8 @@
                 <span class="switch-link">My Account</span>
             </div>
 
+            <div style="border-bottom: 1px solid var(--account-panel-header-border-bottom); margin: 4px 0px 4px 0px;"></div>
+
             <!-- Accessible Accounts -->
             {% for shared_user in accessible_accounts %}
                 {% if shared_user.owner.public_id %}
@@ -340,6 +342,9 @@
                         <!-- Visible label -->
                         <span class="switch-link">Switch to <strong>{{ shared_user.owner.company_email }}</strong></span>
                     </div>
+
+                    <div style="border-bottom: 1px solid var(--account-panel-header-border-bottom); margin: 4px 0px 4px 0px;"></div>
+
                 {% else %}
                     <div class="account-menu">
                         <span>{{ shared_user.user.email }} (no public ID)</span>
@@ -348,8 +353,9 @@
             {% empty %}
                 <div class="account-menu" >
                     <div class="tick-mark"></div>
-                    <span class="switch-link text-danger">No shared access yet.</span>
+                    <span class="switch-link text-danger"><strong>No shared access yet.</strong></span>
                 </div>
+                <div style="border-bottom: 1px solid var(--account-panel-header-border-bottom); margin: 4px 0px 4px 0px;"></div>
             {% endfor %}
         </div>
     </div>

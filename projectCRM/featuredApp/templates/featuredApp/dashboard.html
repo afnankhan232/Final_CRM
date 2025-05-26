@@ -194,6 +194,7 @@
     </ul>
 
 
+    {% comment %}
     <h4>Switch Account</h4>
     <ul class="list-group">
             <!-- Self Account -->
@@ -224,7 +225,8 @@
             {% empty %}
                 <li class="list-group-item text-danger dashboard-ul-list-item">No shared access yet.</li>
         {% endfor %}
-        </ul>
+    </ul>
+    {% endcomment %}
 
 {% endblock contentBody1 %}
 

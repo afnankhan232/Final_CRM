@@ -609,7 +609,7 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: row;
     align-items: center;
     column-gap: 12px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--account-panel-header-border-bottom);
     padding: 18px 38px 12px 10px;
 }
 
@@ -706,6 +706,7 @@ h1, h2, h3, h4, h5, h6 {
 
 
 
+
 /* --- Switch Account Panel --- */
 .account-panel-switchAccount {
     position: fixed;
@@ -732,7 +733,7 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: row;
     align-items: center;
     column-gap: 12px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--account-panel-header-border-bottom);
     padding: 18px 38px 12px 10px;
 }
 
@@ -750,7 +751,7 @@ h1, h2, h3, h4, h5, h6 {
     transition: background-color 0.2s;
 }
 
-.account-panel-appearance #go-back-account-panel-img-from-switchAccount {
+.account-panel-switchAccount #go-back-account-panel-img-from-switchAccount {
     color: var(--account-panel-appearance-back-img);
 }
 
