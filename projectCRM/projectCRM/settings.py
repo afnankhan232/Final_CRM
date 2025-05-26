@@ -9,12 +9,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l3!d6qap(m@zdf^ap$y&p!88k)!zhca0p-j!6c29zuw^ml6ij_'
+# SECRET_KEY = 'django-insecure-l3!d6qap(m@zdf^ap$y&p!88k)!zhca0p-j!6c29zuw^ml6ij_'
+SECRET_KEY = os.environ.get("SECRET_KEY") 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = (os.environ.get("DEBUG_VALUE") == "True")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "CtrlCRM.pythonanywhere.com",
+    "http://localhost:8000/",
+    "localhost",
+]
 
 
 # Application definition
@@ -137,6 +143,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
 
 # Default primary key field type

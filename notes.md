@@ -164,17 +164,17 @@
 
     - Scrollable (part below account info section)
 
-    - ONGOING Switch Account
+    - DONE Switch Account
         - DONE Further clickable window
         - DONE Back button send to Account Sidebar
-        - List View 
-            - My Account
-            - Others
-        - Sign Out button
+        - DONE List View 
+            - DONE My Account
+            - DONE Others
+        - REJECTED Sign Out button
      
     - DONE Logout
 
-    - Appearance
+    - DONE Appearance
         - DONE Layout For Theme Selector
             - DONE Clickable div
             - DONE Tick mark (for active theme)
@@ -202,7 +202,7 @@
         - Includes: [Describe everything; Capture Screenshot; Send Button(apply after the valid information is entered)]
         - Connect to crm-mail author
 
-- Deploy
+- READY Deploy
     - Get PythonAnywhere Subscription
     - Follow Django Deployment Procedure
     - Add Docker if valid
