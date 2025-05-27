@@ -1,62 +1,219 @@
 {% extends 'accounts/base.html' %}
-
 {% load static %}
+{% load socialaccount %}
 
-<!-- Adding css link -->
-{% block addCSSlink%}
-    <link rel="stylesheet" href="{% static 'accounts/home.css' %}" type="text/css">
+{% block title %}Home - &lt;Ctrl&gt;CRM{% endblock %}
 
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f8f9fa;
-            padding-top: 5rem;
-            background-color: white;
-        }
-        .hero {
-            background-color: white;
-            padding: 3rem;
-            border-radius: 1rem;
-            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
-        }
-        .btn-google {
-            background-color: #4285F4;
-            color: white;
-        }
-        .btn-google:hover {
-            background-color: #3367D6;
-        }
-    </style>
+{% block addCSSlink %}
+<link rel="stylesheet" href="{% static 'accounts/home.css' %}" type="text/css">
+<style>
+  body {
+    background: linear-gradient(135deg, #f0f4f8, #e0f7fa);
+    background-attachment: fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+  }
 
-{% endblock addCSSlink%}
+  .modern-heading {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-weight: 800;
+    font-size: 3.5rem;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+  }
 
-<!-- adding title -->
-{% block contentTitle %}
-    <title> My CRM </title>
-{% endblock contentTitle %}
+  .modern-heading:hover {
+    color: #0070f3;
+    cursor: default;
+  }
 
-<!-- Content Page [Main] -->
+  .modern-subtitle {
+    font-family: inherit;
+    font-weight: 400;
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+
+  .modern-btn {
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 0.75rem 2.5rem;
+    background: linear-gradient(90deg, #0070f3, #3291ff);
+    border: none;
+    box-shadow: 0 8px 24px rgb(50 145 255 / 0.4);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+  }
+
+  .modern-btn:hover,
+  .modern-btn:focus {
+    background: linear-gradient(90deg, #3291ff, #0070f3);
+    box-shadow: 0 12px 30px rgb(50 145 255 / 0.6);
+    outline: none;
+    color: white;
+  }
+
+  .welcome-bg {
+    background-color: #A6E3E9;
+    padding: 4rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 12px 30px rgb(0 0 0 / 0.1);
+  }
+
+  .welcome-bg .modern-heading,
+  .welcome-bg .modern-subtitle {
+    color: #000 !important;
+    text-shadow: none;
+  }
+
+  .or-separator {
+    position: relative;
+    text-align: center;
+    margin: 1.5rem 0;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .or-separator::before,
+  .or-separator::after {
+    content: '';
+    height: 1px;
+    background: #ccc;
+    position: absolute;
+    top: 50%;
+    width: 40%;
+  }
+
+  .or-separator::before {
+    left: 0;
+  }
+
+  .or-separator::after {
+    right: 0;
+  }
+
+  .feature-btn {
+    background: #B1B2FF;
+    border: none;
+    border-radius: 1.5rem;
+    padding: 2rem 1.5rem;
+    width: 100%;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgb(0 112 243 / 0.3);
+    transition: all 0.3s ease;
+    font-family: inherit;
+    text-align: center;
+  }
+
+  .feature-btn h5 {
+    font-size: 1.6rem;
+    margin-bottom: 0.75rem;
+    font-weight: 800;
+    color: #000;
+  }
+
+  .feature-btn p {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #000;
+    opacity: 0.95;
+  }
+
+  .feature-btn:hover {
+    background: linear-gradient(90deg, #3291ff, #0070f3);
+    box-shadow: 0 12px 30px rgb(50 145 255 / 0.6);
+    transform: scale(1.05);
+    color: white;
+  }
+
+  .feature-btn:hover h5,
+  .feature-btn:hover p {
+    color: white;
+  }
+  .register-btn {
+    background: #ffffff;
+    color: #000000;
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 0.75rem 2.5rem;
+    border: 2px solid #0070f3;
+    transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.register-btn:hover,
+.register-btn:focus {
+    background: #0070f3;
+    color: white;
+    box-shadow: 0 12px 30px rgba(0, 112, 243, 0.5);
+    outline: none;
+}.simple-link {
+    font-size: 1.25rem;
+    font-weight: 700;       /* Bold text */
+    color:rgb(76, 81, 86);
+    text-decoration: none;  /* Remove underline */
+    display: inline-block;
+    margin: 0.5rem 0;
+    cursor: pointer;
+}
+
+.simple-link:hover {
+    color: #0070f3;         /* No color change on hover */
+    text-decoration: none;  /* No underline on hover */
+}
+
+
+</style>
+{% endblock %}
+
 {% block contentBody1 %}
+<div class="container py-5 text-center welcome-bg shadow-sm">
+    <h1 class="display-4 fw-bold mb-3 modern-heading">Welcome to &lt;Ctrl&gt;CRM</h1>
+    <p class="lead modern-subtitle">Track leads, manage customers, and grow your business — all in one place.</p>
 
-    {% load socialaccount %}
+    {% if not user.is_authenticated %}
+        <a href="{% provider_login_url 'google' %}?next=/" class="btn btn-lg rounded-pill px-5 shadow-sm modern-btn">
+            Login with Google
+        </a>
+        <div class="or-separator">OR</div>
+        <a href="{% url 'register' %}" class="simple-link">
+    Register with Email
+        </a>
+    {% else %}
+        <p class="text-success fw-semibold mt-4">
+            You are logged in as <strong>{{ businessuser.company_name }}</strong>.
+        </p>
+        <a href="{% url 'appDashboard' %}" class="btn btn-lg rounded-pill px-5 shadow-sm modern-btn mt-3">
+            Go to Dashboard
+        </a>
+    {% endif %}
+</div>
 
-    <div class="container">
-        <div class="text-center hero mb-5">
-            <h1 class="display-5 fw-bold">Welcome to Our CRM Software</h1>
-            <p class="lead mt-3">
-                Manage customer details, leads, and tasks efficiently.<br>
-                Stay organized, stay productive.
-            </p>
-
-            {% if not user.is_authenticated %}
-                <a class="btn btn-google btn-lg mt-4" href="{% provider_login_url 'google' %}?next=/">
-                    <i class="bi bi-google"></i> Login with Google
-                </a>
-            {% else %}
-                <p class="text-success fw-semibold mt-4">You are logged in as <strong>{{ businessuser.company_name }}</strong>.</p>
-                <a class="btn btn-primary mt-3" href="{% url 'appDashboard' %}">Go to Dashboard</a>
-            {% endif %}
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <button class="feature-btn">
+                <h5>Lead Management</h5>
+                <p>Organize and track potential clients easily with intuitive tools.</p>
+            </button>
+        </div>
+        <div class="col-md-4">
+            <button class="feature-btn">
+                <h5>Customer Profiles</h5>
+                <p>Keep detailed records of customer interactions and histories.</p>
+            </button>
+        </div>
+        <div class="col-md-4">
+            <button class="feature-btn">
+                <h5>Task Scheduling</h5>
+                <p>Easily assign tasks, track progress, and stay in sync with your team.</p>
+            </button>
         </div>
     </div>
-
-{% endblock contentBody1 %}
+</div>
+{% endblock %}

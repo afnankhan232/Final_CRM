@@ -1,29 +1,184 @@
 {% extends 'accounts/base.html' %}
-
 {% load static %}
 
-<!-- Adding css link -->
-{% block addCSSlink%}
-    <link rel="stylesheet" href="{% static 'accounts/home.css' %}" type="text/css">
-{% endblock addCSSlink%}
+{% block title %}About Us - &lt;CTRL&gt;CRM{% endblock %}
 
-<!-- adding title -->
-{% block contentTitle %}
-    <title> My CRM </title>
-{% endblock contentTitle %}
+{% block addCSSlink %}
+<style>
+  body {
+    background: #f0f4f8;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  }
 
-<!-- Content Page [Main] -->
+  .about-container {
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+  }
+
+  .about-title {
+    text-align: center;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #0070f3;
+    margin-bottom: 3rem;
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .member-card {
+    background: linear-gradient(145deg, #e6eef6, #ffffff);
+    border-radius: 1.25rem;
+    padding: 2.5rem;
+    text-align: center;
+    transition: transform 0.6s ease, box-shadow 0.6s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .member-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 14px 32px rgba(0, 112, 243, 0.25);
+  }
+
+  .member-name {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0070f3;
+    margin-bottom: 1.25rem;
+  }
+
+  .member-details {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.6s ease;
+    font-size: 1.1rem;
+    color: #333;
+  }
+
+  .member-card:focus-within .member-details,
+  .member-card:hover .member-details {
+    max-height: 250px;
+    opacity: 1;
+    margin-top: 1rem;
+  }
+
+  .member-email {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #0070f3;
+    word-break: break-word;
+  }
+
+  .linkedin-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0e76a8;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .linkedin-link:hover {
+    color: #0070f3;
+    text-decoration: underline;
+  }
+
+  .project-summary {
+    margin-top: 4rem;
+    padding: 3rem;
+    border-radius: 1rem;
+    background: linear-gradient(to right, #e0eafc, #cfdef3);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 2s ease-in-out;
+  }
+
+  .project-summary h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0051a2;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .project-summary p {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    color: #333;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+{% endblock %}
+
 {% block contentBody1 %}
+<div class="about-container">
+  <h1 class="about-title">Meet the Developers</h1>
+  <div class="team-grid">
+    <div class="member-card" tabindex="0">
+      <div class="member-name">Adarsh Vishwakarma</div>
+      <div class="member-details">
+        <p>Email:</p>
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=adarsh.cs12level@gmail.com" target="_blank">
+  adarsh.cs12level@gmail.com
+</a>
 
-    <div class="content-section">
-        <h2>Welcome to Our CRM Software</h2>
-        <br><br>
-        <h3>This Software is created by:</h3>
-        <p>
-            Adarsh Vishwakarma<br>
-            Afnan Khan<br>
-            Anurag Pandey<br>
-            Arpit Patel<br>
-        </p>
+        <a class="linkedin-link" href="https://www.linkedin.com/in/adarshvishwakarma12" target="_blank">LinkedIn Profile</a>
+      </div>
     </div>
-{% endblock contentBody1 %}
+    <div class="member-card" tabindex="0">
+      <div class="member-name">Afnan Khan</div>
+      <div class="member-details">
+        <p>Email:</p>
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=khanafnan176@gmail.com" target="_blank">
+  khanafnan176@gmail.com
+</a>
+        <a class="linkedin-link" href="https://www.linkedin.com/in/afnankhan232" target="_blank">LinkedIn Profile</a>
+      </div>
+    </div>
+    <div class="member-card" tabindex="0">
+      <div class="member-name">Anurag Pandey</div>
+      <div class="member-details">
+        <p>Email:</p>
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anuragpandey15095@gmail.com" target="_blank">
+  anuragpandey15095@gmail.com
+</a>
+        <a class="linkedin-link" href="https://www.linkedin.com/in/anurag-pandey-1805b6222" target="_blank">LinkedIn Profile</a>
+      </div>
+    </div>
+    <div class="member-card" tabindex="0">
+      <div class="member-name">Arpit Patel</div>
+      <div class="member-details">
+        <p>Email:</p>
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=imarpit.soe@gmail.com" target="_blank">
+  imarpit.soe@gmail.com
+</a>
+        <a class="linkedin-link" href="http://linkedin.com/in/arpit-patel0307/" target="_blank">LinkedIn Profile</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-summary">
+    <h2>Project Summary</h2>
+    <p>
+      &lt;Ctrl&gt;CRM is a creative culmination of four passionate developers who came together to simplify customer relationship management. Built with a vision of speed, simplicity, and scalability, this project emphasizes clear UX, modern UI, and seamless integration options. Our team approached it not just as a task but as an opportunity to experiment, innovate, and deliver value — blending aesthetics with backend power to bring a refreshing experience to CRM systems.
+    </p>
+  </div>
+</div>
+{% endblock %}

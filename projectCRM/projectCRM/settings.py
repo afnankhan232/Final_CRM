@@ -20,6 +20,7 @@ ALLOWED_HOSTS = [
     "CtrlCRM.pythonanywhere.com",
     "http://localhost:8000/",
     "localhost",
+    "*",
 ]
 
 
@@ -164,7 +165,7 @@ AUTHENTICATION_BACKENDS = [
 
 # ---- ==== Specific to CRM Software ==== ----
 
-# Cirspy forms used at userCreation, userLogin, and other..
+# Crispy forms used at userCreation, userLogin, and other..
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Added media path (to store logo of company and storing Documents)
