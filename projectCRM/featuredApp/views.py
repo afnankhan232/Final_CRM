@@ -151,7 +151,7 @@ def dashboard_view(request, *args, **kwargs):
     find_tasks_by_query = None
     find_document_by_query = None
 
-    recent_activities = ActivityLog.objects.order_by('-timestamp')[:10]  # latest 10
+    recent_activities = ActivityLog.objects.filter(user = active_business_user).order_by('-timestamp')[:10]  # latest 10
 
     today = timezone.now().date()
     upcoming_tasks = Task.objects.filter(
