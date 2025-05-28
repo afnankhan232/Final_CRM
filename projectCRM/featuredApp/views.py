@@ -1003,3 +1003,30 @@ def delete_access(request, access_id):
     access.delete()
     messages.warning(request, f"Access revoked for {shared_with.company_email}.")
     return redirect('appManageAccess')
+
+
+from django.core.mail import send_mail
+from accounts.forms import FeedbackForm
+import os
+
+@login_required
+def submit_feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            description = form.cleaned_data['description']
+            allow_contact = form.cleaned_data['allow_contact']
+            user_email = request.user.email if (allow_contact and request.user.is_authenticated) else 'N/A'
+
+            message = f"Feedback:\n{description}\n\nUser Email: {user_email}"
+            send_mail(
+                subject="New Feedback Received",
+                message=message,
+                from_email=os.environ.get("EMAIL_HOST_USER"),
+                recipient_list=["adarsh.cs12level@gmail.com"],
+            )
+            messages.success(request, "Thanks for your feedback!")
+        else:
+            messages.error(request, "There was an error in your feedback.")
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))

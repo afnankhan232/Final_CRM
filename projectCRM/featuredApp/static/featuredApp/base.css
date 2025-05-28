@@ -175,8 +175,16 @@ h1, h2, h3, h4, h5, h6 {
 
 .container-defined {
     padding-top: 20px;
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+@media (min-width: 1024px) {
+    .container-defined {
+        padding-top: 20px;
+        padding-left: 50px;
+        padding-right: 50px;
+    }
 }
 
 .l-own {
@@ -419,6 +427,8 @@ h1, h2, h3, h4, h5, h6 {
     text-decoration: none;
 }
 
+.
+
 .right-nav .account-link:hover {
     color: #007bff;
 }
@@ -553,8 +563,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Account menu option */
 .account-panel .account-panel-body .account-menu {
-    font-weight: 100;
-    font-size: 14px;
+    font-weight: 500;
+    font-size: 17px;
     padding: 10px 14px;
 }
 
@@ -604,7 +614,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .account-panel-appearance .account-panel-appearance-header {
-    font-size: 16px;
+    font-size: 20px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -645,8 +655,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .account-panel-appearance-body .account-menu {
-    font-weight: 100;
-    font-size: 14px;
+    font-weight: 500;
+    font-size: 18px;
 
     padding: 10px 14px;
 }
@@ -711,8 +721,8 @@ h1, h2, h3, h4, h5, h6 {
 .account-panel-switchAccount {
     position: fixed;
     top: 40px;
-    right: -320px; /* Hidden by default */
-    width: 300px;
+    right: -420px; /* Hidden by default */
+    width: 340px;
 
     color: var(--account-panel-appearance-color);
     background-color: var(--account-panel-appearance-background-color);
@@ -728,7 +738,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .account-panel-switchAccount .account-panel-switchAccount-header {
-    font-size: 16px;
+    font-size: 20px;
+    font-weight: 500;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -769,8 +780,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .account-panel-switchAccount-body .account-menu {
-    font-weight: 100;
-    font-size: 14px;
+
+    font-size: 18px;
+    font-weight: 500;
 
     padding: 10px 14px;
 }
@@ -816,4 +828,165 @@ h1, h2, h3, h4, h5, h6 {
 /* Show tick when selected */
 .account-panel-switchAccount .account-panel-switchAccount-body .account-menu.active .tick-mark::before {
     content: "✓";
+}
+
+
+
+/* --- Feedback Panel --- */
+.account-panel-feedback {
+    position: fixed;
+    top: 0px;
+    bottom: 0;
+    height: auto;
+    right: -100vw; /* Hidden off-screen by default */
+    width: 35vw; /* Always cover at least 35% of viewport */
+    max-width: 580px; /* Limit on large screens */
+    min-width: 320px; /* Safe minimum for mobile */
+    
+    color: var(--account-panel-appearance-color);
+    background-color: var(--account-panel-appearance-background-color);
+
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+    border-left: 1px solid var(--account-panel-appearance-border-left-color);
+    border-radius: 10px 0 0 10px;
+    transition: right 0.3s ease;
+    z-index: 2800;
+    display: flex;
+    flex-direction: column;
+    visibility: none;
+}
+
+.account-panel-feedback .account-panel-feedback-header {
+    font-size: 20px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 12px;
+    border-bottom: 1px solid var(--account-panel-header-border-bottom);
+    padding: 18px 38px 12px 10px;
+}
+
+.account-panel-feedback #go-back-account-panel-from-feedback {
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.account-panel-feedback #go-back-account-panel-img-from-feedback {
+    color: var(--account-panel-appearance-back-img);
+}
+
+.account-panel-feedback #go-back-account-panel-from-feedback:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+.account-panel-feedback .account-panel-feedback-body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.account-panel-feedback .account-panel-feedback-body textarea {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    resize: vertical;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+
+    min-height: 100px;
+    height: 25vh; /* adjusts based on screen height */
+    max-height: 50vh;
+}
+
+.account-panel-feedback .account-panel-feedback-body label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.account-panel-feedback .account-panel-feedback-body input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.account-panel-feedback .account-panel-feedback-body button {
+    padding: 10px;
+    background-color: #3ea6ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.account-panel-feedback .account-panel-feedback-body button:hover {
+    background-color: #0f81e2;
+}
+
+/* --- Open State --- */
+.account-panel-feedback.open {
+    right: 20px;
+    visibility: visible;
+}
+
+/* Responsive width for Feedback Panel */
+@media (max-width: 480px) {
+    .account-panel-feedback {
+        width: 90vw; /* Use most of the screen */
+        right: -100vw; /* Off-screen initially */
+    }
+
+    .account-panel-feedback.open {
+        right: 5vw; /* Slide in slightly from the right */
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .account-panel-feedback {
+        width: 400px;
+        right: -440px;
+    }
+
+    .account-panel-feedback.open {
+        right: 20px;
+    }
+}
+
+.form-control {
+            background-color: var(--featuredApp-contacts-form-control-input-bg);
+            color: var(--featuredApp-contacts-form-control-input-color);
+            border: 1px solid var(--featuredApp-contacts-form-control-input-border);
+            caret-color: var(--featuredApp-contacts-form-control-input-caret-color);
+        }
+
+        .form-control::placeholder {
+            color: var(--featuredApp-contacts-form-control-input-placeholder);
+        }
+
+        .form-control:focus {
+            background-color: var(--featuredApp-contacts-form-control-input-bg);
+            color: var(--featuredApp-contacts-form-control-input-color);
+            /*border-color: var(--featuredApp-contacts-form-control-input-focus-border);*/
+        }
+
+@media (min-width: 769px) {
+    .account-panel-feedback {
+        width: 500px;
+        right: -540px;
+    }
+
+    .account-panel-feedback.open {
+        right: 20px;
+    }
 }

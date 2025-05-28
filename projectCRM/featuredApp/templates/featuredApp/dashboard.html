@@ -78,7 +78,17 @@
     <div class="mb-4">
 
         <div class="welcome-box" id="welcomeBox">
-            <h2>Welcome back, {{ user.first_name }}! </h2>
+            <h2>Welcome back, 
+                {% if user.get_full_name %}
+                    {{ user.get_full_name }}
+                {% elif social %}
+                    {{ social.extra_data.name }}
+                {% elif user.businessuser.company_name %}
+                    {{ user.businessuser.company_name }}
+                {% else %}
+                    User
+                {% endif %}!
+            </h2>
             <p>"Stay on top of your business — check your upcoming tasks, recent activity, and client updates all in one place."</p>
         </div>
 

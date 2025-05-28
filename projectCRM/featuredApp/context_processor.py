@@ -9,3 +9,8 @@ def accessible_accounts(request):
         'self_account': self_account,
         'accessible_accounts': accounts,
     }
+
+from accounts.forms import FeedbackForm
+
+def feedback_form_processor(request):
+    return {'feedback_form': FeedbackForm()}

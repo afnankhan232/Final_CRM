@@ -71,4 +71,7 @@ urlpatterns = [
     path('manage-access/', views.manage_access, name='appManageAccess'),
     path('manage-access/delete-role/<int:role_id>/', views.delete_role, name='delete_role'),
     path('manage-access/delete-access/<int:access_id>/', views.delete_access, name='delete_access'),
+
+    # ---- ==== Send Feedback ==== ----
+    path('submit-feedback/', views.submit_feedback, name='submit_feedback'),
 ]

@@ -33,7 +33,7 @@ class BusinessUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"{self.company_email} - {self.company_name}"
+        return f"{self.company_email}"
 
     def get_logo_filename(self):
         return str(self.company_logo)[str(self.company_logo).index(f'company_logos/{self.pk}/'):]

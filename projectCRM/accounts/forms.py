@@ -103,3 +103,20 @@ class RolesCreationForm_Account(forms.ModelForm):
 
 class AccessShareForm(forms.Form):
     shared_with_emails = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+from django import forms
+
+class FeedbackForm(forms.Form):
+    description = forms.CharField(
+        label="Your Feedback",
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': 'Share your thoughts...',
+            'rows': 3,
+        })
+    )
+    allow_contact = forms.BooleanField(
+        required=False,
+        label="Allow us to reach out via email",
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
